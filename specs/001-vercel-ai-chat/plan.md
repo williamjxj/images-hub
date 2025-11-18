@@ -14,7 +14,8 @@ Implement a real-time chat interface that routes AI requests through Vercel AI G
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, Node.js 20+  
-**Primary Dependencies**: 
+**Primary Dependencies**:
+
 - `ai: ^5.0.93` - Vercel AI SDK core
 - `@ai-sdk/react: ^2.0.93` - React hooks for chat UI
 - `next: 16.0.3` - Next.js framework with App Router
@@ -23,33 +24,38 @@ Implement a real-time chat interface that routes AI requests through Vercel AI G
 
 **Storage**: In-memory session state (client-side React state). No persistent storage required per spec (out of scope: chat history persistence across sessions).
 
-**Testing**: 
+**Testing**:
+
 - Manual testing for user flows
 - Integration testing for API routes (recommended)
 - E2E testing for critical paths (recommended)
 
-**Target Platform**: 
+**Target Platform**:
+
 - Web browser (modern browsers supporting React 19)
 - Vercel Edge Runtime for API routes
 - Vercel deployment platform
 
 **Project Type**: Web application (Next.js App Router with API routes)
 
-**Performance Goals**: 
+**Performance Goals**:
+
 - First response token within 3 seconds (SC-001)
 - 95% success rate for chat requests (SC-002)
 - Support 20+ message exchanges without degradation (SC-003)
 - Error messages displayed within 1 second (SC-004)
 - Responsive UI with no blocking behavior (SC-005)
 
-**Constraints**: 
+**Constraints**:
+
 - 60-second timeout for AI responses (FR-018)
 - Message length validation against token limits (FR-015)
 - Single active session per user (FR-016)
 - 30-minute session inactivity timeout (FR-014)
 - Edge runtime for API routes (low latency requirement)
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - Single-user chat sessions (no multi-user concurrency requirements)
 - Session-based conversation history (no cross-session persistence)
 - Real-time streaming responses
@@ -57,11 +63,12 @@ Implement a real-time chat interface that routes AI requests through Vercel AI G
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 **Constitution Status**: ✅ PASS
 
-**Notes**: 
+**Notes**:
+
 - Constitution file appears to be a template and not yet customized for this project
 - No explicit violations detected in proposed implementation
 - Implementation follows Next.js and React best practices
@@ -116,6 +123,7 @@ lib/
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
 No violations detected. Implementation complexity is justified by:
+
 - Gateway integration provides observability and cost management benefits
 - Error handling and timeout mechanisms are required by specification
 - Session management is lightweight (client-side state)
@@ -126,6 +134,7 @@ No violations detected. Implementation complexity is justified by:
 ✅ All research questions resolved in `research.md`
 
 **Key Findings**:
+
 1. Use model string format `'deepseek/deepseek-chat'` for Gateway routing
 2. Gateway automatically handles routing when deployed on Vercel
 3. `DEEPSEEK_API_KEY` configured in Vercel dashboard for BYOK
@@ -137,6 +146,7 @@ No violations detected. Implementation complexity is justified by:
 ### Data Model
 
 See `data-model.md` for entity definitions:
+
 - **ChatMessage**: Message content, role, timestamp, ID
 - **ChatSession**: Session metadata, message sequence, activity tracking
 - **ErrorState**: Error type, message, recovery options
@@ -144,6 +154,7 @@ See `data-model.md` for entity definitions:
 ### API Contracts
 
 See `contracts/api-chat.yaml` for OpenAPI specification:
+
 - **POST /api/chat**: Chat message endpoint
   - Request: `{ messages: UIMessage[] }`
   - Response: Streaming UI message stream
@@ -152,6 +163,7 @@ See `contracts/api-chat.yaml` for OpenAPI specification:
 ### Quick Start
 
 See `quickstart.md` for:
+
 - Environment variable setup
 - Code changes required
 - Testing instructions
@@ -160,6 +172,7 @@ See `quickstart.md` for:
 ## Implementation Tasks (High-Level)
 
 ### 1. Update API Route (`app/api/chat/route.ts`)
+
 - Replace direct DeepSeek provider with model string format
 - Add `convertToModelMessages()` for message conversion
 - Implement timeout handling (60 seconds)
@@ -167,23 +180,27 @@ See `quickstart.md` for:
 - Add message length validation
 
 ### 2. Enhance Error Handling
+
 - Update error responses to include error type and retry information
 - Handle timeout errors specifically
 - Handle malformed/empty response errors
 - Handle rate limit errors with retry-after information
 
 ### 3. Update Frontend (if needed)
+
 - Verify `useChat` hook compatibility
 - Add error display components (if not present)
 - Add retry functionality for errors
 - Add session timeout handling
 
 ### 4. Environment Configuration
+
 - Document `DEEPSEEK_API_KEY` requirement
 - Verify Vercel dashboard configuration
 - Update `.env.local` documentation
 
 ### 5. Testing & Validation
+
 - Test Gateway routing in development
 - Test error scenarios (timeout, rate limits, malformed responses)
 - Test session lifecycle (start, timeout, new conversation)
@@ -193,27 +210,32 @@ See `quickstart.md` for:
 ## Dependencies & Prerequisites
 
 ### Required
+
 - Vercel account with AI Gateway enabled
 - DeepSeek API key (for BYOK configuration)
 - Next.js 16+ project
 - Existing chat UI components
 
 ### Optional
+
 - `@ai-sdk/gateway` package (only if custom Gateway configuration needed)
 
 ## Risk Assessment
 
 ### Low Risk
+
 - ✅ Gateway routing is well-documented
 - ✅ Existing code structure compatible
 - ✅ No breaking changes to frontend API
 
 ### Medium Risk
+
 - ⚠️ Model string format must match Gateway dashboard exactly
 - ⚠️ Timeout implementation requires careful AbortController usage
 - ⚠️ Error handling must match `useChat` hook expectations
 
 ### Mitigation
+
 - Verify model ID in Vercel dashboard before deployment
 - Test timeout scenarios thoroughly
 - Review error response formats against AI SDK documentation
@@ -221,6 +243,7 @@ See `quickstart.md` for:
 ## Success Criteria Validation
 
 Implementation must meet all success criteria from specification:
+
 - ✅ SC-001: First token within 3 seconds
 - ✅ SC-002: 95% success rate
 - ✅ SC-003: 20+ message exchanges

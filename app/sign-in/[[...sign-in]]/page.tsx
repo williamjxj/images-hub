@@ -1,4 +1,4 @@
-import { SignIn } from '@clerk/nextjs';
+import { SignIn } from "@clerk/nextjs";
 
 export default function SignInPage() {
   return (
@@ -7,4 +7,3 @@ export default function SignInPage() {
     </div>
   );
 }
-

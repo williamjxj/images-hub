@@ -15,7 +15,7 @@
 - Q: How should the system handle when the AI service returns invalid or empty responses? → A: Display a user-friendly error message explaining the issue and provide option to retry the request
 - Q: What should happen when an AI response takes too long (exceeds timeout threshold)? → A: Cancel request and show timeout error with retry option after reasonable timeout (e.g., 60 seconds)
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Send and Receive Chat Messages (Priority: P1)
 
@@ -81,7 +81,7 @@ Users can have multi-turn conversations where the AI assistant remembers and ref
 - What happens when the chat interface loses focus or the user navigates away during a response?
 - When a user starts a new conversation, the previous session ends and is replaced by the new session; only one active session exists per user at a time
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -104,13 +104,13 @@ Users can have multi-turn conversations where the AI assistant remembers and ref
 - **FR-017**: System MUST detect malformed or empty responses from the AI service and display a user-friendly error message with an option to retry the request
 - **FR-018**: System MUST implement a timeout mechanism (e.g., 60 seconds) for AI responses and cancel requests that exceed the timeout, displaying a timeout error message with an option to retry
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Chat Message**: Represents a single message in a conversation, containing the message text, sender role (user or assistant), timestamp, and unique identifier
 - **Chat Session**: Represents a single conversation instance, containing an ordered sequence of messages and session metadata. A session begins when the user sends their first message and ends when the user explicitly starts a new conversation or after 30 minutes of inactivity. Only one active session exists per user at a time
 - **Error State**: Represents error information displayed to users, containing error type, message, and recovery suggestions
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

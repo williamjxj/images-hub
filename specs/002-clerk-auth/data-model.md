@@ -20,36 +20,39 @@ This document defines the data model for authentication and authorization entiti
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `id` | string | Unique user identifier (Clerk user ID) | Clerk |
-| `emailAddresses` | array | Array of email addresses (primary + additional) | Clerk |
-| `primaryEmailAddress` | string | Primary email address | Clerk |
-| `emailVerified` | boolean | Whether primary email is verified | Clerk |
-| `firstName` | string | User's first name (optional) | Clerk |
-| `lastName` | string | User's last name (optional) | Clerk |
-| `imageUrl` | string | User's profile image URL | Clerk |
-| `createdAt` | timestamp | Account creation timestamp | Clerk |
-| `updatedAt` | timestamp | Last update timestamp | Clerk |
-| `lastSignInAt` | timestamp | Last sign-in timestamp | Clerk |
-| `banned` | boolean | Whether account is banned | Clerk |
-| `locked` | boolean | Whether account is locked | Clerk |
-| `role` | string | User role: "user" or "admin" | Custom metadata |
-| `publicMetadata` | object | Public metadata (includes role) | Clerk |
-| `privateMetadata` | object | Private metadata | Clerk |
+| Attribute             | Type      | Description                                     | Source          |
+| --------------------- | --------- | ----------------------------------------------- | --------------- |
+| `id`                  | string    | Unique user identifier (Clerk user ID)          | Clerk           |
+| `emailAddresses`      | array     | Array of email addresses (primary + additional) | Clerk           |
+| `primaryEmailAddress` | string    | Primary email address                           | Clerk           |
+| `emailVerified`       | boolean   | Whether primary email is verified               | Clerk           |
+| `firstName`           | string    | User's first name (optional)                    | Clerk           |
+| `lastName`            | string    | User's last name (optional)                     | Clerk           |
+| `imageUrl`            | string    | User's profile image URL                        | Clerk           |
+| `createdAt`           | timestamp | Account creation timestamp                      | Clerk           |
+| `updatedAt`           | timestamp | Last update timestamp                           | Clerk           |
+| `lastSignInAt`        | timestamp | Last sign-in timestamp                          | Clerk           |
+| `banned`              | boolean   | Whether account is banned                       | Clerk           |
+| `locked`              | boolean   | Whether account is locked                       | Clerk           |
+| `role`                | string    | User role: "user" or "admin"                    | Custom metadata |
+| `publicMetadata`      | object    | Public metadata (includes role)                 | Clerk           |
+| `privateMetadata`     | object    | Private metadata                                | Clerk           |
 
 **Relationships**:
+
 - Has many Sessions (one-to-many)
 - Has one Role (many-to-one, via metadata)
 - Has many Permissions (many-to-many, via role)
 
 **Validation Rules**:
+
 - Email addresses must be valid format (enforced by Clerk)
 - Primary email must be unique (enforced by Clerk)
 - Role must be "user" or "admin" (application-level validation)
 - Default role is "user" for new accounts
 
 **State Transitions**:
+
 ```
 [New User] → [Email Verification Pending] → [Email Verified] → [Active]
                                       ↓
@@ -66,24 +69,27 @@ This document defines the data model for authentication and authorization entiti
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `sessionId` | string | Unique session identifier | Clerk |
-| `userId` | string | Associated user ID | Clerk |
-| `expiresAt` | timestamp | Session expiration timestamp | Clerk |
-| `lastActiveAt` | timestamp | Last activity timestamp | Clerk |
-| `token` | string | Session JWT token (server-side only) | Clerk |
-| `status` | string | Session status: "active" | "expired" | Clerk |
+| Attribute      | Type      | Description                          | Source    |
+| -------------- | --------- | ------------------------------------ | --------- | ----- |
+| `sessionId`    | string    | Unique session identifier            | Clerk     |
+| `userId`       | string    | Associated user ID                   | Clerk     |
+| `expiresAt`    | timestamp | Session expiration timestamp         | Clerk     |
+| `lastActiveAt` | timestamp | Last activity timestamp              | Clerk     |
+| `token`        | string    | Session JWT token (server-side only) | Clerk     |
+| `status`       | string    | Session status: "active"             | "expired" | Clerk |
 
 **Relationships**:
+
 - Belongs to User Account (many-to-one)
 
 **Validation Rules**:
+
 - Session expires after 30 minutes of inactivity (configurable in Clerk)
 - Sessions are automatically refreshed on activity
 - Expired sessions require re-authentication
 
 **State Transitions**:
+
 ```
 [Created] → [Active] → [Expired] → [Requires Re-authentication]
 ```
@@ -98,28 +104,31 @@ This document defines the data model for authentication and authorization entiti
 
 **Supported Roles**:
 
-| Role | Description | Default | Permissions |
-|------|-------------|---------|-------------|
-| `user` | Standard authenticated user | Yes | Access to chat features, basic profile management |
-| `admin` | Administrative user | No | All user permissions + administrative features |
+| Role    | Description                 | Default | Permissions                                       |
+| ------- | --------------------------- | ------- | ------------------------------------------------- |
+| `user`  | Standard authenticated user | Yes     | Access to chat features, basic profile management |
+| `admin` | Administrative user         | No      | All user permissions + administrative features    |
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `name` | string | Role name: "user" or "admin" | Application |
-| `permissions` | array | List of permission strings | Application logic |
+| Attribute     | Type   | Description                  | Source            |
+| ------------- | ------ | ---------------------------- | ----------------- |
+| `name`        | string | Role name: "user" or "admin" | Application       |
+| `permissions` | array  | List of permission strings   | Application logic |
 
 **Relationships**:
+
 - Has many User Accounts (one-to-many, via metadata)
 - Has many Permissions (many-to-many)
 
 **Validation Rules**:
+
 - Role must be one of: "user", "admin"
 - Default role is "user"
 - Role changes take effect immediately (no session refresh needed)
 
 **State Transitions**:
+
 ```
 [Assigned] → [Active] → [Changed] → [New Role Active]
 ```
@@ -134,27 +143,29 @@ This document defines the data model for authentication and authorization entiti
 
 **Permission List**:
 
-| Permission | Description | Roles |
-|-----------|-------------|-------|
-| `chat:access` | Access chat interface | user, admin |
-| `chat:send` | Send chat messages | user, admin |
-| `profile:view` | View own profile | user, admin |
-| `profile:edit` | Edit own profile | user, admin |
-| `admin:access` | Access admin features | admin |
-| `admin:users` | Manage users | admin |
+| Permission     | Description           | Roles       |
+| -------------- | --------------------- | ----------- |
+| `chat:access`  | Access chat interface | user, admin |
+| `chat:send`    | Send chat messages    | user, admin |
+| `profile:view` | View own profile      | user, admin |
+| `profile:edit` | Edit own profile      | user, admin |
+| `admin:access` | Access admin features | admin       |
+| `admin:users`  | Manage users          | admin       |
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `name` | string | Permission identifier | Application |
-| `description` | string | Human-readable description | Application |
-| `roles` | array | Roles that have this permission | Application |
+| Attribute     | Type   | Description                     | Source      |
+| ------------- | ------ | ------------------------------- | ----------- |
+| `name`        | string | Permission identifier           | Application |
+| `description` | string | Human-readable description      | Application |
+| `roles`       | array  | Roles that have this permission | Application |
 
 **Relationships**:
+
 - Belongs to many Roles (many-to-many)
 
 **Validation Rules**:
+
 - Permissions are checked at runtime
 - Admin role has all permissions
 - User role has basic permissions only
@@ -250,21 +261,24 @@ This document defines the data model for authentication and authorization entiti
 ### Reading User Data
 
 **Client-Side**:
+
 ```typescript
-import { useUser } from '@clerk/nextjs';
+import { useUser } from "@clerk/nextjs";
 
 const { user } = useUser();
-const role = user?.publicMetadata?.role || 'user';
-const emailVerified = user?.emailAddresses[0]?.verification?.status === 'verified';
+const role = user?.publicMetadata?.role || "user";
+const emailVerified =
+  user?.emailAddresses[0]?.verification?.status === "verified";
 ```
 
 **Server-Side**:
+
 ```typescript
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 const { userId } = auth();
 const user = await currentUser();
-const role = user?.publicMetadata?.role || 'user';
+const role = user?.publicMetadata?.role || "user";
 ```
 
 ### Checking Permissions
@@ -272,10 +286,17 @@ const role = user?.publicMetadata?.role || 'user';
 ```typescript
 function hasPermission(userRole: string, permission: string): boolean {
   const rolePermissions: Record<string, string[]> = {
-    user: ['chat:access', 'chat:send', 'profile:view', 'profile:edit'],
-    admin: ['chat:access', 'chat:send', 'profile:view', 'profile:edit', 'admin:access', 'admin:users']
+    user: ["chat:access", "chat:send", "profile:view", "profile:edit"],
+    admin: [
+      "chat:access",
+      "chat:send",
+      "profile:view",
+      "profile:edit",
+      "admin:access",
+      "admin:users",
+    ],
   };
-  
+
   return rolePermissions[userRole]?.includes(permission) || false;
 }
 ```
@@ -295,4 +316,3 @@ function hasPermission(userRole: string, permission: string): boolean {
 - Role assignments stored in Clerk `publicMetadata`
 - Sessions managed entirely by Clerk (JWT tokens)
 - No direct database access needed - all via Clerk SDK
-

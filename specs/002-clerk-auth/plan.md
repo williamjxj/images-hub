@@ -14,45 +14,52 @@ Implement Clerk authentication and authorization to protect the chat application
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x, Node.js 20+  
-**Primary Dependencies**: 
+**Primary Dependencies**:
+
 - `@clerk/nextjs: ^6.35.2` - Clerk authentication SDK (already installed)
 - `next: 16.0.3` - Next.js framework with App Router
 - `react: 19.2.0` - React library
 - `ai: ^5.0.93` - Vercel AI SDK (existing)
 - `@ai-sdk/react: ^2.0.93` - React hooks for chat (existing)
 
-**Storage**: 
+**Storage**:
+
 - Clerk-managed user data (authentication, profiles, sessions)
 - No additional database required for authentication (Clerk handles user storage)
 - Role assignments managed through Clerk dashboard or API
 
-**Testing**: 
+**Testing**:
+
 - Manual testing for authentication flows (sign-in, sign-up, sign-out)
 - Integration testing for protected routes and API endpoints
 - E2E testing for complete user journeys (recommended)
 
-**Target Platform**: 
+**Target Platform**:
+
 - Web browser (modern browsers supporting React 19)
 - Next.js App Router with middleware
 - Vercel deployment platform (Clerk-compatible)
 
 **Project Type**: Web application (Next.js App Router with authentication middleware)
 
-**Performance Goals**: 
+**Performance Goals**:
+
 - Sign-in completion in under 10 seconds (SC-002)
 - 95% authentication success rate (SC-003)
 - Session state maintained correctly for 99% of page loads (SC-004)
 - Authorization checks complete in under 100ms (SC-006)
 - Support 1000 concurrent authenticated users (SC-008)
 
-**Constraints**: 
+**Constraints**:
+
 - 30-minute session inactivity timeout (FR-012)
 - Email verification required for full access (FR-003)
 - Rate limiting handled by Clerk (FR-018)
 - Must protect chat route and API endpoints (FR-008)
 - Role-based access control with User/Admin roles (FR-009)
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - User authentication and authorization for chat application
 - Two roles: User (default) and Admin
 - Email/password and OAuth social authentication
@@ -61,11 +68,12 @@ Implement Clerk authentication and authorization to protect the chat application
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 **Constitution Status**: ✅ PASS
 
-**Notes**: 
+**Notes**:
+
 - No constitution file found, using default project standards
 - Implementation follows Next.js and React best practices
 - Security practices maintained (Clerk handles credential storage)

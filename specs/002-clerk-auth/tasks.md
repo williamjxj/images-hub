@@ -42,6 +42,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Goal**: Verify environment configuration and Clerk prerequisites.
 
 ### Independent Test Criteria
+
 - Environment variables configured correctly
 - Clerk package installed and accessible
 - Clerk dashboard accessible
@@ -54,6 +55,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Goal**: Implement middleware-based route protection. This is a blocking prerequisite for all user stories - routes must be protected before authentication flows can be tested.
 
 ### Independent Test Criteria
+
 - Middleware protects chat route (`/`)
 - Middleware protects API endpoints (`/api/chat`)
 - Public routes (sign-in, sign-up) remain accessible
@@ -69,6 +71,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by completing the registration flow and verifying that a new account is created and the user is automatically signed in.
 
 **Acceptance Scenarios**:
+
 1. User provides valid email and password → account created → automatically signed in with limited access
 2. User provides existing email → clear error message shown
 3. User provides weak password → guidance on requirements shown
@@ -90,6 +93,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by signing in with valid credentials and verifying that the user remains authenticated across page navigation and browser refresh.
 
 **Acceptance Scenarios**:
+
 1. User provides valid credentials → signed in → redirected to application
 2. User provides incorrect credentials → clear error message (no credential hint)
 3. User refreshes page → remains authenticated
@@ -113,6 +117,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by signing out and verifying that the session is terminated, protected routes are inaccessible, and the user is redirected appropriately.
 
 **Acceptance Scenarios**:
+
 1. Signed-in user clicks sign out → session terminated → redirected to public page
 2. Signed-out user accesses protected route → redirected to sign-in page
 3. User signs out → session data cleared → cannot access until sign-in again
@@ -128,6 +133,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by accessing protected resources with different user roles (User vs Admin) and verifying that access is granted or denied according to role permissions.
 
 **Acceptance Scenarios**:
+
 1. User role accesses feature → access granted only if available to all authenticated users
 2. Admin role accesses admin feature → access granted
 3. User role accesses admin feature → clear message indicating no access
@@ -147,6 +153,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by updating profile information and verifying that changes are saved and reflected throughout the application.
 
 **Acceptance Scenarios**:
+
 1. Signed-in user views profile → sees current account information
 2. User updates profile → changes saved → reflected immediately
 3. User changes email → receives verification email for new address
@@ -162,6 +169,7 @@ Polish (Phase 8) - Cross-cutting concerns
 **Goal**: Handle edge cases, improve error messages, and ensure production readiness.
 
 ### Independent Test Criteria
+
 - All edge cases handled gracefully
 - Error messages are clear and user-friendly
 - Session timeout configured correctly
@@ -175,13 +183,15 @@ Polish (Phase 8) - Cross-cutting concerns
 ### After Phase 2 (Foundational) Complete
 
 **Can work in parallel**:
+
 - T005-T010 (US1 - Registration UI) can be done while planning US2
 - Layout updates can be done incrementally
 
 ### After Phase 4 (US2) Complete
 
 **Can work in parallel**:
-- T019-T021 (US3 - Sign Out) 
+
+- T019-T021 (US3 - Sign Out)
 - T022-T026 (US4 - RBAC)
 - T027-T030 (US5 - Profile Management)
 
@@ -192,6 +202,7 @@ These three user stories are independent and can be developed simultaneously.
 ### Manual Testing Per User Story
 
 **US1 - Registration**:
+
 - [ ] Sign up with email/password
 - [ ] Sign up with social provider (if configured)
 - [ ] Verify email verification flow
@@ -199,6 +210,7 @@ These three user stories are independent and can be developed simultaneously.
 - [ ] Test duplicate email handling
 
 **US2 - Sign In**:
+
 - [ ] Sign in with valid credentials
 - [ ] Test invalid credentials error
 - [ ] Test session persistence across refresh
@@ -206,17 +218,20 @@ These three user stories are independent and can be developed simultaneously.
 - [ ] Test deactivated account handling
 
 **US3 - Sign Out**:
+
 - [ ] Sign out from UserButton
 - [ ] Verify redirect after sign-out
 - [ ] Verify protected routes inaccessible after sign-out
 
 **US4 - RBAC**:
+
 - [ ] Test User role access
 - [ ] Test Admin role access
 - [ ] Test role change propagation
 - [ ] Test API endpoint role checks
 
 **US5 - Profile Management**:
+
 - [ ] View profile information
 - [ ] Update profile fields
 - [ ] Change email address
@@ -230,4 +245,3 @@ These three user stories are independent and can be developed simultaneously.
 - Session management handled automatically by Clerk
 - Rate limiting handled by Clerk (FR-018)
 - User data stored in Clerk (no local database needed)
-

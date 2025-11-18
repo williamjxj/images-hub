@@ -7,22 +7,26 @@ This document describes the implementation of an AI-powered chatbox application 
 ## Tech Stack
 
 ### Core Framework
+
 - **Next.js 16.0.3** - React framework with App Router
 - **React 19.2.0** - UI library
 - **TypeScript 5** - Type safety
 
 ### Authentication
+
 - **Clerk 6.35.2** - User authentication and management
   - Integrated with Next.js middleware for route protection
   - Supports sign-in and sign-up flows
 
 ### AI Integration
+
 - **Vercel AI SDK 5.0.93** - AI integration framework
 - **@ai-sdk/react 2.0.93** - React hooks for AI interactions
 - **@ai-sdk/openai 2.0.68** - OpenAI-compatible API client
 - **DeepSeek API** - AI model provider (via OpenAI-compatible interface)
 
 ### Styling
+
 - **Tailwind CSS 4** - Utility-first CSS framework
   - CSS-based configuration using `@theme` directive
   - PostCSS integration via `@tailwindcss/postcss`
@@ -31,6 +35,7 @@ This document describes the implementation of an AI-powered chatbox application 
   - New York style variant
 
 ### UI Components
+
 - **Radix UI** - Headless UI primitives
   - ScrollArea, Slot, Avatar components
 - **Lucide React** - Icon library
@@ -69,17 +74,20 @@ ai-chatbox/
 ### 1. Clerk Authentication Setup
 
 #### Middleware (`middleware.ts`)
+
 - Implements route protection using Clerk's `clerkMiddleware`
 - Public routes: `/`, `/sign-in`, `/sign-up`, `/api/webhooks`
 - All other routes require authentication
 - Runs on all routes except Next.js internals and static files
 
 #### Root Layout (`app/layout.tsx`)
+
 - Wraps application with `ClerkProvider` for authentication context
 - Maintains font configuration (Geist Sans & Mono)
 - Imports global CSS styles
 
 #### Environment Variables Required
+
 ```env
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
@@ -88,6 +96,7 @@ CLERK_SECRET_KEY=sk_...
 ### 2. AI Chat Integration
 
 #### API Route (`app/api/chat/route.ts`)
+
 - **Endpoint**: `POST /api/chat`
 - **Runtime**: Edge runtime for better performance
 - **Configuration**:
@@ -99,6 +108,7 @@ CLERK_SECRET_KEY=sk_...
 - **Streaming**: Returns text stream response using `toTextStreamResponse()`
 
 #### Chat Interface (`app/page.tsx`)
+
 - **Client Component**: Uses React hooks for state management
 - **State Management**:
   - Local input state with `useState`
@@ -117,6 +127,7 @@ CLERK_SECRET_KEY=sk_...
 ### 3. Styling Configuration
 
 #### Tailwind CSS v4
+
 - **Configuration Method**: CSS-based using `@theme` directive
 - **Location**: `app/globals.css`
 - **Features**:
@@ -127,10 +138,12 @@ CLERK_SECRET_KEY=sk_...
 - **Compatibility**: `tailwind.config.ts` created for tool compatibility (not actively used)
 
 #### PostCSS (`postcss.config.mjs`)
+
 - Uses `@tailwindcss/postcss` plugin
 - Processes CSS imports and Tailwind directives
 
 #### shadcn/ui Configuration (`components.json`)
+
 - Style: New York
 - RSC: Enabled
 - CSS Variables: Enabled
@@ -140,6 +153,7 @@ CLERK_SECRET_KEY=sk_...
 ### 4. Component Library
 
 #### shadcn/ui Components
+
 - **Button**: Variant-based button component
 - **Input**: Styled input field
 - **Card**: Container component with header/body/footer
@@ -147,6 +161,7 @@ CLERK_SECRET_KEY=sk_...
 - **Avatar**: User avatar display
 
 All components use:
+
 - Radix UI primitives for accessibility
 - Tailwind CSS for styling
 - TypeScript for type safety
@@ -155,11 +170,13 @@ All components use:
 ## Key Features
 
 ### Authentication
+
 - ✅ Clerk integration with middleware protection
 - ✅ Public and protected route handling
 - ✅ Sign-in/Sign-up pages ready (to be implemented)
 
 ### AI Chat
+
 - ✅ Real-time streaming chat interface
 - ✅ DeepSeek AI integration
 - ✅ Message history display
@@ -167,6 +184,7 @@ All components use:
 - ✅ Error handling
 
 ### UI/UX
+
 - ✅ Modern, responsive design
 - ✅ Dark mode support (via CSS variables)
 - ✅ Accessible components (Radix UI)
@@ -175,6 +193,7 @@ All components use:
 ## Environment Setup
 
 ### Required Environment Variables
+
 ```env
 # Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
@@ -185,16 +204,19 @@ DEEPSEEK_API_KEY=your_deepseek_api_key
 ```
 
 ### Installation
+
 ```bash
 pnpm install
 ```
 
 ### Development
+
 ```bash
 pnpm dev
 ```
 
 ### Build
+
 ```bash
 pnpm build
 pnpm start
@@ -203,9 +225,11 @@ pnpm start
 ## API Endpoints
 
 ### POST /api/chat
+
 Handles chat message streaming.
 
 **Request Body**:
+
 ```json
 {
   "messages": [
@@ -222,6 +246,7 @@ Handles chat message streaming.
 ## Future Enhancements
 
 ### Planned Features
+
 - [ ] Sign-in and Sign-up pages
 - [ ] User profile management
 - [ ] Chat history persistence
@@ -233,6 +258,7 @@ Handles chat message streaming.
 - [ ] Export chat history
 
 ### Technical Improvements
+
 - [ ] Add error boundaries
 - [ ] Implement retry logic for failed requests
 - [ ] Add request rate limiting
@@ -266,6 +292,7 @@ Handles chat message streaming.
 ## Dependencies Summary
 
 ### Production Dependencies
+
 - Next.js, React, TypeScript (core)
 - Clerk (authentication)
 - Vercel AI SDK (AI integration)
@@ -274,6 +301,7 @@ Handles chat message streaming.
 - shadcn/ui components
 
 ### Development Dependencies
+
 - ESLint (linting)
 - Tailwind CSS v4 (styling)
 - Type definitions
@@ -294,4 +322,3 @@ Handles chat message streaming.
 - [Vercel AI SDK](https://sdk.vercel.ai/docs)
 - [Tailwind CSS v4](https://tailwindcss.com/docs)
 - [shadcn/ui](https://ui.shadcn.com)
-

@@ -37,25 +37,25 @@ paths:
                   type: array
                   description: Array of chat messages
                   items:
-                    $ref: '#/components/schemas/ChatMessage'
+                    $ref: "#/components/schemas/ChatMessage"
               example:
                 messages:
                   - role: user
                     content: Hello, how are you?
       responses:
-        '200':
+        "200":
           description: Streaming chat response
           content:
             text/event-stream:
               schema:
                 type: string
                 description: Server-sent events stream with chat response
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
 
   /api/auth/user:
     get:
@@ -67,14 +67,14 @@ paths:
       security:
         - ClerkAuth: []
       responses:
-        '200':
+        "200":
           description: User information
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
 
 components:
   securitySchemes:
@@ -174,7 +174,15 @@ components:
           properties:
             type:
               type: string
-              enum: [validation, authentication, authorization, service, network, timeout]
+              enum:
+                [
+                  validation,
+                  authentication,
+                  authorization,
+                  service,
+                  network,
+                  timeout,
+                ]
               description: Error type
             message:
               type: string
@@ -193,7 +201,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error:
               type: authentication
@@ -205,7 +213,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error:
               type: authorization
@@ -217,7 +225,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error:
               type: validation
@@ -229,7 +237,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Error'
+            $ref: "#/components/schemas/Error"
           example:
             error:
               type: service
@@ -241,4 +249,3 @@ tags:
     description: Chat-related endpoints (protected)
   - name: Auth
     description: Authentication-related endpoints
-

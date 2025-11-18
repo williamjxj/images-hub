@@ -12,6 +12,7 @@ This guide walks through implementing Clerk authentication to protect the chat a
 
 ✅ Clerk package installed (`@clerk/nextjs`)  
 ✅ Environment variables configured in `.env.local`:
+
 ```env
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
@@ -26,12 +27,12 @@ CLERK_SECRET_KEY=sk_test_...
 Update the middleware to protect the chat route (`/`) and API endpoints:
 
 ```typescript
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isPublicRoute = createRouteMatcher([
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/api/webhooks(.*)',
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/api/webhooks(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
@@ -44,14 +45,15 @@ export default clerkMiddleware(async (auth, request) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
-    '/(api|trpc)(.*)',
+    "/(api|trpc)(.*)",
   ],
 };
 ```
 
 **What this does**:
+
 - Protects `/` (chat page) - redirects to sign-in if not authenticated
 - Protects `/api/chat` - returns 401 if not authenticated
 - Keeps `/sign-in` and `/sign-up` public
@@ -118,6 +120,7 @@ export default function RootLayout({
 ```
 
 **What this does**:
+
 - Shows Sign In and Sign Up buttons when user is signed out
 - Shows UserButton (profile menu) when user is signed in
 - UserButton includes sign-out functionality
@@ -131,7 +134,7 @@ Add authentication check in the route handler:
 
 ```typescript
 import { streamText, convertToModelMessages } from "ai";
-import { auth } from '@clerk/nextjs/server';
+import { auth } from "@clerk/nextjs/server";
 
 export const runtime = "edge";
 
@@ -163,6 +166,7 @@ export async function POST(req: Request) {
 ```
 
 **What this does**:
+
 - Adds explicit authentication check in route handler
 - Provides better error messages if middleware somehow fails
 - Returns 401 with clear error message
@@ -182,7 +186,7 @@ import { useChat } from '@ai-sdk/react';
 
 export default function ChatPage() {
   const { isLoaded, user } = useUser();
-  
+
   // Show loading state while checking authentication
   if (!isLoaded) {
     return (
@@ -198,6 +202,7 @@ export default function ChatPage() {
 ```
 
 **What this does**:
+
 - Shows loading state while Clerk checks authentication
 - Provides better UX during authentication check
 - Middleware handles redirect, but this prevents flash of content
@@ -286,13 +291,14 @@ To implement User/Admin roles:
    - Add: `{ "role": "admin" }`
 
 2. **Check roles in code**:
+
 ```typescript
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 const user = await currentUser();
-const role = user?.publicMetadata?.role || 'user';
+const role = user?.publicMetadata?.role || "user";
 
-if (role === 'admin') {
+if (role === "admin") {
   // Admin-only logic
 }
 ```
@@ -304,6 +310,7 @@ if (role === 'admin') {
 **Symptom**: Page keeps redirecting to sign-in even when signed in
 
 **Solution**:
+
 - Check middleware matcher config
 - Ensure `/sign-in` is in public routes
 - Clear browser cookies and try again
@@ -313,6 +320,7 @@ if (role === 'admin') {
 **Symptom**: API route returns 401 even when signed in
 
 **Solution**:
+
 - Check `CLERK_SECRET_KEY` is set correctly
 - Verify middleware is running (check logs)
 - Ensure API route is in middleware matcher
@@ -322,6 +330,7 @@ if (role === 'admin') {
 **Symptom**: Sign-in buttons not appearing
 
 **Solution**:
+
 - Verify `ClerkProvider` wraps the app
 - Check `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is set
 - Check browser console for errors
@@ -331,6 +340,7 @@ if (role === 'admin') {
 **Symptom**: User signed out after page refresh
 
 **Solution**:
+
 - Check Clerk dashboard session settings
 - Verify cookies are enabled in browser
 - Check HTTPS is used in production
@@ -351,4 +361,3 @@ After implementing basic authentication:
 - [Clerk Middleware Reference](https://clerk.com/docs/reference/nextjs/clerk-middleware)
 - [Clerk Components](https://clerk.com/docs/nextjs/reference/components/overview)
 - [Protect API Routes](https://clerk.com/docs/nextjs/guides/api-routes)
-

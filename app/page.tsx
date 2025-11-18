@@ -1,24 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { useChat } from '@ai-sdk/react';
-import { DefaultChatTransport } from 'ai';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useRef } from "react";
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Send, AlertCircle } from "lucide-react";
 
 export default function ChatPage() {
-  const [input, setInput] = useState('');
-  const { messages, sendMessage, status, error, reload, setMessages } = useChat({
-    transport: new DefaultChatTransport({ api: '/api/chat' }),
-    onError: (error) => {
-      console.error('Chat error:', error);
-    },
-  });
+  const [input, setInput] = useState("");
+  const { messages, sendMessage, status, error, reload, setMessages } = useChat(
+    {
+      transport: new DefaultChatTransport({ api: "/api/chat" }),
+      onError: (error) => {
+        console.error("Chat error:", error);
+      },
+    }
+  );
 
-  const isLoading = status === 'streaming' || status === 'submitted';
+  const isLoading = status === "streaming" || status === "submitted";
   const sessionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Session timeout: 30 minutes inactivity (FR-014)
@@ -53,18 +55,18 @@ export default function ChatPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedInput = input.trim();
-    
+
     if (!trimmedInput || isLoading) return;
 
     // Client-side message length validation (FR-015)
     const estimatedTokens = trimmedInput.length / 4; // Approximate: 1 token ≈ 4 characters
     if (estimatedTokens > 8000) {
-      alert('Message exceeds token limit. Please shorten your message.');
+      alert("Message exceeds token limit. Please shorten your message.");
       return;
     }
 
     sendMessage({ text: trimmedInput });
-    setInput('');
+    setInput("");
   };
 
   const handleRetry = () => {
@@ -76,7 +78,7 @@ export default function ChatPage() {
   // New conversation handler - clears previous session (FR-016)
   const handleNewConversation = () => {
     setMessages([]);
-    setInput('');
+    setInput("");
     if (sessionTimeoutRef.current) {
       clearTimeout(sessionTimeoutRef.current);
       sessionTimeoutRef.current = null;
@@ -90,7 +92,9 @@ export default function ChatPage() {
         <div className="p-4 border-b bg-white rounded-t-lg flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">DeepSeek Chat</h1>
-            <p className="text-sm text-gray-500">Powered by Vercel AI Gateway</p>
+            <p className="text-sm text-gray-500">
+              Powered by Vercel AI Gateway
+            </p>
           </div>
           {messages.length > 0 && (
             <Button onClick={handleNewConversation} variant="outline" size="sm">
@@ -108,24 +112,27 @@ export default function ChatPage() {
                 <p className="text-sm mt-2">Ask me anything...</p>
               </div>
             )}
-            
+
             {messages.map((message) => {
-              const textParts = message.parts?.filter((part) => part.type === 'text') || [];
-              const content = textParts.map((part) => 'text' in part ? part.text : '').join('');
+              const textParts =
+                message.parts?.filter((part) => part.type === "text") || [];
+              const content = textParts
+                .map((part) => ("text" in part ? part.text : ""))
+                .join("");
               const role = message.role;
-              
+
               return (
                 <div
                   key={message.id}
                   className={`flex ${
-                    role === 'user' ? 'justify-end' : 'justify-start'
+                    role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
                   <div
                     className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      role === 'user'
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-200 text-gray-800'
+                      role === "user"
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-800"
                     }`}
                   >
                     <p className="text-sm whitespace-pre-wrap">{content}</p>
@@ -133,7 +140,7 @@ export default function ChatPage() {
                 </div>
               );
             })}
-            
+
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-gray-200 rounded-lg px-4 py-2">
@@ -148,11 +155,14 @@ export default function ChatPage() {
                   <div className="flex items-start gap-2">
                     <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <p className="text-sm font-semibold text-red-800">Error</p>
-                      <p className="text-sm text-red-700 mt-1">
-                        {error.message || 'An error occurred. Please try again.'}
+                      <p className="text-sm font-semibold text-red-800">
+                        Error
                       </p>
-                      {error.message?.includes('credit card') && (
+                      <p className="text-sm text-red-700 mt-1">
+                        {error.message ||
+                          "An error occurred. Please try again."}
+                      </p>
+                      {error.message?.includes("credit card") && (
                         <a
                           href="https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%3Fmodal%3Dadd-credit-card"
                           target="_blank"
@@ -168,7 +178,7 @@ export default function ChatPage() {
                           </Button>
                         </a>
                       )}
-                      {!error.message?.includes('credit card') && (
+                      {!error.message?.includes("credit card") && (
                         <Button
                           onClick={handleRetry}
                           variant="outline"
@@ -187,7 +197,10 @@ export default function ChatPage() {
         </ScrollArea>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t bg-white rounded-b-lg">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 border-t bg-white rounded-b-lg"
+        >
           <div className="flex gap-2">
             <Input
               value={input}
@@ -196,7 +209,11 @@ export default function ChatPage() {
               disabled={isLoading}
               className="flex-1"
             />
-            <Button type="submit" disabled={isLoading || !input.trim()} size="icon">
+            <Button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              size="icon"
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>

@@ -15,7 +15,7 @@
 - Q: What should be the session timeout duration for inactive users? → A: 30 minutes of inactivity
 - Q: How should the system handle sign-in attempts for deactivated or suspended accounts? → A: Show clear error message explaining account status, deny access completely
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - User Registration and Account Creation (Priority: P1)
 
@@ -120,7 +120,7 @@ Authenticated users can view and update their profile information, including ema
 - What happens when a user attempts to register with an email that was previously deleted?
 - How does the system handle OAuth callback failures or provider errors?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -150,7 +150,7 @@ Authenticated users can view and update their profile information, including ema
 - **Role**: Represents a user's permission level or category, determining what features and data they can access. Supported roles: User (default, standard authenticated access) and Admin (elevated permissions for administrative functions)
 - **Permission**: Represents a specific access right or capability that can be granted to roles or individual users
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 
@@ -193,4 +193,3 @@ Authenticated users can view and update their profile information, including ema
 - Administrative interfaces for managing users and roles (assumed to be handled by Clerk dashboard)
 - Integration with external identity providers beyond standard OAuth providers
 - Session management across multiple applications or domains
-

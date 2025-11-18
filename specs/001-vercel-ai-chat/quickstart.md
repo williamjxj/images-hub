@@ -46,6 +46,7 @@ DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
 ### File: `app/api/chat/route.ts`
 
 **Before** (Direct DeepSeek provider):
+
 ```typescript
 import { deepseek } from "@ai-sdk/deepseek";
 import { streamText, convertToModelMessages } from "ai";
@@ -57,19 +58,20 @@ const deepseekProvider = deepseek({
 export async function POST(req: Request) {
   const { messages } = await req.json();
   const modelMessages = convertToModelMessages(messages);
-  
+
   const result = streamText({
     model: deepseekProvider("deepseek-chat"),
     messages: modelMessages,
     temperature: 0.7,
     maxOutputTokens: 2000,
   });
-  
+
   return result.toTextStreamResponse();
 }
 ```
 
 **After** (Vercel AI Gateway routing):
+
 ```typescript
 import { streamText, convertToModelMessages } from "ai";
 
@@ -105,7 +107,8 @@ export async function POST(req: Request) {
           JSON.stringify({
             error: {
               type: "validation",
-              message: "Message exceeds token limit. Please shorten your message.",
+              message:
+                "Message exceeds token limit. Please shorten your message.",
               retryable: false,
               details: "Maximum tokens: 8000",
             },
@@ -137,7 +140,7 @@ export async function POST(req: Request) {
       return result.toUIMessageStreamResponse();
     } catch (error) {
       clearTimeout(timeoutId);
-      
+
       // Handle timeout
       if (error instanceof Error && error.name === "AbortError") {
         return new Response(
@@ -180,7 +183,8 @@ export async function POST(req: Request) {
         JSON.stringify({
           error: {
             type: "service",
-            message: "An error occurred processing your request. Please try again.",
+            message:
+              "An error occurred processing your request. Please try again.",
             retryable: true,
             details: error instanceof Error ? error.message : "Unknown error",
           },
@@ -194,7 +198,8 @@ export async function POST(req: Request) {
       JSON.stringify({
         error: {
           type: "network",
-          message: "Network error occurred. Please check your connection and try again.",
+          message:
+            "Network error occurred. Please check your connection and try again.",
           retryable: true,
         },
       }),
@@ -237,7 +242,7 @@ export default function ChatPage() {
   // Session timeout: 30 minutes (FR-014)
   useEffect(() => {
     const SESSION_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
-    
+
     const timeoutId = setTimeout(() => {
       // Clear messages and show timeout message
       // Implementation depends on your error handling strategy
@@ -256,7 +261,7 @@ export default function ChatPage() {
         alert("Message exceeds token limit. Please shorten your message.");
         return;
       }
-      
+
       sendMessage({ text: input });
       setInput('');
     }
@@ -292,12 +297,12 @@ export default function ChatPage() {
                 <p className="text-sm mt-2">Ask me anything...</p>
               </div>
             )}
-            
+
             {messages.map((message) => {
               const textParts = message.parts?.filter((part) => part.type === 'text') || [];
               const content = textParts.map((part) => 'text' in part ? part.text : '').join('');
               const role = message.role;
-              
+
               return (
                 <div
                   key={message.id}
@@ -317,7 +322,7 @@ export default function ChatPage() {
                 </div>
               );
             })}
-            
+
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-gray-200 rounded-lg px-4 py-2">
@@ -366,6 +371,7 @@ export default function ChatPage() {
 ### Local Testing
 
 1. **Start development server**:
+
    ```bash
    pnpm dev
    # or
@@ -386,6 +392,7 @@ export default function ChatPage() {
 ### Production Testing
 
 1. **Deploy to Vercel**:
+
    ```bash
    vercel deploy
    ```
@@ -417,7 +424,8 @@ export default function ChatPage() {
 
 ### Issue: Gateway not routing requests
 
-**Solution**: 
+**Solution**:
+
 - Verify deployment is on Vercel (Gateway is automatic on Vercel)
 - Check model string format matches Gateway dashboard exactly
 - Ensure `DEEPSEEK_API_KEY` is configured in Vercel dashboard
@@ -425,6 +433,7 @@ export default function ChatPage() {
 ### Issue: Timeout not working
 
 **Solution**:
+
 - Verify `AbortController` is properly implemented
 - Check timeout value (60 seconds)
 - Ensure `abortSignal` is passed to `streamText()`
@@ -432,6 +441,7 @@ export default function ChatPage() {
 ### Issue: Error responses not displaying
 
 **Solution**:
+
 - Check error response format matches `useChat` hook expectations
 - Verify error handling in frontend component
 - Check browser console for error details
@@ -439,6 +449,7 @@ export default function ChatPage() {
 ### Issue: Token validation too strict/lenient
 
 **Solution**:
+
 - Adjust token estimation formula (currently `length / 4`)
 - Update maximum token limit if needed
 - Consider server-side validation for exact token counting
@@ -458,4 +469,3 @@ export default function ChatPage() {
 - Data Model: `specs/001-vercel-ai-chat/data-model.md`
 - API Contract: `specs/001-vercel-ai-chat/contracts/api-chat.yaml`
 - Vercel AI Gateway Docs: https://vercel.com/docs/ai-gateway
-

@@ -40,6 +40,7 @@ DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
 ```
 
 **For Production (Vercel)**:
+
 1. Go to Vercel Dashboard → Your Project → Settings → Environment Variables
 2. Add `DEEPSEEK_API_KEY` with your DeepSeek API key
 3. Ensure it's available for Production, Preview, and Development environments
@@ -51,11 +52,23 @@ DEEPSEEK_API_KEY=sk-your-deepseek-api-key-here
 This project uses Vercel AI Gateway to route requests to DeepSeek LLM:
 
 1. **Add Credit Card** (Required): Vercel AI Gateway requires a valid credit card on file, even for the free tier ($5/month free credits). Add your card at: https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%3Fmodal%3Dadd-credit-card
-2. **Verify Model Availability**: Go to Vercel Dashboard → AI Gateway → Model List
-3. Search for "deepseek" and verify the model identifier is `deepseek/deepseek-chat`
-4. Configure `DEEPSEEK_API_KEY` in Vercel dashboard for BYOK (Bring Your Own Key) access
 
-**Note**: The free tier includes $5 USD of AI Gateway Credits per month. Once you add a credit card, you'll unlock these free credits.
+2. **Configure Deepseek API Key** (Required for BYOK):
+   - Go to Vercel Dashboard → **AI Gateway** → **Integrations** (left sidebar)
+   - Find **Deepseek** in the provider list and click **Add**
+   - Enter your Deepseek API key and click **Test Key** to validate
+   - Ensure the **Enabled** toggle is turned on
+   - Click **Add** to save
+
+3. **Verify Model Availability**:
+   - Go to Vercel Dashboard → AI Gateway → Model List
+   - Search for "deepseek" and verify the model identifier is `deepseek/deepseek-chat`
+
+**Note**:
+
+- The free tier includes $5 USD of AI Gateway Credits per month. Once you add a credit card, you'll unlock these free credits.
+- For local development, use `.env.local` with `DEEPSEEK_API_KEY`. For production, configure it in AI Gateway Integrations (not Environment Variables).
+- See [SETUP.md](./SETUP.md) for detailed setup instructions.
 
 ## Deploy on Vercel
 

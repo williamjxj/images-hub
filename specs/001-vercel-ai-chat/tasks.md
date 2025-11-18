@@ -38,6 +38,7 @@ Polish (Phase 6) - Cross-cutting concerns
 **Goal**: Configure environment and verify prerequisites for Vercel AI Gateway integration.
 
 ### Independent Test Criteria
+
 - Environment variables configured correctly
 - Model availability verified in Vercel dashboard
 - Project dependencies are up to date
@@ -51,6 +52,7 @@ Polish (Phase 6) - Cross-cutting concerns
 **Goal**: Migrate API route from direct DeepSeek provider to Vercel AI Gateway routing. This is a blocking prerequisite for all user stories.
 
 ### Independent Test Criteria
+
 - API route uses model string format for Gateway routing
 - Basic chat functionality works through Gateway
 - No breaking changes to existing frontend
@@ -65,6 +67,7 @@ Polish (Phase 6) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by sending a message and verifying that a response is received and displayed in the chat interface.
 
 **Acceptance Scenarios**:
+
 1. User sends message → message appears in chat history → response streams in real-time
 2. Multiple messages → all displayed in chronological order with clear distinction
 3. Processing state → loading indicator shown
@@ -86,6 +89,7 @@ Polish (Phase 6) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by simulating error conditions and verifying appropriate error messages are displayed.
 
 **Acceptance Scenarios**:
+
 1. Service unavailable → clear error message with retry suggestion
 2. Rate limit exceeded → message explaining limit and retry timing
 3. Error retry → message successfully processed after retry
@@ -109,6 +113,7 @@ Polish (Phase 6) - Cross-cutting concerns
 **Independent Test**: Can be fully tested by sending a series of related messages and verifying AI responses reference earlier messages.
 
 **Acceptance Scenarios**:
+
 1. Follow-up question → AI responds with context from earlier exchange
 2. Ongoing conversation → AI considers all previous messages
 3. New conversation → AI responds without referencing previous conversations
@@ -132,21 +137,25 @@ Polish (Phase 6) - Cross-cutting concerns
 ### After Phase 2 (Foundational) Complete:
 
 **User Story 1 Tasks** (can work on in parallel):
+
 - T006, T007, T008 can be worked on simultaneously (different aspects of frontend)
 - T009, T010 can be done in parallel (both UI rendering concerns)
 
 **User Story 2 Tasks** (can work on in parallel after US1):
+
 - T014, T015 (timeout handling) can be done independently
-- T016, T017 (validation) can be done independently  
+- T016, T017 (validation) can be done independently
 - T018, T019 (error detection) can be done independently
 
 **User Story 3 Tasks** (can work on in parallel after US1):
+
 - T021, T022 (conversation history) can be done together
 - T023, T024, T025 (session management) can be done together
 
 ### After Phase 3 (User Story 1) Complete:
 
 **User Stories 2 and 3** can be developed in parallel as they enhance different aspects:
+
 - User Story 2 focuses on error handling (backend + frontend error display)
 - User Story 3 focuses on session and context management (frontend state + backend message passing)
 
@@ -155,12 +164,14 @@ Polish (Phase 6) - Cross-cutting concerns
 **Minimum Viable Product**: Complete Phase 1, Phase 2, and Phase 3 (User Story 1)
 
 This delivers:
+
 - ✅ Core chat functionality with streaming responses
 - ✅ Vercel AI Gateway routing
 - ✅ Basic message display and loading states
 - ✅ Input validation
 
 **Post-MVP Enhancements**:
+
 - Phase 4: Comprehensive error handling
 - Phase 5: Session management and conversation context
 - Phase 6: Polish and refinements
@@ -185,4 +196,3 @@ Before considering implementation complete, verify:
 - **Testing**: Manual testing recommended after each phase
 - **Error Handling**: User Story 2 enhances error handling but basic error handling exists in current code
 - **Session Management**: User Story 3 adds session lifecycle but basic message history already works via useChat hook
-

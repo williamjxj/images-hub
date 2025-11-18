@@ -43,17 +43,17 @@ AI_GATEWAY_API_KEY=
 ## Step 3: API Route
 
 ```ts
-import { openai } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { openai } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = streamText({
-    model: openai('deepseek-chat', {
-      baseURL: 'https://gateway.ai.cloudflare.com/v1/YOUR_ACCOUNT_ID/deepseek',
+    model: openai("deepseek-chat", {
+      baseURL: "https://gateway.ai.cloudflare.com/v1/YOUR_ACCOUNT_ID/deepseek",
       apiKey: process.env.AI_GATEWAY_API_KEY,
     }),
     messages,
@@ -66,17 +66,18 @@ export async function POST(req: Request) {
 ## Step 4: Chat Component
 
 ```tsx
-'use client';
+"use client";
 
-import { useChat } from 'ai/react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send } from 'lucide-react';
+import { useChat } from "ai/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Send } from "lucide-react";
 
 export default function ChatPage() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
+  const { messages, input, handleInputChange, handleSubmit, isLoading } =
+    useChat();
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
@@ -96,26 +97,28 @@ export default function ChatPage() {
                 <p className="text-sm mt-2">Ask me anything...</p>
               </div>
             )}
-            
+
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${
-                  message.role === 'user' ? 'justify-end' : 'justify-start'
+                  message.role === "user" ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
                   className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                    message.role === 'user'
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200 text-gray-800'
+                    message.role === "user"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-gray-800"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {message.content}
+                  </p>
                 </div>
               </div>
             ))}
-            
+
             {isLoading && (
               <div className="flex justify-start">
                 <div className="bg-gray-200 rounded-lg px-4 py-2">
@@ -127,7 +130,10 @@ export default function ChatPage() {
         </ScrollArea>
 
         {/* Input */}
-        <form onSubmit={handleSubmit} className="p-4 border-t bg-white rounded-b-lg">
+        <form
+          onSubmit={handleSubmit}
+          className="p-4 border-t bg-white rounded-b-lg"
+        >
           <div className="flex gap-2">
             <Input
               value={input}
@@ -150,14 +156,14 @@ export default function ChatPage() {
 ## Step 5: Update API Route (Simpler Version)
 
 ```ts
-import { createOpenAI } from '@ai-sdk/openai';
-import { streamText } from 'ai';
+import { createOpenAI } from "@ai-sdk/openai";
+import { streamText } from "ai";
 
-export const runtime = 'edge';
+export const runtime = "edge";
 
 // Configure DeepSeek through Vercel AI Gateway
 const deepseek = createOpenAI({
-  baseURL: 'https://api.deepseek.com/v1',
+  baseURL: "https://api.deepseek.com/v1",
   apiKey: process.env.DEEPSEEK_API_KEY,
 });
 
@@ -166,7 +172,7 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
 
     const result = streamText({
-      model: deepseek('deepseek-chat'),
+      model: deepseek("deepseek-chat"),
       messages,
       temperature: 0.7,
       maxTokens: 2000,
@@ -174,8 +180,8 @@ export async function POST(req: Request) {
 
     return result.toDataStreamResponse();
   } catch (error) {
-    console.error('Chat API Error:', error);
-    return new Response('Error processing chat', { status: 500 });
+    console.error("Chat API Error:", error);
+    return new Response("Error processing chat", { status: 500 });
   }
 }
 ```

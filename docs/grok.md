@@ -1,4 +1,5 @@
 ### Key Setup Assumptions and Overview
+
 - **Basic Features**: This implementation provides a simple AI chatbox with message history (session-based), streaming responses for real-time typing effect, user authentication via Clerk to access the chat page, and a clean UI using shadcn/ui components like Card, Input, Button, ScrollArea, and Avatar.
 - **Technology Choices**: Uses DeepSeek's "deepseek-chat" model via Vercel AI SDK for AI integration; assumes no persistent storage (e.g., no database for chat history); chat is on a dedicated protected page (/chat).
 - **API Keys**: Relies on DEEPSEEK_API_KEY in .env.local for the LLM; vercel-api-key is not used in this basic setup (it may be for advanced Vercel features, but not required here).
@@ -8,6 +9,7 @@
 If these assumptions don't match your needs (e.g., floating chat instead of page, specific model, or additional features like file uploads), provide more details for refinements.
 
 #### Prerequisites
+
 - Node.js 18+ installed.
 - A Clerk account (sign up at clerk.com) with a new application created; note your Publishable Key and Secret Key.
 - A DeepSeek API key (from platform.deepseek.com).
@@ -20,6 +22,7 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
   (Replace with your keys; vercel-api-key can be added if needed for other Vercel APIs, but ignored here.)
 
 #### Installation Steps
+
 1. Create a new Next.js app:
    ```
    npx create-next-app@latest my-chat-app --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
@@ -45,33 +48,43 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
    Access at http://localhost:3000; sign up/in via Clerk to reach /chat.
 
 #### Core Code Snippets
-- **Middleware for Auth (/src/middleware.ts)**: Protects the /chat route.
-  ```ts
-  import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 
-  const isProtectedRoute = createRouteMatcher(['/chat(.*)']);
+- **Middleware for Auth (/src/middleware.ts)**: Protects the /chat route.
+
+  ```ts
+  import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+
+  const isProtectedRoute = createRouteMatcher(["/chat(.*)"]);
 
   export default clerkMiddleware((auth, req) => {
     if (isProtectedRoute(req)) auth().protect();
   });
 
   export const config = {
-    matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+    matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
   };
   ```
-- **Root Layout (/src/app/layout.tsx)**: Wraps app with ClerkProvider.
-  ```tsx
-  import type { Metadata } from 'next';
-  import { ClerkProvider } from '@clerk/nextjs';
-  import { GeistSans, GeistMono } from 'next/font/google';
-  import './globals.css';
 
-  const geistSans = GeistSans({ variable: '--font-geist-sans', subsets: ['latin'] });
-  const geistMono = GeistMono({ variable: '--font-geist-mono', subsets: ['latin'] });
+- **Root Layout (/src/app/layout.tsx)**: Wraps app with ClerkProvider.
+
+  ```tsx
+  import type { Metadata } from "next";
+  import { ClerkProvider } from "@clerk/nextjs";
+  import { GeistSans, GeistMono } from "next/font/google";
+  import "./globals.css";
+
+  const geistSans = GeistSans({
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
+  });
+  const geistMono = GeistMono({
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
+  });
 
   export const metadata: Metadata = {
-    title: 'AI Chatbox',
-    description: 'Powered by DeepSeek and Vercel AI SDK',
+    title: "AI Chatbox",
+    description: "Powered by DeepSeek and Vercel AI SDK",
   };
 
   export default function RootLayout({
@@ -82,7 +95,9 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
     return (
       <ClerkProvider>
         <html lang="en">
-          <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          >
             {children}
           </body>
         </html>
@@ -90,10 +105,12 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
     );
   }
   ```
+
 - **API Route (/src/app/api/chat/route.ts)**: Handles AI requests with DeepSeek.
+
   ```ts
-  import { deepseek } from '@ai-sdk/deepseek';
-  import { streamText } from 'ai';
+  import { deepseek } from "@ai-sdk/deepseek";
+  import { streamText } from "ai";
 
   // Allow streaming responses up to 30 seconds
   export const maxDuration = 30;
@@ -102,27 +119,29 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
     const { messages } = await req.json();
 
     const result = await streamText({
-      model: deepseek('deepseek-chat'),
+      model: deepseek("deepseek-chat"),
       messages,
     });
 
     return result.toDataStreamResponse();
   }
   ```
-- **Chat Page (/src/app/chat/page.tsx)**: Client-side component with UI.
-  ```tsx
-  'use client';
 
-  import { useChat } from 'ai/react';
-  import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-  import { Button } from '@/components/ui/button';
-  import { Card, CardContent } from '@/components/ui/card';
-  import { Input } from '@/components/ui/input';
-  import { ScrollArea } from '@/components/ui/scroll-area';
+- **Chat Page (/src/app/chat/page.tsx)**: Client-side component with UI.
+
+  ```tsx
+  "use client";
+
+  import { useChat } from "ai/react";
+  import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+  import { Button } from "@/components/ui/button";
+  import { Card, CardContent } from "@/components/ui/card";
+  import { Input } from "@/components/ui/input";
+  import { ScrollArea } from "@/components/ui/scroll-area";
 
   export default function Chat() {
     const { messages, input, handleInputChange, handleSubmit } = useChat({
-      api: '/api/chat',
+      api: "/api/chat",
     });
 
     return (
@@ -133,7 +152,9 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
             <Card key={message.id} className="mb-2">
               <CardContent className="flex items-start p-4">
                 <Avatar className="mr-4">
-                  <AvatarFallback>{message.role === 'user' ? 'U' : 'AI'}</AvatarFallback>
+                  <AvatarFallback>
+                    {message.role === "user" ? "U" : "AI"}
+                  </AvatarFallback>
                 </Avatar>
                 <div>{message.content}</div>
               </CardContent>
@@ -155,6 +176,7 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
   ```
 
 #### Deployment to Vercel
+
 1. Push to GitHub.
 2. Import to Vercel dashboard; add env vars (DEEPSEEK_API_KEY, Clerk keys).
 3. Deploy – Vercel handles scalability; monitor costs via DeepSeek dashboard.
@@ -164,7 +186,9 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
 This comprehensive guide expands on the basic implementation, providing step-by-step explanations, potential extensions, and troubleshooting. It draws from official documentation and examples to ensure reliability, while incorporating best practices for scalability and user experience in an AI-powered chatbox.
 
 #### Detailed Project Structure
+
 Your project directory should look like this after setup:
+
 ```
 my-chat-app/
 ├── .env.local
@@ -189,17 +213,25 @@ my-chat-app/
 ```
 
 #### Expanded Installation and Configuration
+
 Start with the Next.js creation command as noted, which sets up Tailwind CSS automatically. For Clerk, after installation, ensure you configure the middleware to protect routes selectively – this prevents unauthorized access to the chat, enhancing security. shadcn/ui initialization creates a components.json file and updates tailwind.config.js for custom styling; adding components pulls in only what's needed, keeping the bundle small.
 
 For Vercel AI SDK, the 'ai' package handles core functionality like streaming, while '@ai-sdk/deepseek' provides the provider integration. This setup uses OpenAI-compatible APIs, so DeepSeek slots in seamlessly without custom base URLs (defaults to https://api.deepseek.com/v1).
 
 #### Authentication Flow with Clerk
-Clerk handles user sign-up, sign-in, and sessions out-of-the-box. In the root layout, ClerkProvider enables global auth state. For the chat page, the middleware enforces protection: unauthenticated users are redirected to sign-in. You can add a home page (/src/app/page.tsx) with:
-```tsx
-'use client';
 
-import { SignInButton, SignedIn, SignedOut, RedirectToSignIn } from '@clerk/nextjs';
-import Link from 'next/link';
+Clerk handles user sign-up, sign-in, and sessions out-of-the-box. In the root layout, ClerkProvider enables global auth state. For the chat page, the middleware enforces protection: unauthenticated users are redirected to sign-in. You can add a home page (/src/app/page.tsx) with:
+
+```tsx
+"use client";
+
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  RedirectToSignIn,
+} from "@clerk/nextjs";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -215,28 +247,34 @@ export default function Home() {
   );
 }
 ```
+
 This ensures users are authenticated before chatting.
 
 #### AI Integration Details
+
 The /api/chat route uses streamText for real-time responses, which is ideal for chat UX as it mimics typing. The useChat hook in the client component manages state, input, and submission automatically. Messages are rendered in a ScrollArea to handle long conversations, with Avatars distinguishing user and AI roles. Streaming is enabled by default in the SDK, reducing perceived latency.
 
 If you want non-streaming, switch to generateText in the route:
+
 ```ts
-import { generateText } from 'ai';
+import { generateText } from "ai";
 
 // ...
 const result = await generateText({
-  model: deepseek('deepseek-chat'),
+  model: deepseek("deepseek-chat"),
   messages,
 });
 return new Response(result.text);
 ```
+
 But streaming is recommended for better engagement.
 
 #### UI Enhancements with shadcn/ui and Tailwind
+
 shadcn/ui components are fully customizable via Tailwind classes. For example, add dark mode support by updating components.json and tailwind.config.js. The chat layout uses flexbox for responsiveness; you can extend the Card with variants (e.g., user messages right-aligned) by modifying card.tsx in /components/ui.
 
 #### Potential Extensions
+
 - **Chat History Persistence**: Integrate a database like Vercel Postgres; store messages via a server action after each response.
 - **Model Selection**: Swap 'deepseek-chat' for 'deepseek-coder' if code-focused; add a dropdown in the UI to select models dynamically.
 - **Error Handling**: Add try-catch in useChat and display toasts (add shadcn toast component).
@@ -244,24 +282,27 @@ shadcn/ui components are fully customizable via Tailwind classes. For example, a
 - **Costs and Scaling**: Monitor DeepSeek usage (billed per token); Vercel provides edge functions for low-latency, but watch bandwidth costs.
 
 #### Troubleshooting Common Issues
+
 - **Auth Errors**: Ensure Clerk keys are correct; test sign-in flow separately.
 - **API Failures**: Check console for 401 (invalid DeepSeek key) or 429 (rate limits); add retries in the route.
 - **Streaming Not Working**: Verify Next.js version ≥14; test with curl to /api/chat.
 - **UI Mismatches**: Run `npx shadcn-ui@latest add` again if components fail to import.
 
 #### Dependencies Table
-| Dependency | Purpose | Version Note |
-|------------|---------|--------------|
-| @clerk/nextjs | Authentication and user management | Latest stable |
-| ai | Vercel AI SDK core for streaming/generation | Compatible with Next.js App Router |
-| @ai-sdk/deepseek | DeepSeek LLM provider integration | Supports models like deepseek-chat |
-| shadcn/ui (via CLI) | UI components (Button, Input, etc.) | Tailwind-based, on-demand install |
-| tailwindcss | Styling utility classes | Included in Next.js setup |
-| next | Framework | ≥14 for best AI SDK support |
+
+| Dependency          | Purpose                                     | Version Note                       |
+| ------------------- | ------------------------------------------- | ---------------------------------- |
+| @clerk/nextjs       | Authentication and user management          | Latest stable                      |
+| ai                  | Vercel AI SDK core for streaming/generation | Compatible with Next.js App Router |
+| @ai-sdk/deepseek    | DeepSeek LLM provider integration           | Supports models like deepseek-chat |
+| shadcn/ui (via CLI) | UI components (Button, Input, etc.)         | Tailwind-based, on-demand install  |
+| tailwindcss         | Styling utility classes                     | Included in Next.js setup          |
+| next                | Framework                                   | ≥14 for best AI SDK support        |
 
 This setup leverages cloud scalability via Vercel deployment, with ease of env management for keys. For advanced features like reasoning models, refer to DeepSeek's reasoning support in the SDK.
 
 ### Key Citations
+
 - [DeepSeek Provider - AI SDK](https://ai-sdk.dev/providers/ai-sdk-providers/deepseek)
 - [Next.js Quickstart (App Router) - Clerk](https://clerk.com/docs/quickstarts/nextjs)
 - [Next.js - shadcn/ui](https://ui.shadcn.com/docs/installation/next)
