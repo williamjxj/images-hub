@@ -1,7 +1,6 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
-
 this is `gitingest` + `github pim repo` + `gemini` extraction.
 
 This is the extraction of all Cloudflare R2 related source codes, configurations, and documentation sections from the provided files.

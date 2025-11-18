@@ -39,19 +39,25 @@ export default function RootLayout({
           suppressHydrationWarning
         >
           <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
-            <nav className="flex items-center gap-4">
-              <Link href="/" className="text-sm font-medium hover:underline">
-                Chat
-              </Link>
-              <SignedIn>
-                <Link
-                  href="/r2-images"
-                  className="text-sm font-medium hover:underline"
-                >
-                  Cloudflare Images
-                </Link>
-              </SignedIn>
-            </nav>
+        <nav className="flex items-center gap-4">
+          <Link href="/" className="text-sm font-medium hover:underline">
+            Chat
+          </Link>
+          <SignedIn>
+            <Link
+              href="/r2-images"
+              className="text-sm font-medium hover:underline"
+            >
+              Cloudflare Images
+            </Link>
+            <Link
+              href="/images-hub"
+              className="text-sm font-medium hover:underline"
+            >
+              Stock Images
+            </Link>
+          </SignedIn>
+        </nav>
             <div className="flex items-center gap-4">
               <SignedOut>
                 <SignInButton mode="modal" />
