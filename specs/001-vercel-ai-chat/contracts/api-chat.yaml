@@ -1,0 +1,285 @@
+openapi: 3.0.3
+info:
+  title: Chat API - Vercel AI Gateway + DeepSeek
+  description: API endpoint for chat functionality using Vercel AI Gateway routing to DeepSeek LLM
+  version: 1.0.0
+  contact:
+    name: AI Chatbox Team
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+  - url: https://{domain}/api
+    description: Production server
+    variables:
+      domain:
+        default: your-app.vercel.app
+
+paths:
+  /chat:
+    post:
+      summary: Send chat message and receive streaming response
+      description: |
+        Sends a chat message to the AI assistant via Vercel AI Gateway routing to DeepSeek LLM.
+        Returns a streaming response with incremental text updates.
+        
+        **Routing**: Requests are automatically routed through Vercel AI Gateway when deployed on Vercel.
+        **Model**: Uses `deepseek/deepseek-chat` model identifier.
+        **Streaming**: Response streams token-by-token for real-time user experience.
+        **Timeout**: Requests timeout after 60 seconds (FR-018).
+        **Error Handling**: Returns structured error responses for various failure scenarios.
+      
+      operationId: sendChatMessage
+      tags:
+        - Chat
+      
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+            examples:
+              singleMessage:
+                summary: Single message
+                value:
+                  messages:
+                    - role: user
+                      content: "Hello, how are you?"
+                    - id: "msg-1"
+                      role: assistant
+                      content: "I'm doing well, thank you!"
+              multiTurn:
+                summary: Multi-turn conversation
+                value:
+                  messages:
+                    - role: user
+                      content: "What is React?"
+                    - id: "msg-1"
+                      role: assistant
+                      content: "React is a JavaScript library..."
+                    - role: user
+                      content: "How does it differ from Vue?"
+      
+      responses:
+        '200':
+          description: |
+            Streaming response with incremental text updates.
+            Response format follows Vercel AI SDK UI message stream format.
+          content:
+            text/plain; charset=utf-8:
+              schema:
+                type: string
+                format: binary
+                description: Streaming UI message stream
+            application/x-ndjson:
+              schema:
+                type: string
+                description: Newline-delimited JSON stream
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: text/plain; charset=utf-8
+            X-Streaming:
+              schema:
+                type: string
+                example: "true"
+        
+        '400':
+          description: Bad request - Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                emptyMessage:
+                  summary: Empty message
+                  value:
+                    error: {
+                      type: "validation",
+                      message: "Message cannot be empty",
+                      retryable: false
+                    }
+                tokenLimitExceeded:
+                  summary: Token limit exceeded
+                  value:
+                    error: {
+                      type: "validation",
+                      message: "Message exceeds token limit. Please shorten your message.",
+                      retryable: false,
+                      details: "Maximum tokens: 8000"
+                    }
+        
+        '408':
+          description: Request timeout - Response exceeded 60 seconds
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: {
+                  type: "timeout",
+                  message: "Request timed out. Please try again.",
+                  retryable: true
+                }
+        
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              headers:
+                Retry-After:
+                  schema:
+                    type: integer
+                    description: Seconds to wait before retrying
+                    example: 60
+              example:
+                error: {
+                  type: "rate_limit",
+                  message: "Rate limit exceeded. Please try again later.",
+                  retryable: true,
+                  retryAfter: 60
+                }
+        
+        '500':
+          description: Server error or AI service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                serviceUnavailable:
+                  summary: AI service unavailable
+                  value:
+                    error: {
+                      type: "service",
+                      message: "AI service is temporarily unavailable. Please try again later.",
+                      retryable: true
+                    }
+                malformedResponse:
+                  summary: Malformed response from AI
+                  value:
+                    error: {
+                      type: "malformed",
+                      message: "Received invalid response from AI. Please try again.",
+                      retryable: true
+                    }
+                networkError:
+                  summary: Network error
+                  value:
+                    error: {
+                      type: "network",
+                      message: "Network error occurred. Please check your connection and try again.",
+                      retryable: true
+                    }
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - messages
+      properties:
+        messages:
+          type: array
+          description: Array of conversation messages in chronological order
+          items:
+            $ref: '#/components/schemas/UIMessage'
+          minItems: 1
+          maxItems: 100
+          example:
+            - role: user
+              content: "Hello!"
+            - id: "msg-1"
+              role: assistant
+              content: "Hi there!"
+      
+    UIMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        id:
+          type: string
+          description: Unique message identifier (generated by AI SDK)
+          example: "msg-123"
+        role:
+          type: string
+          enum: [user, assistant]
+          description: Message sender role
+        content:
+          type: string
+          description: Message text content
+          minLength: 1
+          maxLength: 32000
+          example: "Hello, how can I help you?"
+        parts:
+          type: array
+          description: Structured message parts (for AI SDK compatibility)
+          items:
+            $ref: '#/components/schemas/MessagePart'
+      
+    MessagePart:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: [text]
+          description: Part type
+        text:
+          type: string
+          description: Text content (when type is 'text')
+      
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - type
+            - message
+            - retryable
+          properties:
+            type:
+              type: string
+              enum: [network, timeout, rate_limit, validation, service, malformed]
+              description: Error category
+            message:
+              type: string
+              description: User-friendly error message
+              example: "Request timed out. Please try again."
+            retryable:
+              type: boolean
+              description: Whether the request can be retried
+            retryAfter:
+              type: integer
+              description: Seconds to wait before retrying (for rate limits)
+              minimum: 0
+            details:
+              type: string
+              description: Additional error details (optional, for debugging)
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Authentication via Clerk (if enabled).
+        Protected routes require valid authentication token.
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: Chat
+    description: Chat functionality with AI assistant
+
