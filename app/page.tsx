@@ -105,9 +105,9 @@ export default function ChatPage() {
         {/* Header */}
         <div className="p-4 border-b bg-white rounded-t-lg flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">DeepSeek Chat</h1>
+            <h1 className="text-2xl font-bold text-gray-800">AI Powered Chat</h1>
             <p className="text-sm text-gray-500">
-              Powered by Vercel AI Gateway
+              Powered by Best IT Consulting
             </p>
           </div>
           {messages.length > 0 && (
