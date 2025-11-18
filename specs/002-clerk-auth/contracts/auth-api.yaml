@@ -1,0 +1,244 @@
+openapi: 3.0.3
+info:
+  title: Clerk Authentication API Contracts
+  description: |
+    API contracts for authentication-protected endpoints in the chat application.
+    Authentication is handled by Clerk middleware - these contracts document
+    the protected endpoints and their authentication requirements.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://your-domain.vercel.app
+    description: Production server
+
+paths:
+  /api/chat:
+    post:
+      summary: Send chat message (Protected)
+      description: |
+        Send a chat message to the AI assistant. Requires authentication.
+        Protected by Clerk middleware - unauthenticated requests are automatically
+        redirected to sign-in page.
+      operationId: sendChatMessage
+      security:
+        - ClerkAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - messages
+              properties:
+                messages:
+                  type: array
+                  description: Array of chat messages
+                  items:
+                    $ref: '#/components/schemas/ChatMessage'
+              example:
+                messages:
+                  - role: user
+                    content: Hello, how are you?
+      responses:
+        '200':
+          description: Streaming chat response
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-sent events stream with chat response
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/auth/user:
+    get:
+      summary: Get current user information
+      description: |
+        Get information about the currently authenticated user.
+        Requires authentication via Clerk session.
+      operationId: getCurrentUser
+      security:
+        - ClerkAuth: []
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    ClerkAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Clerk JWT token authentication. Token is automatically included
+        in requests by Clerk SDK. Middleware validates token before
+        route handler execution.
+
+  schemas:
+    ChatMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system]
+          description: Message role
+        content:
+          type: string
+          description: Message content
+          maxLength: 32000
+          example: Hello, how are you?
+
+    User:
+      type: object
+      description: Authenticated user information from Clerk
+      properties:
+        id:
+          type: string
+          description: Clerk user ID
+          example: user_2abc123def456
+        emailAddresses:
+          type: array
+          description: User's email addresses
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              emailAddress:
+                type: string
+                format: email
+              verification:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [verified, unverified]
+        primaryEmailAddress:
+          type: string
+          format: email
+          description: Primary email address
+        emailVerified:
+          type: boolean
+          description: Whether primary email is verified
+        firstName:
+          type: string
+          nullable: true
+        lastName:
+          type: string
+          nullable: true
+        imageUrl:
+          type: string
+          format: uri
+          nullable: true
+        role:
+          type: string
+          enum: [user, admin]
+          description: User role (from publicMetadata)
+          default: user
+        createdAt:
+          type: integer
+          format: int64
+          description: Account creation timestamp
+        lastSignInAt:
+          type: integer
+          format: int64
+          nullable: true
+          description: Last sign-in timestamp
+
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - type
+            - message
+          properties:
+            type:
+              type: string
+              enum: [validation, authentication, authorization, service, network, timeout]
+              description: Error type
+            message:
+              type: string
+              description: Human-readable error message
+            retryable:
+              type: boolean
+              description: Whether the error is retryable
+            details:
+              type: string
+              nullable: true
+              description: Additional error details
+
+  responses:
+    Unauthorized:
+      description: Authentication required or invalid token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authentication
+              message: Authentication required. Please sign in.
+              retryable: false
+
+    Forbidden:
+      description: Insufficient permissions for this action
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: authorization
+              message: You don't have permission to access this resource.
+              retryable: false
+
+    BadRequest:
+      description: Invalid request data
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: validation
+              message: Messages array is required and cannot be empty
+              retryable: false
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error:
+              type: service
+              message: An error occurred processing your request. Please try again.
+              retryable: true
+
+tags:
+  - name: Chat
+    description: Chat-related endpoints (protected)
+  - name: Auth
+    description: Authentication-related endpoints
+

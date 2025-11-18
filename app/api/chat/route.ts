@@ -1,4 +1,6 @@
 import { streamText, convertToModelMessages } from "ai";
+import { auth } from '@clerk/nextjs/server';
+import { hasPermission } from '@/lib/auth';
 
 export const runtime = "edge"; // Edge runtime for lower latency
 
@@ -6,6 +8,36 @@ export const runtime = "edge"; // Edge runtime for lower latency
 const REQUEST_TIMEOUT_MS = 60_000;
 
 export async function POST(req: Request) {
+  // Verify authentication (defense-in-depth)
+  const { userId } = auth();
+  if (!userId) {
+    return new Response(
+      JSON.stringify({
+        error: {
+          type: "authentication",
+          message: "Authentication required. Please sign in.",
+          retryable: false,
+        },
+      }),
+      { status: 401, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  // Check permissions (role-based access control)
+  const canAccessChat = await hasPermission('chat:access');
+  if (!canAccessChat) {
+    return new Response(
+      JSON.stringify({
+        error: {
+          type: "authorization",
+          message: "You don't have permission to access this resource.",
+          retryable: false,
+        },
+      }),
+      { status: 403, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
   try {
     const { messages } = await req.json();
 
