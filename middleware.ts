@@ -6,6 +6,10 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
 ]);
 
+// Note: Next.js 16 deprecates middleware.ts in favor of proxy.ts
+// However, Clerk's clerkMiddleware currently requires default export in middleware.ts
+// Keep using middleware.ts until Clerk updates to support proxy.ts
+// The deprecation warning can be safely ignored for now
 export default clerkMiddleware(async (auth, request) => {
   // Protect all routes except public auth routes
   if (!isPublicRoute(request)) {
@@ -21,3 +25,4 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
+

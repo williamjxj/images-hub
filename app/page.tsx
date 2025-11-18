@@ -11,7 +11,7 @@ import { Send, AlertCircle } from "lucide-react";
 
 export default function ChatPage() {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, status, error, reload, setMessages } = useChat(
+  const { messages, sendMessage, status, error, setMessages } = useChat(
     {
       transport: new DefaultChatTransport({ api: "/api/chat" }),
       onError: (error) => {
@@ -70,8 +70,22 @@ export default function ChatPage() {
   };
 
   const handleRetry = () => {
-    if (reload) {
-      reload();
+    // Retry by clearing the last assistant message and resending the last user message
+    if (messages.length > 0) {
+      const lastUserMessage = [...messages].reverse().find((msg) => msg.role === "user");
+      if (lastUserMessage) {
+        // Remove all messages after the last user message (including failed assistant response)
+        const lastUserIndex = messages.findIndex((msg) => msg.id === lastUserMessage.id);
+        setMessages(messages.slice(0, lastUserIndex + 1));
+        // Resend the last user message - extract text from message parts
+        const textParts = lastUserMessage.parts?.filter((part) => part.type === "text") || [];
+        const messageText = textParts.map((part) => ("text" in part ? part.text : "")).join("");
+        if (messageText) {
+          setTimeout(() => {
+            sendMessage({ text: messageText });
+          }, 100);
+        }
+      }
     }
   };
 
