@@ -3,485 +3,441 @@
 **Feature**: R2 Images Display with Tabbed Buckets  
 **Branch**: `003-r2-image-tabs`  
 **Date**: 2025-01-27  
-**Status**: Planning Complete, Ready for Implementation
+**Status**: Ready for Implementation
 
 ## Overview
 
-This document breaks down the implementation into actionable tasks, following the proven `pim-gallery` pattern while extending it for multi-bucket support with tabs and sub-folder navigation.
+This document provides actionable, dependency-ordered tasks for implementing the R2 Images Display feature. Tasks are organized by user story priority to enable independent implementation and testing.
 
-## Task Groups
+## User Stories Summary
 
-### Phase 1: Setup & Configuration
+- **User Story 1 (P1)**: View Images from Multiple R2 Buckets - Core functionality
+- **User Story 2 (P2)**: Navigate and Browse Images - Enhanced browsing
+- **User Story 3 (P2)**: Handle Errors and Edge Cases - Error handling
 
-#### Task 1.1: Install Dependencies
-- [ ] Install `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner`
-- [ ] Install `react-intersection-observer` for infinite scroll
-- [ ] Install `react-masonry-css` for masonry layout (optional, can use CSS columns)
-- [ ] Verify all dependencies are compatible with Next.js 16 and React 19
+## Dependency Graph
 
-**Estimated Time**: 5 minutes  
-**Dependencies**: None  
-**Reference**: [research.md](./research.md) - Dependencies section
+```
+Phase 1: Setup
+  └─> Phase 2: Foundational (R2 Client, Types, API Routes)
+       └─> Phase 3: User Story 1 (Core Gallery with Tabs)
+            ├─> Phase 4: User Story 2 (Navigation & Browsing)
+            └─> Phase 5: User Story 3 (Error Handling)
+                 └─> Phase 6: Polish & Cross-Cutting
+```
 
----
+## Implementation Strategy
 
-#### Task 1.2: Configure Environment Variables
-- [ ] Add R2 environment variables to `.env.local`:
-  - `R2_ACCOUNT_ID`
-  - `R2_ACCESS_KEY_ID`
-  - `R2_SECRET_ACCESS_KEY`
-  - `NEXT_PUBLIC_R2_PUBLIC_URL` (optional, if public access enabled)
-- [ ] Document environment variables in README or setup guide
-- [ ] Add `.env.local.example` template file
-
-**Estimated Time**: 10 minutes  
-**Dependencies**: Task 1.1  
-**Reference**: [quickstart.md](./quickstart.md) - Environment Variables section, pim-gallery pattern
+**MVP Scope**: User Story 1 only (Phase 3) - Core tabbed gallery functionality  
+**Incremental Delivery**: Each user story phase is independently testable and deployable  
+**Parallel Opportunities**: Tasks marked with [P] can be worked on in parallel
 
 ---
 
-### Phase 2: R2 Client Library & Types
+## Phase 1: Setup
 
-#### Task 2.1: Create R2 Type Definitions
-- [ ] Create `types/r2.ts` with interfaces:
-  - `R2ImageAsset` (extends pim-gallery pattern)
-  - `R2Object` (file/folder representation)
-  - `R2ListResponse` (API response)
-  - `ImageGalleryState` (client state)
-  - `ImageGalleryFilter` (filter/search state)
-  - `R2BucketConfig` (bucket configuration)
-- [ ] Add TypeScript types for display modes: `"grid" | "masonry" | "list"`
-- [ ] Add types for folder navigation: `FolderPath`, `BreadcrumbItem`
+**Goal**: Initialize project dependencies and configuration
 
-**Estimated Time**: 30 minutes  
-**Dependencies**: None  
-**Reference**: [data-model.md](./data-model.md), pim-gallery `types/r2.ts` pattern
+### Setup Tasks
+
+- [ ] T001 Install @aws-sdk/client-s3 and @aws-sdk/s3-request-presigner packages via pnpm
+- [ ] T002 Install react-intersection-observer package via pnpm
+- [ ] T003 Install react-masonry-css package via pnpm (optional, can use CSS columns)
+- [ ] T004 Add R2_ACCOUNT_ID to .env.local with Cloudflare account ID
+- [ ] T005 Add R2_ACCESS_KEY_ID to .env.local with R2 API access key
+- [ ] T006 Add R2_SECRET_ACCESS_KEY to .env.local with R2 API secret key
+- [ ] T007 Add NEXT_PUBLIC_R2_PUBLIC_URL to .env.local if public access enabled (optional)
+- [ ] T008 Create .env.local.example template with R2 environment variable placeholders
 
 ---
 
-#### Task 2.2: Create R2 Client Library
-- [ ] Create `lib/r2/client.ts`:
-  - Implement `isR2Configured()` check function (following pim-gallery pattern)
-  - Initialize `S3Client` with R2 endpoint and credentials
-  - Export `r2Client` instance
-  - Export `R2_BUCKETS` constant array with three bucket names
-  - Export `R2BucketName` type
-- [ ] Create `lib/r2/list-objects.ts`:
-  - Implement `listObjects()` function with bucket, prefix, cursor, limit params
-  - Filter images by supported formats (JPEG, PNG, WebP, GIF)
-  - Separate folders from files using `CommonPrefixes` and `Delimiter`
-  - Handle pagination with `ContinuationToken`
-  - Return `R2ListResponse` with `objects`, `folders`, `hasMore`, `nextToken`
-- [ ] Create `lib/r2/get-object-url.ts`:
-  - Implement `getPresignedUrl()` function
-  - Generate presigned URLs with 1-hour expiration
-  - Handle errors gracefully
+## Phase 2: Foundational (Blocking Prerequisites)
 
-**Estimated Time**: 2 hours  
-**Dependencies**: Task 2.1, Task 1.2  
-**Reference**: [research.md](./research.md) - R2 Integration section, pim-gallery `lib/r2-client.ts` pattern
+**Goal**: Create R2 client library, types, and API routes that all user stories depend on
 
----
+### Type Definitions
 
-### Phase 3: API Routes
+- [ ] T009 [P] Create types/r2.ts with R2ImageAsset interface (key, size, lastModified, url, etc.)
+- [ ] T010 [P] Create types/r2.ts with R2Object interface (extends R2ImageAsset with isFolder, urlExpiresAt)
+- [ ] T011 [P] Create types/r2.ts with R2ListResponse interface (objects, folders, hasMore, nextToken)
+- [ ] T012 [P] Create types/r2.ts with ImageGalleryState interface (images, loading, error, hasMore, cursor)
+- [ ] T013 [P] Create types/r2.ts with R2BucketName type union ("bestitconsulting-assets" | "juewei-assets" | "static-assets")
+- [ ] T014 [P] Create types/r2.ts with DisplayMode type union ("grid" | "masonry" | "list")
+- [ ] T015 [P] Create types/r2.ts with FolderPath interface (bucket, path, parts)
 
-#### Task 3.1: Create List Objects API Route
-- [ ] Create `app/api/r2/list/route.ts`:
-  - Implement GET handler with Clerk authentication check
-  - Extract query parameters: `bucket`, `prefix`, `token`, `maxKeys`
-  - Validate bucket name (must be one of three buckets)
-  - Call `listObjects()` from R2 client library
-  - Return JSON response with `objects`, `folders`, `hasMore`, `nextToken`
-  - Handle errors with proper HTTP status codes (400, 401, 403, 500)
-- [ ] Add error handling for missing/invalid bucket
-- [ ] Add error handling for R2 connection failures
-- [ ] Test API endpoint with curl/Postman
+### R2 Client Library
 
-**Estimated Time**: 1.5 hours  
-**Dependencies**: Task 2.2, Clerk authentication  
-**Reference**: [contracts/api-r2.yaml](./contracts/api-r2.yaml), pim-gallery `app/api/r2/images/route.ts` pattern
+- [ ] T016 Create lib/r2/client.ts with isR2Configured() function checking environment variables
+- [ ] T017 Create lib/r2/client.ts with S3Client initialization using R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+- [ ] T018 Create lib/r2/client.ts with R2_BUCKETS constant array ["bestitconsulting-assets", "juewei-assets", "static-assets"]
+- [ ] T019 Create lib/r2/client.ts with R2BucketName type export
+- [ ] T020 Create lib/r2/list-objects.ts with listObjects() function accepting bucket, prefix, cursor, limit parameters
+- [ ] T021 Create lib/r2/list-objects.ts with image format filtering (JPEG, PNG, WebP, GIF only)
+- [ ] T022 Create lib/r2/list-objects.ts with folder detection using CommonPrefixes and Delimiter
+- [ ] T023 Create lib/r2/list-objects.ts with pagination support using ContinuationToken
+- [ ] T024 Create lib/r2/list-objects.ts returning R2ListResponse with objects, folders, hasMore, nextToken
+- [ ] T025 Create lib/r2/get-object-url.ts with getPresignedUrl() function accepting bucket and key
+- [ ] T026 Create lib/r2/get-object-url.ts with 1-hour expiration for presigned URLs
 
----
+### API Routes
 
-#### Task 3.2: Create Image URL API Route
-- [ ] Create `app/api/r2/image/route.ts`:
-  - Implement GET handler with Clerk authentication check
-  - Extract query parameters: `bucket`, `key`
-  - Validate bucket name and key
-  - Call `getPresignedUrl()` from R2 client library
-  - Return JSON response with `url` and `expiresAt`
-  - Handle errors (404 for not found, 500 for server errors)
-- [ ] Test API endpoint with curl/Postman
+- [ ] T027 Create app/api/r2/list/route.ts with GET handler
+- [ ] T028 Create app/api/r2/list/route.ts with Clerk authentication check using auth() from @clerk/nextjs/server
+- [ ] T029 Create app/api/r2/list/route.ts extracting bucket query parameter and validating against R2_BUCKETS
+- [ ] T030 Create app/api/r2/list/route.ts extracting prefix query parameter (defaults to empty string)
+- [ ] T031 Create app/api/r2/list/route.ts extracting token query parameter for pagination
+- [ ] T032 Create app/api/r2/list/route.ts calling listObjects() from lib/r2/list-objects.ts
+- [ ] T033 Create app/api/r2/list/route.ts returning JSON response with objects, folders, hasMore, nextToken
+- [ ] T034 Create app/api/r2/list/route.ts with error handling returning 400 for invalid bucket
+- [ ] T035 Create app/api/r2/list/route.ts with error handling returning 401 for unauthenticated requests
+- [ ] T036 Create app/api/r2/list/route.ts with error handling returning 500 for R2 connection failures
+- [ ] T037 Create app/api/r2/image/route.ts with GET handler
+- [ ] T038 Create app/api/r2/image/route.ts with Clerk authentication check
+- [ ] T039 Create app/api/r2/image/route.ts extracting bucket and key query parameters
+- [ ] T040 Create app/api/r2/image/route.ts validating bucket name against R2_BUCKETS
+- [ ] T041 Create app/api/r2/image/route.ts calling getPresignedUrl() from lib/r2/get-object-url.ts
+- [ ] T042 Create app/api/r2/image/route.ts returning JSON response with url and expiresAt
+- [ ] T043 Create app/api/r2/image/route.ts with error handling returning 404 for not found
+- [ ] T044 Create app/api/r2/image/route.ts with error handling returning 500 for server errors
 
-**Estimated Time**: 1 hour  
-**Dependencies**: Task 2.2, Clerk authentication  
-**Reference**: [contracts/api-r2.yaml](./contracts/api-r2.yaml)
+### Utility Functions
+
+- [ ] T045 [P] Create lib/utils/image-utils.ts with isImageFile() function checking file extensions (.jpg, .jpeg, .png, .webp, .gif)
+- [ ] T046 [P] Create lib/utils/image-utils.ts with sortImagesByDate() function sorting by lastModified descending (newest first)
 
 ---
 
-### Phase 4: Custom Hooks
+## Phase 3: User Story 1 - View Images from Multiple R2 Buckets (P1)
 
-#### Task 4.1: Create Infinite Scroll Hook
-- [ ] Create `lib/hooks/use-r2-images.ts`:
-  - Implement state management: `images`, `folders`, `loading`, `error`, `hasMore`, `cursor`
-  - Implement `loadMore()` function for infinite scroll:
-    - Check if already loading or no more items
-    - Fetch from `/api/r2/list` with continuation token
-    - Append new images to existing array
-    - Update `hasMore` and `cursor` state
-  - Implement `refreshGallery()` function:
-    - Reset state to initial values
-    - Fetch first page of images
-  - Implement `navigateToFolder()` function:
-    - Update folder path
-    - Reset images and fetch folder contents
-  - Handle errors with user-friendly messages
-- [ ] Add support for bucket switching
-- [ ] Add support for folder navigation
+**Goal**: Users can browse and view images stored in three different R2 buckets through a tabbed interface
 
-**Estimated Time**: 2 hours  
-**Dependencies**: Task 3.1  
-**Reference**: pim-gallery `lib/useImageGallery.ts` pattern, [research.md](./research.md) - Infinite Scroll section
+**Independent Test**: Navigate to /r2-images, verify three tabs appear with bucket names, click tabs to switch buckets, verify images display from each bucket
 
----
+**Acceptance Criteria**:
+- Three tabs labeled with R2 bucket names
+- First tab active by default
+- Images display from active bucket
+- Tab switching shows different bucket images
+- Empty buckets show appropriate message
+- Authentication required (redirect if not authenticated)
 
-#### Task 4.2: Create Display Mode Hook
-- [ ] Create `lib/hooks/use-display-mode.ts`:
-  - Manage display mode state: `"grid" | "masonry" | "list"`
-  - Persist mode to localStorage (optional)
-  - Provide `setDisplayMode()` function
-- [ ] Integrate with gallery component
+### Custom Hooks
 
-**Estimated Time**: 30 minutes  
-**Dependencies**: None  
-**Reference**: [research.md](./research.md) - Display Modes section
+- [ ] T047 [US1] Create lib/hooks/use-r2-images.ts with useState for images array
+- [ ] T048 [US1] Create lib/hooks/use-r2-images.ts with useState for folders array
+- [ ] T049 [US1] Create lib/hooks/use-r2-images.ts with useState for loading boolean
+- [ ] T050 [US1] Create lib/hooks/use-r2-images.ts with useState for error string | null
+- [ ] T051 [US1] Create lib/hooks/use-r2-images.ts with useState for hasMore boolean
+- [ ] T052 [US1] Create lib/hooks/use-r2-images.ts with useState for cursor string | undefined
+- [ ] T053 [US1] Create lib/hooks/use-r2-images.ts with useState for activeBucket R2BucketName
+- [ ] T054 [US1] Create lib/hooks/use-r2-images.ts with useState for currentFolder string (defaults to empty string)
+- [ ] T055 [US1] Create lib/hooks/use-r2-images.ts with loadMore() function fetching from /api/r2/list with continuation token
+- [ ] T056 [US1] Create lib/hooks/use-r2-images.ts with refreshGallery() function resetting state and fetching first page
+- [ ] T057 [US1] Create lib/hooks/use-r2-images.ts with switchBucket() function updating activeBucket and resetting folder path
+- [ ] T058 [US1] Create lib/hooks/use-r2-images.ts with useEffect calling refreshGallery() when activeBucket or currentFolder changes
 
----
+### Tab Navigation Component
 
-### Phase 5: UI Components - Core
+- [ ] T059 [US1] Create components/r2-images/r2-image-tabs.tsx as client component with "use client" directive
+- [ ] T060 [US1] Create components/r2-images/r2-image-tabs.tsx accepting buckets array and activeBucket prop
+- [ ] T061 [US1] Create components/r2-images/r2-image-tabs.tsx accepting onTabChange callback prop
+- [ ] T062 [US1] Create components/r2-images/r2-image-tabs.tsx rendering three tabs with bucket names as labels
+- [ ] T063 [US1] Create components/r2-images/r2-image-tabs.tsx highlighting active tab with visual distinction (border, background color)
+- [ ] T064 [US1] Create components/r2-images/r2-image-tabs.tsx handling tab click to call onTabChange with bucket name
+- [ ] T065 [US1] Create components/r2-images/r2-image-tabs.tsx using shadcn/ui Tabs component or custom implementation
+- [ ] T066 [US1] Create components/r2-images/r2-image-tabs.tsx adding Framer Motion animation for tab switching
 
-#### Task 5.1: Create Tab Navigation Component
-- [ ] Create `components/r2-images/r2-image-tabs.tsx`:
-  - Display three tabs for three buckets
-  - Use bucket names as tab labels (per spec clarification)
-  - Highlight active tab with visual distinction
-  - Handle tab click to switch buckets
-  - Use shadcn/ui Tabs component or custom implementation
-  - Add Framer Motion animations for tab switching
-- [ ] Test tab switching behavior
-- [ ] Ensure first tab is active by default (per spec)
+### Image Display Components
 
-**Estimated Time**: 1.5 hours  
-**Dependencies**: Task 4.1  
-**Reference**: [spec.md](./spec.md) - FR-001, FR-001a, FR-001b, pim-gallery navigation pattern
+- [ ] T067 [US1] Create components/r2-images/r2-image-item.tsx as client component
+- [ ] T068 [US1] Create components/r2-images/r2-image-item.tsx accepting R2Object prop
+- [ ] T069 [US1] Create components/r2-images/r2-image-item.tsx rendering img tag with src from object.url
+- [ ] T070 [US1] Create components/r2-images/r2-image-item.tsx adding loading="lazy" attribute to img tag
+- [ ] T071 [US1] Create components/r2-images/r2-image-item.tsx handling image load errors with placeholder
+- [ ] T072 [US1] Create components/r2-images/r2-image-item.tsx displaying image metadata on hover (filename, size, date)
+- [ ] T073 [US1] Create components/r2-images/r2-image-grid.tsx as client component
+- [ ] T074 [US1] Create components/r2-images/r2-image-grid.tsx accepting images array prop
+- [ ] T075 [US1] Create components/r2-images/r2-image-grid.tsx using CSS Grid with responsive columns (2 mobile, 3 tablet, 4 desktop)
+- [ ] T076 [US1] Create components/r2-images/r2-image-grid.tsx rendering r2-image-item for each image
+- [ ] T077 [US1] Create components/r2-images/r2-image-grid.tsx using fixed aspect ratio (square) for grid items
+- [ ] T078 [US1] Create components/r2-images/r2-image-grid.tsx using object-cover for image fitting
 
----
+### Main Gallery Component
 
-#### Task 5.2: Create Folder Navigation Component
-- [ ] Create `components/r2-images/r2-folder-navigation.tsx`:
-  - Display breadcrumb navigation
-  - Show current folder path
-  - Allow clicking breadcrumb items to navigate up
-  - Display folder list when in a folder
-  - Handle folder click to navigate into folder
-  - Use shadcn/ui Breadcrumb component
-  - Add folder icons (lucide-react)
-- [ ] Test folder navigation
-- [ ] Test breadcrumb navigation
+- [ ] T079 [US1] Create components/r2-images/r2-image-gallery.tsx as client component
+- [ ] T080 [US1] Create components/r2-images/r2-image-gallery.tsx importing use-r2-images hook
+- [ ] T081 [US1] Create components/r2-images/r2-image-gallery.tsx importing r2-image-tabs component
+- [ ] T082 [US1] Create components/r2-images/r2-image-gallery.tsx importing r2-image-grid component
+- [ ] T083 [US1] Create components/r2-images/r2-image-gallery.tsx initializing hook with default bucket (first in R2_BUCKETS)
+- [ ] T084 [US1] Create components/r2-images/r2-image-gallery.tsx rendering r2-image-tabs with buckets and activeBucket
+- [ ] T085 [US1] Create components/r2-images/r2-image-gallery.tsx handling tab change to call switchBucket()
+- [ ] T086 [US1] Create components/r2-images/r2-image-gallery.tsx rendering r2-image-grid with images from hook
+- [ ] T087 [US1] Create components/r2-images/r2-image-gallery.tsx displaying loading state when loading is true
+- [ ] T088 [US1] Create components/r2-images/r2-image-gallery.tsx displaying empty state message when images.length === 0 and !loading
+- [ ] T089 [US1] Create components/r2-images/r2-image-gallery.tsx displaying error message when error is not null
 
-**Estimated Time**: 2 hours  
-**Dependencies**: Task 4.1  
-**Reference**: [research.md](./research.md) - Sub-folder Navigation section, [data-model.md](./data-model.md) - FolderPath entity
+### Page Route
 
----
+- [ ] T090 [US1] Create app/r2-images/page.tsx as server component
+- [ ] T091 [US1] Create app/r2-images/page.tsx checking authentication using auth() from @clerk/nextjs/server
+- [ ] T092 [US1] Create app/r2-images/page.tsx redirecting to /sign-in if not authenticated using redirect() from next/navigation
+- [ ] T093 [US1] Create app/r2-images/page.tsx rendering R2ImageGallery client component
+- [ ] T094 [US1] Create app/r2-images/page.tsx adding page metadata (title: "R2 Images", description)
 
-#### Task 5.3: Create Image Item Component
-- [ ] Create `components/r2-images/r2-image-item.tsx`:
-  - Display single image with lazy loading
-  - Show image thumbnail/preview
-  - Handle image click to open modal/lightbox
-  - Display image metadata on hover (filename, size, date)
-  - Handle image load errors with placeholder
-  - Use native `<img loading="lazy">` attribute
-  - Add Intersection Observer for viewport-based loading
-- [ ] Test image loading and error states
+### Navigation Integration
 
-**Estimated Time**: 1.5 hours  
-**Dependencies**: Task 3.2  
-**Reference**: [research.md](./research.md) - Image Optimization section, pim-gallery image display pattern
+- [ ] T095 [US1] Add /r2-images route to main navigation component (components/main-nav.tsx or similar)
 
 ---
 
-### Phase 6: UI Components - Display Modes
+## Phase 4: User Story 2 - Navigate and Browse Images (P2)
 
-#### Task 6.1: Create Grid Display Component
-- [ ] Create `components/r2-images/r2-image-grid.tsx`:
-  - Use CSS Grid layout
-  - Responsive columns: 2 (mobile), 3 (tablet), 4 (desktop)
-  - Fixed aspect ratio (square) for grid items
-  - Use `object-cover` for image fitting
-  - Add hover effects with Framer Motion
-  - Integrate with `r2-image-item` component
-- [ ] Test responsive behavior
-- [ ] Test with various image sizes
+**Goal**: Users can browse through images within each bucket, viewing image details and navigating between images efficiently
 
-**Estimated Time**: 1 hour  
-**Dependencies**: Task 5.3  
-**Reference**: [research.md](./research.md) - Display Modes section
+**Independent Test**: Scroll through images, verify infinite scroll loads more, hover over images to see details, click images to open modal
 
----
+**Acceptance Criteria**:
+- Infinite scroll loads additional images
+- Image details visible on hover
+- Click image opens larger view/modal
+- Loading indicators shown during fetch
 
-#### Task 6.2: Create Masonry Display Component
-- [ ] Create `components/r2-images/r2-image-masonry.tsx`:
-  - Option A: Use CSS columns (`columns-2 md:columns-3 lg:columns-4`)
-  - Option B: Use `react-masonry-css` library
-  - Preserve image aspect ratios
-  - Handle varying image heights
-  - Add `break-inside-avoid` for column layout
-  - Integrate with `r2-image-item` component
-- [ ] Test with images of varying sizes
-- [ ] Test responsive behavior
+### Infinite Scroll
 
-**Estimated Time**: 1.5 hours  
-**Dependencies**: Task 5.3  
-**Reference**: [research.md](./research.md) - Display Modes section
+- [ ] T096 [US2] Create lib/hooks/use-infinite-scroll.ts with useRef for intersection observer target element
+- [ ] T097 [US2] Create lib/hooks/use-infinite-scroll.ts with useInView hook from react-intersection-observer
+- [ ] T098 [US2] Create lib/hooks/use-infinite-scroll.ts with useEffect calling loadMore() when inView and hasMore
+- [ ] T099 [US2] Update components/r2-images/r2-image-gallery.tsx adding intersection observer trigger element at bottom
+- [ ] T100 [US2] Update components/r2-images/r2-image-gallery.tsx connecting infinite scroll hook to loadMore() function
 
----
+### Image Details Display
 
-#### Task 6.3: Create List Display Component
-- [ ] Create `components/r2-images/r2-image-list.tsx`:
-  - Use Flexbox layout
-  - Horizontal image thumbnails (fixed width/height)
-  - Display image metadata (filename, size, date) next to thumbnail
-  - Add hover effects
-  - Integrate with `r2-image-item` component
-- [ ] Test list layout
-- [ ] Test with long filenames
+- [ ] T101 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing filename
+- [ ] T102 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing file size (formatted)
+- [ ] T103 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing upload date (formatted)
+- [ ] T104 [US2] Update components/r2-images/r2-image-item.tsx using shadcn/ui Tooltip component for hover details
 
-**Estimated Time**: 1 hour  
-**Dependencies**: Task 5.3  
-**Reference**: [research.md](./research.md) - Display Modes section
+### Image Modal/Lightbox
 
----
+- [ ] T105 [US2] Create components/r2-images/r2-image-modal.tsx as client component
+- [ ] T106 [US2] Create components/r2-images/r2-image-modal.tsx accepting selectedImage R2Object | null prop
+- [ ] T107 [US2] Create components/r2-images/r2-image-modal.tsx accepting onClose callback prop
+- [ ] T108 [US2] Create components/r2-images/r2-image-modal.tsx using shadcn/ui Dialog component
+- [ ] T109 [US2] Create components/r2-images/r2-image-modal.tsx rendering full-size image when selectedImage is not null
+- [ ] T110 [US2] Create components/r2-images/r2-image-modal.tsx adding close button
+- [ ] T111 [US2] Create components/r2-images/r2-image-modal.tsx handling Escape key to close modal
+- [ ] T112 [US2] Create components/r2-images/r2-image-modal.tsx adding Framer Motion animation for modal open/close
+- [ ] T113 [US2] Update components/r2-images/r2-image-item.tsx adding onClick handler to open modal
+- [ ] T114 [US2] Update components/r2-images/r2-image-gallery.tsx adding useState for selectedImage
+- [ ] T115 [US2] Update components/r2-images/r2-image-gallery.tsx rendering r2-image-modal with selectedImage state
 
-### Phase 7: UI Components - Main Gallery
+### Loading States
 
-#### Task 7.1: Create Main Gallery Component
-- [ ] Create `components/r2-images/r2-image-gallery.tsx`:
-  - Integrate tab navigation (Task 5.1)
-  - Integrate folder navigation (Task 5.2)
-  - Integrate display mode switching
-  - Conditionally render grid/masonry/list based on mode
-  - Integrate infinite scroll hook (Task 4.1)
-  - Add Intersection Observer trigger for infinite scroll
-  - Handle loading states
-  - Handle error states
-  - Display empty state when no images
-- [ ] Test full gallery flow
-- [ ] Test tab switching
-- [ ] Test folder navigation
-- [ ] Test display mode switching
+- [ ] T116 [US2] Create components/r2-images/r2-image-loading.tsx with skeleton loader for grid mode
+- [ ] T117 [US2] Create components/r2-images/r2-image-loading.tsx using Tailwind animate-pulse class
+- [ ] T118 [US2] Update components/r2-images/r2-image-gallery.tsx rendering r2-image-loading when loading is true
 
-**Estimated Time**: 3 hours  
-**Dependencies**: Tasks 5.1, 5.2, 6.1, 6.2, 6.3, 4.1, 4.2  
-**Reference**: [quickstart.md](./quickstart.md) - Gallery Component section, pim-gallery `app/r2-gallery/page.tsx` pattern
+### Display Mode Switching
 
----
+- [ ] T119 [US2] Create lib/hooks/use-display-mode.ts with useState for displayMode ("grid" | "masonry" | "list")
+- [ ] T120 [US2] Create lib/hooks/use-display-mode.ts with localStorage persistence for displayMode
+- [ ] T121 [US2] Create components/r2-images/r2-image-masonry.tsx as client component
+- [ ] T122 [US2] Create components/r2-images/r2-image-masonry.tsx accepting images array prop
+- [ ] T123 [US2] Create components/r2-images/r2-image-masonry.tsx using CSS columns or react-masonry-css
+- [ ] T124 [US2] Create components/r2-images/r2-image-masonry.tsx rendering r2-image-item for each image
+- [ ] T125 [US2] Create components/r2-images/r2-image-list.tsx as client component
+- [ ] T126 [US2] Create components/r2-images/r2-image-list.tsx accepting images array prop
+- [ ] T127 [US2] Create components/r2-images/r2-image-list.tsx using Flexbox layout
+- [ ] T128 [US2] Create components/r2-images/r2-image-list.tsx rendering horizontal thumbnails with metadata
+- [ ] T129 [US2] Create components/r2-images/r2-image-list.tsx displaying filename, size, date next to thumbnail
+- [ ] T130 [US2] Update components/r2-images/r2-image-gallery.tsx adding display mode selector (grid/masonry/list buttons)
+- [ ] T131 [US2] Update components/r2-images/r2-image-gallery.tsx conditionally rendering grid/masonry/list based on displayMode
 
-#### Task 7.2: Create Loading States Component
-- [ ] Create `components/r2-images/r2-image-loading.tsx`:
-  - Skeleton loaders for grid mode
-  - Skeleton loaders for masonry mode
-  - Skeleton loaders for list mode
-  - Use Tailwind `animate-pulse` for loading animation
-  - Match layout of actual content
-- [ ] Integrate with gallery component
+### Folder Navigation
 
-**Estimated Time**: 1 hour  
-**Dependencies**: Tasks 6.1, 6.2, 6.3  
-**Reference**: Tailwind CSS animations
+- [ ] T132 [US2] Create components/r2-images/r2-folder-navigation.tsx as client component
+- [ ] T133 [US2] Create components/r2-images/r2-folder-navigation.tsx accepting bucket, currentFolder, folders props
+- [ ] T134 [US2] Create components/r2-images/r2-folder-navigation.tsx accepting onFolderClick callback prop
+- [ ] T135 [US2] Create components/r2-images/r2-folder-navigation.tsx rendering breadcrumb navigation using shadcn/ui Breadcrumb
+- [ ] T136 [US2] Create components/r2-images/r2-folder-navigation.tsx computing breadcrumb items from currentFolder path
+- [ ] T137 [US2] Create components/r2-images/r2-folder-navigation.tsx handling breadcrumb click to navigate up folders
+- [ ] T138 [US2] Create components/r2-images/r2-folder-navigation.tsx rendering folder list when folders.length > 0
+- [ ] T139 [US2] Create components/r2-images/r2-folder-navigation.tsx handling folder click to call onFolderClick with folder path
+- [ ] T140 [US2] Update lib/hooks/use-r2-images.ts adding navigateToFolder() function updating currentFolder and resetting images
+- [ ] T141 [US2] Update components/r2-images/r2-image-gallery.tsx rendering r2-folder-navigation component
+- [ ] T142 [US2] Update components/r2-images/r2-image-gallery.tsx handling folder navigation to call navigateToFolder()
 
 ---
 
-#### Task 7.3: Create Image Modal/Lightbox
-- [ ] Create `components/r2-images/r2-image-modal.tsx`:
-  - Display full-size image in modal
-  - Add close button
-  - Add navigation (previous/next) if multiple images
-  - Use shadcn/ui Dialog component
-  - Add Framer Motion animations for modal open/close
-  - Handle keyboard navigation (Escape to close, Arrow keys for navigation)
-- [ ] Integrate with image item click handler
+## Phase 5: User Story 3 - Handle Errors and Edge Cases (P2)
 
-**Estimated Time**: 2 hours  
-**Dependencies**: Task 5.3  
-**Reference**: shadcn/ui Dialog component, Framer Motion
+**Goal**: When errors occur while loading or displaying images, users receive clear feedback about what went wrong
 
----
+**Independent Test**: Simulate network failures, bucket access issues, missing images, verify appropriate error messages display
 
-### Phase 8: Page Route & Integration
+**Acceptance Criteria**:
+- Clear error message when bucket access fails
+- Placeholder for individual image load failures
+- Error message for unavailable bucket (other tabs remain functional)
+- Network connectivity error message
 
-#### Task 8.1: Create R2 Images Page
-- [ ] Create `app/r2-images/page.tsx`:
-  - Server component wrapper
-  - Check authentication (redirect if not authenticated)
-  - Render `R2ImageGallery` client component
-  - Add page metadata (title, description)
-- [ ] Test page access with/without authentication
-- [ ] Test page routing
+### Error Handling in Hooks
 
-**Estimated Time**: 30 minutes  
-**Dependencies**: Task 7.1, Clerk authentication  
-**Reference**: [quickstart.md](./quickstart.md) - Main Page section
+- [ ] T143 [US3] Update lib/hooks/use-r2-images.ts with try-catch in loadMore() catching fetch errors
+- [ ] T144 [US3] Update lib/hooks/use-r2-images.ts setting error state with user-friendly message on fetch failure
+- [ ] T145 [US3] Update lib/hooks/use-r2-images.ts with try-catch in refreshGallery() catching fetch errors
+- [ ] T146 [US3] Update lib/hooks/use-r2-images.ts handling HTTP error responses (400, 401, 403, 500)
+- [ ] T147 [US3] Update lib/hooks/use-r2-images.ts distinguishing network errors from API errors
 
----
+### Error UI Components
 
-#### Task 8.2: Add Navigation Link
-- [ ] Add R2 Images link to main navigation
-- [ ] Update navigation component (`components/main-nav.tsx` or similar)
-- [ ] Test navigation link
+- [ ] T148 [US3] Create components/r2-images/r2-image-error.tsx with error message display component
+- [ ] T149 [US3] Create components/r2-images/r2-image-error.tsx accepting error message string prop
+- [ ] T150 [US3] Create components/r2-images/r2-image-error.tsx accepting retry callback prop
+- [ ] T151 [US3] Create components/r2-images/r2-image-error.tsx displaying error icon and message
+- [ ] T152 [US3] Create components/r2-images/r2-image-error.tsx adding retry button calling retry callback
+- [ ] T153 [US3] Update components/r2-images/r2-image-gallery.tsx rendering r2-image-error when error is not null
+- [ ] T154 [US3] Update components/r2-images/r2-image-item.tsx adding error placeholder for failed image loads
+- [ ] T155 [US3] Update components/r2-images/r2-image-item.tsx using onError handler on img tag to show placeholder
 
-**Estimated Time**: 15 minutes  
-**Dependencies**: Task 8.1  
-**Reference**: pim-gallery navigation pattern
+### Tab Error Handling
 
----
+- [ ] T156 [US3] Update components/r2-images/r2-image-gallery.tsx handling per-bucket errors (error state per bucket)
+- [ ] T157 [US3] Update components/r2-images/r2-image-gallery.tsx displaying error for specific bucket while other tabs remain functional
+- [ ] T158 [US3] Update components/r2-images/r2-image-gallery.tsx canceling/pausing loading when switching tabs during load
 
-### Phase 9: Filter & Search (Nice to Have)
+### Network Error Handling
 
-#### Task 9.1: Create Filter/Search Component
-- [ ] Create `components/r2-images/r2-image-filters.tsx`:
-  - Search input for filename filtering
-  - Filter by file type (JPEG, PNG, WebP, GIF)
-  - Sort options (date, name, size)
-  - Use shadcn/ui Input, Select components
-  - Implement client-side filtering
-  - Add debouncing for search input
-- [ ] Integrate with gallery component
-- [ ] Test filtering functionality
+- [ ] T159 [US3] Update lib/hooks/use-r2-images.ts detecting network connectivity issues
+- [ ] T160 [US3] Update lib/hooks/use-r2-images.ts displaying network error message suggesting user check connection
+- [ ] T161 [US3] Update components/r2-images/r2-image-error.tsx adding specific UI for network errors
 
-**Estimated Time**: 2 hours  
-**Dependencies**: Task 7.1  
-**Reference**: [research.md](./research.md) - Filter and Search section
+### Edge Case Handling
+
+- [ ] T162 [US3] Update lib/r2/list-objects.ts handling very large image collections (thousands) efficiently
+- [ ] T163 [US3] Update components/r2-images/r2-image-item.tsx handling unsupported image formats with error indicator
+- [ ] T164 [US3] Update components/r2-images/r2-image-item.tsx handling corrupted image files with error indicator
+- [ ] T165 [US3] Update lib/hooks/use-r2-images.ts handling concurrent tab switches preventing race conditions
+- [ ] T166 [US3] Update lib/hooks/use-r2-images.ts ensuring only active tab's images are displayed
 
 ---
 
-### Phase 10: Polish & Optimization
+## Phase 6: Polish & Cross-Cutting Concerns
 
-#### Task 10.1: Add Animations
-- [ ] Add Framer Motion animations:
-  - Tab switching transitions
-  - Image loading fade-in
-  - Modal open/close animations
-  - Folder navigation transitions
-- [ ] Use Tailwind animations for loading spinners
-- [ ] Test animation performance
+**Goal**: Performance optimization, animations, and final polish
 
-**Estimated Time**: 2 hours  
-**Dependencies**: All UI components  
-**Reference**: Framer Motion documentation, Tailwind CSS animations
+### Performance Optimization
 
----
+- [ ] T167 Update lib/r2/get-object-url.ts implementing URL caching (check expiration before regenerating)
+- [ ] T168 Update components/r2-images/r2-image-item.tsx wrapping with React.memo for performance
+- [ ] T169 Update components/r2-images/r2-image-gallery.tsx optimizing re-renders with useMemo where appropriate
+- [ ] T170 Create error boundary component for graceful error handling (components/r2-images/r2-error-boundary.tsx)
 
-#### Task 10.2: Optimize Performance
-- [ ] Implement image URL caching (check expiration before regenerating)
-- [ ] Optimize re-renders with React.memo where appropriate
-- [ ] Add error boundaries for graceful error handling
-- [ ] Test with large image collections (500+ images)
-- [ ] Verify infinite scroll performance
+### Animations
 
-**Estimated Time**: 2 hours  
-**Dependencies**: All components  
-**Reference**: [spec.md](./spec.md) - Success Criteria (SC-005)
+- [ ] T171 Update components/r2-images/r2-image-tabs.tsx adding Framer Motion transitions for tab switching
+- [ ] T172 Update components/r2-images/r2-image-item.tsx adding Framer Motion fade-in animation on image load
+- [ ] T173 Update components/r2-images/r2-image-modal.tsx enhancing Framer Motion animations for open/close
+- [ ] T174 Update components/r2-images/r2-folder-navigation.tsx adding Framer Motion transitions for folder navigation
 
----
+### Image Sorting
 
-#### Task 10.3: Error Handling & Edge Cases
-- [ ] Handle empty buckets gracefully
-- [ ] Handle empty folders gracefully
-- [ ] Handle network errors
-- [ ] Handle R2 connection failures
-- [ ] Handle invalid bucket names
-- [ ] Handle missing images (404)
-- [ ] Add retry logic for failed requests
-- [ ] Display user-friendly error messages
+- [ ] T175 Update lib/r2/list-objects.ts sorting images by lastModified descending (newest first) before returning
+- [ ] T176 Update lib/utils/image-utils.ts ensuring sortImagesByDate() handles missing lastModified gracefully
 
-**Estimated Time**: 2 hours  
-**Dependencies**: All components  
-**Reference**: [spec.md](./spec.md) - User Story 3, Edge Cases
+### Empty States
+
+- [ ] T177 Update components/r2-images/r2-image-gallery.tsx enhancing empty state message with helpful text
+- [ ] T178 Update components/r2-images/r2-image-gallery.tsx adding empty state icon/illustration
+
+### Accessibility
+
+- [ ] T179 Update components/r2-images/r2-image-tabs.tsx adding ARIA labels for tabs
+- [ ] T180 Update components/r2-images/r2-image-item.tsx adding alt text to img tags using image filename
+- [ ] T181 Update components/r2-images/r2-image-modal.tsx adding keyboard navigation (Arrow keys for next/prev if implemented)
 
 ---
 
-### Phase 11: Testing & Documentation
+## Parallel Execution Examples
 
-#### Task 11.1: Manual Testing
-- [ ] Test tab switching between all three buckets
-- [ ] Test folder navigation (navigate into folders, use breadcrumbs)
-- [ ] Test infinite scroll (load more images)
-- [ ] Test all three display modes (grid, masonry, list)
-- [ ] Test image modal/lightbox
-- [ ] Test filter/search (if implemented)
-- [ ] Test error scenarios (network failure, empty buckets, etc.)
-- [ ] Test authentication (redirect when not logged in)
-- [ ] Test responsive design (mobile, tablet, desktop)
+### User Story 1 (Phase 3) - Parallel Opportunities
 
-**Estimated Time**: 3 hours  
-**Dependencies**: All tasks  
-**Reference**: [spec.md](./spec.md) - Acceptance Scenarios
+**Can work in parallel**:
+- T009-T015 (Type definitions) - All independent type interfaces
+- T045-T046 (Utility functions) - Independent helper functions
+- T059-T066 (Tab component) - Can be built independently
+- T067-T072 (Image item component) - Can be built independently
+- T073-T078 (Grid component) - Can be built independently
+
+**Must be sequential**:
+- T047-T058 (Hooks) → T079-T089 (Gallery component) → T090-T094 (Page route)
+
+### User Story 2 (Phase 4) - Parallel Opportunities
+
+**Can work in parallel**:
+- T096-T098 (Infinite scroll hook) - Independent feature
+- T101-T104 (Image details) - Independent enhancement
+- T105-T115 (Modal component) - Independent feature
+- T116-T118 (Loading states) - Independent feature
+- T119-T131 (Display modes) - Independent feature
+- T132-T142 (Folder navigation) - Independent feature
+
+### User Story 3 (Phase 5) - Parallel Opportunities
+
+**Can work in parallel**:
+- T143-T147 (Error handling in hooks) - Independent enhancement
+- T148-T155 (Error UI components) - Independent feature
+- T156-T158 (Tab error handling) - Independent enhancement
+- T159-T161 (Network errors) - Independent enhancement
+- T162-T166 (Edge cases) - Independent enhancements
 
 ---
 
-#### Task 11.2: Update Documentation
-- [ ] Update README with R2 Images feature
-- [ ] Document environment variables
-- [ ] Add screenshots or demo GIF
-- [ ] Update API documentation if needed
-- [ ] Document any deviations from pim-gallery pattern
+## Task Summary
 
-**Estimated Time**: 1 hour  
-**Dependencies**: Task 11.1  
-**Reference**: [quickstart.md](./quickstart.md)
+- **Total Tasks**: 181
+- **Phase 1 (Setup)**: 8 tasks
+- **Phase 2 (Foundational)**: 38 tasks
+- **Phase 3 (User Story 1)**: 49 tasks
+- **Phase 4 (User Story 2)**: 47 tasks
+- **Phase 5 (User Story 3)**: 24 tasks
+- **Phase 6 (Polish)**: 15 tasks
 
----
+## MVP Scope
 
-## Implementation Order
+**Minimum Viable Product**: Phase 1 + Phase 2 + Phase 3 (User Story 1)
+- **Total MVP Tasks**: 95 tasks
+- **Delivers**: Core tabbed gallery with three buckets, basic image display, authentication
 
-**Recommended Sequence**:
-1. Phase 1: Setup & Configuration (Tasks 1.1, 1.2)
-2. Phase 2: R2 Client Library & Types (Tasks 2.1, 2.2)
-3. Phase 3: API Routes (Tasks 3.1, 3.2)
-4. Phase 4: Custom Hooks (Tasks 4.1, 4.2)
-5. Phase 5: UI Components - Core (Tasks 5.1, 5.2, 5.3)
-6. Phase 6: UI Components - Display Modes (Tasks 6.1, 6.2, 6.3)
-7. Phase 7: UI Components - Main Gallery (Tasks 7.1, 7.2, 7.3)
-8. Phase 8: Page Route & Integration (Tasks 8.1, 8.2)
-9. Phase 9: Filter & Search (Task 9.1) - Optional/Nice to Have
-10. Phase 10: Polish & Optimization (Tasks 10.1, 10.2, 10.3)
-11. Phase 11: Testing & Documentation (Tasks 11.1, 11.2)
+## Independent Test Criteria
 
-## Estimated Total Time
+### User Story 1
+- Navigate to /r2-images (authenticated)
+- Verify three tabs appear with bucket names
+- Click each tab, verify images switch
+- Verify first tab is active by default
+- Verify empty bucket shows message
+- Test unauthenticated redirect
 
-- **Core Features** (Phases 1-8): ~20 hours
-- **Nice to Have** (Phase 9): ~2 hours
-- **Polish** (Phase 10): ~6 hours
-- **Testing & Documentation** (Phase 11): ~4 hours
-- **Total**: ~32 hours
+### User Story 2
+- Scroll to bottom, verify more images load
+- Hover over image, verify details appear
+- Click image, verify modal opens
+- Switch display modes, verify layout changes
+- Navigate into folder, verify breadcrumb updates
+- Click breadcrumb, verify navigation up
 
-## Notes
+### User Story 3
+- Simulate network failure, verify error message
+- Load invalid image, verify placeholder
+- Switch tabs during load, verify cancellation
+- Test bucket access error, verify per-bucket error display
 
-- Follow the `pim-gallery` pattern for proven implementation approaches
-- Extend pim-gallery pattern for multi-bucket support and tabs
-- Use shadcn/ui components where possible for consistent UI
-- Use Framer Motion for smooth animations
-- Prioritize performance (infinite scroll, lazy loading)
-- Ensure all authenticated users have access (no role restrictions)
+## Next Steps
 
-## References
-
-- [Specification](./spec.md)
-- [Research](./research.md)
-- [Data Model](./data-model.md)
-- [API Contracts](./contracts/api-r2.yaml)
-- [Quickstart Guide](./quickstart.md)
-- pim-gallery cursor rules pattern
-
+1. Review tasks.md for completeness
+2. Start with Phase 1 (Setup) - 8 tasks
+3. Proceed to Phase 2 (Foundational) - 38 tasks
+4. Implement Phase 3 (User Story 1) for MVP - 49 tasks
+5. Test MVP independently
+6. Continue with Phase 4-6 incrementally
