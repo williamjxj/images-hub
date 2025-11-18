@@ -9,6 +9,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Play } from "lucide-react";
 import { formatFileSize, formatDate } from "@/lib/utils/image-utils";
 import type { R2Object } from "@/types/r2";
@@ -51,7 +52,7 @@ export function R2MediaItem({ media, onClick }: R2MediaItemProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: mediaLoaded ? 1 : 0 }}
       transition={{ duration: 0.2 }}
-      className="relative group cursor-pointer overflow-hidden rounded-lg bg-muted w-full h-full"
+      className="relative group cursor-pointer overflow-hidden rounded-lg bg-muted w-full aspect-square"
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -87,13 +88,15 @@ export function R2MediaItem({ media, onClick }: R2MediaItemProps) {
       ) : (
         <>
           {/* Image */}
-          <img
+          <Image
             src={media.url}
             alt={media.name}
-            loading="lazy"
+            fill
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
             onError={handleMediaError}
             onLoad={handleMediaLoad}
-            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
+            unoptimized={true}
           />
           {!mediaLoaded && (
             <div className="absolute inset-0 bg-muted animate-pulse" />

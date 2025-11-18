@@ -55,6 +55,7 @@ export async function listObjects(
           urlExpiresAt: null,
           mimeType: null,
           type: "",
+          mediaType: "image" as const, // Folders don't have media type, but required by interface
         };
       }) || [];
 

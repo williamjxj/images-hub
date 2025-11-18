@@ -6,9 +6,10 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { formatFileSize, formatDate } from "@/lib/utils/image-utils";
@@ -27,11 +28,16 @@ export function R2ImageModal({
   onClose,
   onNavigate,
 }: R2ImageModalProps) {
+  const [imageError, setImageError] = useState(false);
   const imageFiles = images.filter((img) => !img.isFolder);
   const currentIndex = image
     ? imageFiles.findIndex((img) => img.key === image.key)
     : -1;
   const canLoop = imageFiles.length > 1; // Show navigation buttons only if there are multiple images
+
+  useEffect(() => {
+    setImageError(false);
+  }, [image]);
 
   // Keyboard navigation with looping support
   useEffect(() => {
@@ -111,12 +117,24 @@ export function R2ImageModal({
               transition={{ duration: 0.2 }}
               className="relative w-full h-full flex items-center justify-center p-4"
             >
-              <img
-                src={image.url}
-                alt={image.name}
-                className="max-w-full max-h-full object-contain"
-                draggable={false}
-              />
+              {image.url && !imageError ? (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={image.url}
+                    alt={image.name}
+                    fill
+                    className="object-contain"
+                    quality={95}
+                    onError={() => setImageError(true)}
+                    unoptimized={true}
+                    sizes="100vw"
+                  />
+                </div>
+              ) : (
+                <div className="text-white text-center">
+                  <p>{imageError ? "Failed to load image" : "Image URL not available"}</p>
+                </div>
+              )}
             </motion.div>
 
             {/* Image metadata */}

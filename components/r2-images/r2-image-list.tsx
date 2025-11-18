@@ -7,6 +7,7 @@
 
 "use client";
 
+import Image from "next/image";
 import { Play } from "lucide-react";
 import { formatFileSize, formatDate } from "@/lib/utils/image-utils";
 import type { R2Object } from "@/types/r2";
@@ -53,11 +54,13 @@ export function R2ImageList({ images, onImageClick }: R2ImageListProps) {
                       muted
                     />
                   ) : (
-                    <img
+                    <Image
                       src={media.url}
                       alt={media.name}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                      unoptimized={true}
                     />
                   )}
                   {isVideo && (

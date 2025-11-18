@@ -102,7 +102,7 @@ export class UnsplashClient {
         author: photo.user.name,
         tags: photo.tags ? photo.tags.map((tag) => tag.title) : [],
       }));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Unsplash API error:', error);
       console.error('Response data:', error.response?.data);
       throw new Error(`Failed to fetch images from Unsplash: ${error}`);

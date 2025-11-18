@@ -105,7 +105,7 @@ export class PexelsClient {
         author: photo.photographer,
         tags: photo.alt ? [photo.alt] : [],
       }));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Pexels API error:', error);
       console.error('Response data:', error.response?.data);
       throw new Error(`Failed to fetch images from Pexels: ${error}`);

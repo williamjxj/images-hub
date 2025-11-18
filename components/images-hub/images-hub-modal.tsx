@@ -6,9 +6,10 @@
 
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { X, ExternalLink, Copy, Download } from "lucide-react";
+import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { ImageResult } from "@/lib/hub/types";
@@ -19,6 +20,8 @@ interface ImagesHubModalProps {
 }
 
 export function ImagesHubModal({ image, onClose }: ImagesHubModalProps) {
+  const [imageError, setImageError] = useState(false);
+
   useEffect(() => {
     if (!image) return;
 
@@ -31,6 +34,10 @@ export function ImagesHubModal({ image, onClose }: ImagesHubModalProps) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [image, onClose]);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [image]);
 
   const handleCopyAttribution = async () => {
     if (!image) return;
@@ -80,12 +87,22 @@ export function ImagesHubModal({ image, onClose }: ImagesHubModalProps) {
             transition={{ duration: 0.2 }}
             className="relative w-full h-full flex items-center justify-center p-4"
           >
-            <img
-              src={image.urlFull}
-              alt={image.description || image.attribution}
-              className="max-w-full max-h-full object-contain"
-              draggable={false}
-            />
+            {!imageError ? (
+              <Image
+                src={image.urlFull}
+                alt={image.description || image.attribution}
+                width={image.width}
+                height={image.height}
+                className="max-w-full max-h-full object-contain"
+                quality={95}
+                onError={() => setImageError(true)}
+                unoptimized={false}
+              />
+            ) : (
+              <div className="text-white text-center">
+                <p>Failed to load image</p>
+              </div>
+            )}
           </motion.div>
 
           {/* Image metadata and actions */}

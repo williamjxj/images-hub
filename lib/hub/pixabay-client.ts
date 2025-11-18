@@ -99,7 +99,7 @@ export class PixabayClient {
         author: hit.user,
         tags: hit.tags.split(', '),
       }));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Pixabay API error:', error);
       console.error('Response data:', error.response?.data);
       throw new Error(`Failed to fetch images from Pixabay: ${error}`);
