@@ -1,0 +1,280 @@
+openapi: 3.0.3
+info:
+  title: R2 Images API
+  description: API endpoints for listing and accessing images from Cloudflare R2 buckets
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://your-domain.com
+    description: Production server
+
+paths:
+  /api/r2/list:
+    get:
+      summary: List objects in an R2 bucket
+      description: |
+        Lists objects (images and folders) in a specified R2 bucket and optional folder path.
+        Supports pagination via continuation token for infinite scroll.
+      operationId: listR2Objects
+      tags:
+        - R2
+      security:
+        - ClerkAuth: []
+      parameters:
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - bestitconsulting-assets
+              - juewei-assets
+              - static-assets
+          description: Name of the R2 bucket
+        - name: prefix
+          in: query
+          required: false
+          schema:
+            type: string
+            default: ""
+          description: Folder path prefix (e.g., "images/2024/"). Empty string for root.
+        - name: token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Continuation token for pagination (from previous response)
+        - name: maxKeys
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 1000
+          description: Maximum number of objects to return per request
+      responses:
+        '200':
+          description: Successfully retrieved objects
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListObjectsResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden - insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/r2/image:
+    get:
+      summary: Get presigned URL for an image
+      description: |
+        Generates a presigned URL for accessing a specific image from an R2 bucket.
+        URLs expire after 1 hour for security.
+      operationId: getImageUrl
+      tags:
+        - R2
+      security:
+        - ClerkAuth: []
+      parameters:
+        - name: bucket
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - bestitconsulting-assets
+              - juewei-assets
+              - static-assets
+          description: Name of the R2 bucket
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Object key/path (e.g., "images/2024/photo.jpg")
+      responses:
+        '200':
+          description: Successfully generated presigned URL
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageUrlResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Image not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    ClerkAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Clerk authentication token
+
+  schemas:
+    R2Object:
+      type: object
+      required:
+        - key
+        - name
+        - size
+        - lastModified
+        - isFolder
+      properties:
+        key:
+          type: string
+          description: Full object key/path
+          example: "images/2024/photo.jpg"
+        name:
+          type: string
+          description: Display name (filename or folder name)
+          example: "photo.jpg"
+        size:
+          type: integer
+          description: File size in bytes (0 for folders)
+          example: 245678
+        lastModified:
+          type: string
+          format: date-time
+          description: Last modification timestamp
+          example: "2024-01-15T10:30:00Z"
+        isFolder:
+          type: boolean
+          description: Whether this is a folder
+          example: false
+        url:
+          type: string
+          format: uri
+          nullable: true
+          description: Presigned URL for image access (null for folders)
+          example: "https://r2.example.com/presigned-url?expires=..."
+        urlExpiresAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: Expiration time for presigned URL
+          example: "2024-01-15T11:30:00Z"
+        mimeType:
+          type: string
+          nullable: true
+          description: MIME type if available
+          example: "image/jpeg"
+
+    ListObjectsResponse:
+      type: object
+      required:
+        - objects
+        - folders
+        - hasMore
+      properties:
+        objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/R2Object'
+          description: List of image files (filtered to supported formats)
+        folders:
+          type: array
+          items:
+            $ref: '#/components/schemas/R2Object'
+          description: List of folders in the current path
+        hasMore:
+          type: boolean
+          description: Whether more objects are available (pagination)
+        nextToken:
+          type: string
+          nullable: true
+          description: Continuation token for next page (null if no more pages)
+          example: "abc123..."
+
+    ImageUrlResponse:
+      type: object
+      required:
+        - url
+        - expiresAt
+      properties:
+        url:
+          type: string
+          format: uri
+          description: Presigned URL for the image
+          example: "https://r2.example.com/presigned-url?expires=..."
+        expiresAt:
+          type: string
+          format: date-time
+          description: Expiration time for the presigned URL
+          example: "2024-01-15T11:30:00Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - type
+            - message
+          properties:
+            type:
+              type: string
+              enum:
+                - authentication
+                - authorization
+                - validation
+                - not_found
+                - server_error
+              description: Error type
+            message:
+              type: string
+              description: Human-readable error message
+            details:
+              type: string
+              nullable: true
+              description: Additional error details
+            retryable:
+              type: boolean
+              default: false
+              description: Whether the request can be retried
+
