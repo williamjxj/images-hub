@@ -4,6 +4,8 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  // API routes handle their own authentication
+  "/api/r2(.*)",
 ]);
 
 // Note: Next.js 16 deprecates middleware.ts in favor of proxy.ts

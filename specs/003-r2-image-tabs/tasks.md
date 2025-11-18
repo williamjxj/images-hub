@@ -40,14 +40,14 @@ Phase 1: Setup
 
 ### Setup Tasks
 
-- [ ] T001 Install @aws-sdk/client-s3 and @aws-sdk/s3-request-presigner packages via pnpm
-- [ ] T002 Install react-intersection-observer package via pnpm
-- [ ] T003 Install react-masonry-css package via pnpm (optional, can use CSS columns)
-- [ ] T004 Add R2_ACCOUNT_ID to .env.local with Cloudflare account ID
-- [ ] T005 Add R2_ACCESS_KEY_ID to .env.local with R2 API access key
-- [ ] T006 Add R2_SECRET_ACCESS_KEY to .env.local with R2 API secret key
+- [x] T001 Install @aws-sdk/client-s3 and @aws-sdk/s3-request-presigner packages via pnpm
+- [x] T002 Install react-intersection-observer package via pnpm
+- [x] T003 Install react-masonry-css package via pnpm (optional, can use CSS columns)
+- [x] T004 Add R2_ACCOUNT_ID to .env.local with Cloudflare account ID
+- [x] T005 Add R2_ACCESS_KEY_ID to .env.local with R2 API access key
+- [x] T006 Add R2_SECRET_ACCESS_KEY to .env.local with R2 API secret key
 - [ ] T007 Add NEXT_PUBLIC_R2_PUBLIC_URL to .env.local if public access enabled (optional)
-- [ ] T008 Create .env.local.example template with R2 environment variable placeholders
+- [x] T008 Create .env.local.example template with R2 environment variable placeholders
 
 ---
 
@@ -57,53 +57,53 @@ Phase 1: Setup
 
 ### Type Definitions
 
-- [ ] T009 [P] Create types/r2.ts with R2ImageAsset interface (key, size, lastModified, url, etc.)
-- [ ] T010 [P] Create types/r2.ts with R2Object interface (extends R2ImageAsset with isFolder, urlExpiresAt)
-- [ ] T011 [P] Create types/r2.ts with R2ListResponse interface (objects, folders, hasMore, nextToken)
-- [ ] T012 [P] Create types/r2.ts with ImageGalleryState interface (images, loading, error, hasMore, cursor)
-- [ ] T013 [P] Create types/r2.ts with R2BucketName type union ("bestitconsulting-assets" | "juewei-assets" | "static-assets")
-- [ ] T014 [P] Create types/r2.ts with DisplayMode type union ("grid" | "masonry" | "list")
-- [ ] T015 [P] Create types/r2.ts with FolderPath interface (bucket, path, parts)
+- [x] T009 [P] Create types/r2.ts with R2ImageAsset interface (key, size, lastModified, url, etc.)
+- [x] T010 [P] Create types/r2.ts with R2Object interface (extends R2ImageAsset with isFolder, urlExpiresAt)
+- [x] T011 [P] Create types/r2.ts with R2ListResponse interface (objects, folders, hasMore, nextToken)
+- [x] T012 [P] Create types/r2.ts with ImageGalleryState interface (images, loading, error, hasMore, cursor)
+- [x] T013 [P] Create types/r2.ts with R2BucketName type union ("bestitconsulting-assets" | "juewei-assets" | "static-assets")
+- [x] T014 [P] Create types/r2.ts with DisplayMode type union ("grid" | "masonry" | "list")
+- [x] T015 [P] Create types/r2.ts with FolderPath interface (bucket, path, parts)
 
 ### R2 Client Library
 
-- [ ] T016 Create lib/r2/client.ts with isR2Configured() function checking environment variables
-- [ ] T017 Create lib/r2/client.ts with S3Client initialization using R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
-- [ ] T018 Create lib/r2/client.ts with R2_BUCKETS constant array ["bestitconsulting-assets", "juewei-assets", "static-assets"]
-- [ ] T019 Create lib/r2/client.ts with R2BucketName type export
-- [ ] T020 Create lib/r2/list-objects.ts with listObjects() function accepting bucket, prefix, cursor, limit parameters
-- [ ] T021 Create lib/r2/list-objects.ts with image format filtering (JPEG, PNG, WebP, GIF only)
-- [ ] T022 Create lib/r2/list-objects.ts with folder detection using CommonPrefixes and Delimiter
-- [ ] T023 Create lib/r2/list-objects.ts with pagination support using ContinuationToken
-- [ ] T024 Create lib/r2/list-objects.ts returning R2ListResponse with objects, folders, hasMore, nextToken
-- [ ] T025 Create lib/r2/get-object-url.ts with getPresignedUrl() function accepting bucket and key
-- [ ] T026 Create lib/r2/get-object-url.ts with 1-hour expiration for presigned URLs
+- [x] T016 Create lib/r2/client.ts with isR2Configured() function checking environment variables
+- [x] T017 Create lib/r2/client.ts with S3Client initialization using R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY
+- [x] T018 Create lib/r2/client.ts with R2_BUCKETS constant array ["bestitconsulting-assets", "juewei-assets", "static-assets"]
+- [x] T019 Create lib/r2/client.ts with R2BucketName type export
+- [x] T020 Create lib/r2/list-objects.ts with listObjects() function accepting bucket, prefix, cursor, limit parameters
+- [x] T021 Create lib/r2/list-objects.ts with image format filtering (JPEG, PNG, WebP, GIF only)
+- [x] T022 Create lib/r2/list-objects.ts with folder detection using CommonPrefixes and Delimiter
+- [x] T023 Create lib/r2/list-objects.ts with pagination support using ContinuationToken
+- [x] T024 Create lib/r2/list-objects.ts returning R2ListResponse with objects, folders, hasMore, nextToken
+- [x] T025 Create lib/r2/get-object-url.ts with getPresignedUrl() function accepting bucket and key
+- [x] T026 Create lib/r2/get-object-url.ts with 1-hour expiration for presigned URLs
 
 ### API Routes
 
-- [ ] T027 Create app/api/r2/list/route.ts with GET handler
-- [ ] T028 Create app/api/r2/list/route.ts with Clerk authentication check using auth() from @clerk/nextjs/server
-- [ ] T029 Create app/api/r2/list/route.ts extracting bucket query parameter and validating against R2_BUCKETS
-- [ ] T030 Create app/api/r2/list/route.ts extracting prefix query parameter (defaults to empty string)
-- [ ] T031 Create app/api/r2/list/route.ts extracting token query parameter for pagination
-- [ ] T032 Create app/api/r2/list/route.ts calling listObjects() from lib/r2/list-objects.ts
-- [ ] T033 Create app/api/r2/list/route.ts returning JSON response with objects, folders, hasMore, nextToken
-- [ ] T034 Create app/api/r2/list/route.ts with error handling returning 400 for invalid bucket
-- [ ] T035 Create app/api/r2/list/route.ts with error handling returning 401 for unauthenticated requests
-- [ ] T036 Create app/api/r2/list/route.ts with error handling returning 500 for R2 connection failures
-- [ ] T037 Create app/api/r2/image/route.ts with GET handler
-- [ ] T038 Create app/api/r2/image/route.ts with Clerk authentication check
-- [ ] T039 Create app/api/r2/image/route.ts extracting bucket and key query parameters
-- [ ] T040 Create app/api/r2/image/route.ts validating bucket name against R2_BUCKETS
-- [ ] T041 Create app/api/r2/image/route.ts calling getPresignedUrl() from lib/r2/get-object-url.ts
-- [ ] T042 Create app/api/r2/image/route.ts returning JSON response with url and expiresAt
-- [ ] T043 Create app/api/r2/image/route.ts with error handling returning 404 for not found
-- [ ] T044 Create app/api/r2/image/route.ts with error handling returning 500 for server errors
+- [x] T027 Create app/api/r2/list/route.ts with GET handler
+- [x] T028 Create app/api/r2/list/route.ts with Clerk authentication check using auth() from @clerk/nextjs/server
+- [x] T029 Create app/api/r2/list/route.ts extracting bucket query parameter and validating against R2_BUCKETS
+- [x] T030 Create app/api/r2/list/route.ts extracting prefix query parameter (defaults to empty string)
+- [x] T031 Create app/api/r2/list/route.ts extracting token query parameter for pagination
+- [x] T032 Create app/api/r2/list/route.ts calling listObjects() from lib/r2/list-objects.ts
+- [x] T033 Create app/api/r2/list/route.ts returning JSON response with objects, folders, hasMore, nextToken
+- [x] T034 Create app/api/r2/list/route.ts with error handling returning 400 for invalid bucket
+- [x] T035 Create app/api/r2/list/route.ts with error handling returning 401 for unauthenticated requests
+- [x] T036 Create app/api/r2/list/route.ts with error handling returning 500 for R2 connection failures
+- [x] T037 Create app/api/r2/image/route.ts with GET handler
+- [x] T038 Create app/api/r2/image/route.ts with Clerk authentication check
+- [x] T039 Create app/api/r2/image/route.ts extracting bucket and key query parameters
+- [x] T040 Create app/api/r2/image/route.ts validating bucket name against R2_BUCKETS
+- [x] T041 Create app/api/r2/image/route.ts calling getPresignedUrl() from lib/r2/get-object-url.ts
+- [x] T042 Create app/api/r2/image/route.ts returning JSON response with url and expiresAt
+- [x] T043 Create app/api/r2/image/route.ts with error handling returning 404 for not found
+- [x] T044 Create app/api/r2/image/route.ts with error handling returning 500 for server errors
 
 ### Utility Functions
 
-- [ ] T045 [P] Create lib/utils/image-utils.ts with isImageFile() function checking file extensions (.jpg, .jpeg, .png, .webp, .gif)
-- [ ] T046 [P] Create lib/utils/image-utils.ts with sortImagesByDate() function sorting by lastModified descending (newest first)
+- [x] T045 [P] Create lib/utils/image-utils.ts with isImageFile() function checking file extensions (.jpg, .jpeg, .png, .webp, .gif)
+- [x] T046 [P] Create lib/utils/image-utils.ts with sortImagesByDate() function sorting by lastModified descending (newest first)
 
 ---
 
@@ -123,70 +123,70 @@ Phase 1: Setup
 
 ### Custom Hooks
 
-- [ ] T047 [US1] Create lib/hooks/use-r2-images.ts with useState for images array
-- [ ] T048 [US1] Create lib/hooks/use-r2-images.ts with useState for folders array
-- [ ] T049 [US1] Create lib/hooks/use-r2-images.ts with useState for loading boolean
-- [ ] T050 [US1] Create lib/hooks/use-r2-images.ts with useState for error string | null
-- [ ] T051 [US1] Create lib/hooks/use-r2-images.ts with useState for hasMore boolean
-- [ ] T052 [US1] Create lib/hooks/use-r2-images.ts with useState for cursor string | undefined
-- [ ] T053 [US1] Create lib/hooks/use-r2-images.ts with useState for activeBucket R2BucketName
-- [ ] T054 [US1] Create lib/hooks/use-r2-images.ts with useState for currentFolder string (defaults to empty string)
-- [ ] T055 [US1] Create lib/hooks/use-r2-images.ts with loadMore() function fetching from /api/r2/list with continuation token
-- [ ] T056 [US1] Create lib/hooks/use-r2-images.ts with refreshGallery() function resetting state and fetching first page
-- [ ] T057 [US1] Create lib/hooks/use-r2-images.ts with switchBucket() function updating activeBucket and resetting folder path
-- [ ] T058 [US1] Create lib/hooks/use-r2-images.ts with useEffect calling refreshGallery() when activeBucket or currentFolder changes
+- [x] T047 [US1] Create lib/hooks/use-r2-images.ts with useState for images array
+- [x] T048 [US1] Create lib/hooks/use-r2-images.ts with useState for folders array
+- [x] T049 [US1] Create lib/hooks/use-r2-images.ts with useState for loading boolean
+- [x] T050 [US1] Create lib/hooks/use-r2-images.ts with useState for error string | null
+- [x] T051 [US1] Create lib/hooks/use-r2-images.ts with useState for hasMore boolean
+- [x] T052 [US1] Create lib/hooks/use-r2-images.ts with useState for cursor string | undefined
+- [x] T053 [US1] Create lib/hooks/use-r2-images.ts with useState for activeBucket R2BucketName
+- [x] T054 [US1] Create lib/hooks/use-r2-images.ts with useState for currentFolder string (defaults to empty string)
+- [x] T055 [US1] Create lib/hooks/use-r2-images.ts with loadMore() function fetching from /api/r2/list with continuation token
+- [x] T056 [US1] Create lib/hooks/use-r2-images.ts with refreshGallery() function resetting state and fetching first page
+- [x] T057 [US1] Create lib/hooks/use-r2-images.ts with switchBucket() function updating activeBucket and resetting folder path
+- [x] T058 [US1] Create lib/hooks/use-r2-images.ts with useEffect calling refreshGallery() when activeBucket or currentFolder changes
 
 ### Tab Navigation Component
 
-- [ ] T059 [US1] Create components/r2-images/r2-image-tabs.tsx as client component with "use client" directive
-- [ ] T060 [US1] Create components/r2-images/r2-image-tabs.tsx accepting buckets array and activeBucket prop
-- [ ] T061 [US1] Create components/r2-images/r2-image-tabs.tsx accepting onTabChange callback prop
-- [ ] T062 [US1] Create components/r2-images/r2-image-tabs.tsx rendering three tabs with bucket names as labels
-- [ ] T063 [US1] Create components/r2-images/r2-image-tabs.tsx highlighting active tab with visual distinction (border, background color)
-- [ ] T064 [US1] Create components/r2-images/r2-image-tabs.tsx handling tab click to call onTabChange with bucket name
-- [ ] T065 [US1] Create components/r2-images/r2-image-tabs.tsx using shadcn/ui Tabs component or custom implementation
-- [ ] T066 [US1] Create components/r2-images/r2-image-tabs.tsx adding Framer Motion animation for tab switching
+- [x] T059 [US1] Create components/r2-images/r2-image-tabs.tsx as client component with "use client" directive
+- [x] T060 [US1] Create components/r2-images/r2-image-tabs.tsx accepting buckets array and activeBucket prop
+- [x] T061 [US1] Create components/r2-images/r2-image-tabs.tsx accepting onTabChange callback prop
+- [x] T062 [US1] Create components/r2-images/r2-image-tabs.tsx rendering three tabs with bucket names as labels
+- [x] T063 [US1] Create components/r2-images/r2-image-tabs.tsx highlighting active tab with visual distinction (border, background color)
+- [x] T064 [US1] Create components/r2-images/r2-image-tabs.tsx handling tab click to call onTabChange with bucket name
+- [x] T065 [US1] Create components/r2-images/r2-image-tabs.tsx using shadcn/ui Tabs component or custom implementation
+- [x] T066 [US1] Create components/r2-images/r2-image-tabs.tsx adding Framer Motion animation for tab switching
 
 ### Image Display Components
 
-- [ ] T067 [US1] Create components/r2-images/r2-image-item.tsx as client component
-- [ ] T068 [US1] Create components/r2-images/r2-image-item.tsx accepting R2Object prop
-- [ ] T069 [US1] Create components/r2-images/r2-image-item.tsx rendering img tag with src from object.url
-- [ ] T070 [US1] Create components/r2-images/r2-image-item.tsx adding loading="lazy" attribute to img tag
-- [ ] T071 [US1] Create components/r2-images/r2-image-item.tsx handling image load errors with placeholder
-- [ ] T072 [US1] Create components/r2-images/r2-image-item.tsx displaying image metadata on hover (filename, size, date)
-- [ ] T073 [US1] Create components/r2-images/r2-image-grid.tsx as client component
-- [ ] T074 [US1] Create components/r2-images/r2-image-grid.tsx accepting images array prop
-- [ ] T075 [US1] Create components/r2-images/r2-image-grid.tsx using CSS Grid with responsive columns (2 mobile, 3 tablet, 4 desktop)
-- [ ] T076 [US1] Create components/r2-images/r2-image-grid.tsx rendering r2-image-item for each image
-- [ ] T077 [US1] Create components/r2-images/r2-image-grid.tsx using fixed aspect ratio (square) for grid items
-- [ ] T078 [US1] Create components/r2-images/r2-image-grid.tsx using object-cover for image fitting
+- [x] T067 [US1] Create components/r2-images/r2-image-item.tsx as client component
+- [x] T068 [US1] Create components/r2-images/r2-image-item.tsx accepting R2Object prop
+- [x] T069 [US1] Create components/r2-images/r2-image-item.tsx rendering img tag with src from object.url
+- [x] T070 [US1] Create components/r2-images/r2-image-item.tsx adding loading="lazy" attribute to img tag
+- [x] T071 [US1] Create components/r2-images/r2-image-item.tsx handling image load errors with placeholder
+- [x] T072 [US1] Create components/r2-images/r2-image-item.tsx displaying image metadata on hover (filename, size, date)
+- [x] T073 [US1] Create components/r2-images/r2-image-grid.tsx as client component
+- [x] T074 [US1] Create components/r2-images/r2-image-grid.tsx accepting images array prop
+- [x] T075 [US1] Create components/r2-images/r2-image-grid.tsx using CSS Grid with responsive columns (2 mobile, 3 tablet, 4 desktop)
+- [x] T076 [US1] Create components/r2-images/r2-image-grid.tsx rendering r2-image-item for each image
+- [x] T077 [US1] Create components/r2-images/r2-image-grid.tsx using fixed aspect ratio (square) for grid items
+- [x] T078 [US1] Create components/r2-images/r2-image-grid.tsx using object-cover for image fitting
 
 ### Main Gallery Component
 
-- [ ] T079 [US1] Create components/r2-images/r2-image-gallery.tsx as client component
-- [ ] T080 [US1] Create components/r2-images/r2-image-gallery.tsx importing use-r2-images hook
-- [ ] T081 [US1] Create components/r2-images/r2-image-gallery.tsx importing r2-image-tabs component
-- [ ] T082 [US1] Create components/r2-images/r2-image-gallery.tsx importing r2-image-grid component
-- [ ] T083 [US1] Create components/r2-images/r2-image-gallery.tsx initializing hook with default bucket (first in R2_BUCKETS)
-- [ ] T084 [US1] Create components/r2-images/r2-image-gallery.tsx rendering r2-image-tabs with buckets and activeBucket
-- [ ] T085 [US1] Create components/r2-images/r2-image-gallery.tsx handling tab change to call switchBucket()
-- [ ] T086 [US1] Create components/r2-images/r2-image-gallery.tsx rendering r2-image-grid with images from hook
-- [ ] T087 [US1] Create components/r2-images/r2-image-gallery.tsx displaying loading state when loading is true
-- [ ] T088 [US1] Create components/r2-images/r2-image-gallery.tsx displaying empty state message when images.length === 0 and !loading
-- [ ] T089 [US1] Create components/r2-images/r2-image-gallery.tsx displaying error message when error is not null
+- [x] T079 [US1] Create components/r2-images/r2-image-gallery.tsx as client component
+- [x] T080 [US1] Create components/r2-images/r2-image-gallery.tsx importing use-r2-images hook
+- [x] T081 [US1] Create components/r2-images/r2-image-gallery.tsx importing r2-image-tabs component
+- [x] T082 [US1] Create components/r2-images/r2-image-gallery.tsx importing r2-image-grid component
+- [x] T083 [US1] Create components/r2-images/r2-image-gallery.tsx initializing hook with default bucket (first in R2_BUCKETS)
+- [x] T084 [US1] Create components/r2-images/r2-image-gallery.tsx rendering r2-image-tabs with buckets and activeBucket
+- [x] T085 [US1] Create components/r2-images/r2-image-gallery.tsx handling tab change to call switchBucket()
+- [x] T086 [US1] Create components/r2-images/r2-image-gallery.tsx rendering r2-image-grid with images from hook
+- [x] T087 [US1] Create components/r2-images/r2-image-gallery.tsx displaying loading state when loading is true
+- [x] T088 [US1] Create components/r2-images/r2-image-gallery.tsx displaying empty state message when images.length === 0 and !loading
+- [x] T089 [US1] Create components/r2-images/r2-image-gallery.tsx displaying error message when error is not null
 
 ### Page Route
 
-- [ ] T090 [US1] Create app/r2-images/page.tsx as server component
-- [ ] T091 [US1] Create app/r2-images/page.tsx checking authentication using auth() from @clerk/nextjs/server
-- [ ] T092 [US1] Create app/r2-images/page.tsx redirecting to /sign-in if not authenticated using redirect() from next/navigation
-- [ ] T093 [US1] Create app/r2-images/page.tsx rendering R2ImageGallery client component
-- [ ] T094 [US1] Create app/r2-images/page.tsx adding page metadata (title: "R2 Images", description)
+- [x] T090 [US1] Create app/r2-images/page.tsx as server component
+- [x] T091 [US1] Create app/r2-images/page.tsx checking authentication using auth() from @clerk/nextjs/server
+- [x] T092 [US1] Create app/r2-images/page.tsx redirecting to /sign-in if not authenticated using redirect() from next/navigation
+- [x] T093 [US1] Create app/r2-images/page.tsx rendering R2ImageGallery client component
+- [x] T094 [US1] Create app/r2-images/page.tsx adding page metadata (title: "R2 Images", description)
 
 ### Navigation Integration
 
-- [ ] T095 [US1] Add /r2-images route to main navigation component (components/main-nav.tsx or similar)
+- [x] T095 [US1] Add /r2-images route to main navigation component (components/main-nav.tsx or similar)
 
 ---
 
@@ -212,10 +212,10 @@ Phase 1: Setup
 
 ### Image Details Display
 
-- [ ] T101 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing filename
-- [ ] T102 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing file size (formatted)
-- [ ] T103 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing upload date (formatted)
-- [ ] T104 [US2] Update components/r2-images/r2-image-item.tsx using shadcn/ui Tooltip component for hover details
+- [x] T101 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing filename
+- [x] T102 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing file size (formatted)
+- [x] T103 [US2] Update components/r2-images/r2-image-item.tsx adding hover tooltip showing upload date (formatted)
+- [x] T104 [US2] Update components/r2-images/r2-image-item.tsx using shadcn/ui Tooltip component for hover details
 
 ### Image Modal/Lightbox
 
@@ -239,33 +239,33 @@ Phase 1: Setup
 
 ### Display Mode Switching
 
-- [ ] T119 [US2] Create lib/hooks/use-display-mode.ts with useState for displayMode ("grid" | "masonry" | "list")
-- [ ] T120 [US2] Create lib/hooks/use-display-mode.ts with localStorage persistence for displayMode
-- [ ] T121 [US2] Create components/r2-images/r2-image-masonry.tsx as client component
-- [ ] T122 [US2] Create components/r2-images/r2-image-masonry.tsx accepting images array prop
-- [ ] T123 [US2] Create components/r2-images/r2-image-masonry.tsx using CSS columns or react-masonry-css
-- [ ] T124 [US2] Create components/r2-images/r2-image-masonry.tsx rendering r2-image-item for each image
-- [ ] T125 [US2] Create components/r2-images/r2-image-list.tsx as client component
-- [ ] T126 [US2] Create components/r2-images/r2-image-list.tsx accepting images array prop
-- [ ] T127 [US2] Create components/r2-images/r2-image-list.tsx using Flexbox layout
-- [ ] T128 [US2] Create components/r2-images/r2-image-list.tsx rendering horizontal thumbnails with metadata
-- [ ] T129 [US2] Create components/r2-images/r2-image-list.tsx displaying filename, size, date next to thumbnail
-- [ ] T130 [US2] Update components/r2-images/r2-image-gallery.tsx adding display mode selector (grid/masonry/list buttons)
-- [ ] T131 [US2] Update components/r2-images/r2-image-gallery.tsx conditionally rendering grid/masonry/list based on displayMode
+- [x] T119 [US2] Create lib/hooks/use-display-mode.ts with useState for displayMode ("grid" | "masonry" | "list")
+- [x] T120 [US2] Create lib/hooks/use-display-mode.ts with localStorage persistence for displayMode
+- [x] T121 [US2] Create components/r2-images/r2-image-masonry.tsx as client component
+- [x] T122 [US2] Create components/r2-images/r2-image-masonry.tsx accepting images array prop
+- [x] T123 [US2] Create components/r2-images/r2-image-masonry.tsx using CSS columns or react-masonry-css
+- [x] T124 [US2] Create components/r2-images/r2-image-masonry.tsx rendering r2-image-item for each image
+- [x] T125 [US2] Create components/r2-images/r2-image-list.tsx as client component
+- [x] T126 [US2] Create components/r2-images/r2-image-list.tsx accepting images array prop
+- [x] T127 [US2] Create components/r2-images/r2-image-list.tsx using Flexbox layout
+- [x] T128 [US2] Create components/r2-images/r2-image-list.tsx rendering horizontal thumbnails with metadata
+- [x] T129 [US2] Create components/r2-images/r2-image-list.tsx displaying filename, size, date next to thumbnail
+- [x] T130 [US2] Update components/r2-images/r2-image-gallery.tsx adding display mode selector (grid/masonry/list buttons)
+- [x] T131 [US2] Update components/r2-images/r2-image-gallery.tsx conditionally rendering grid/masonry/list based on displayMode
 
 ### Folder Navigation
 
-- [ ] T132 [US2] Create components/r2-images/r2-folder-navigation.tsx as client component
-- [ ] T133 [US2] Create components/r2-images/r2-folder-navigation.tsx accepting bucket, currentFolder, folders props
-- [ ] T134 [US2] Create components/r2-images/r2-folder-navigation.tsx accepting onFolderClick callback prop
-- [ ] T135 [US2] Create components/r2-images/r2-folder-navigation.tsx rendering breadcrumb navigation using shadcn/ui Breadcrumb
-- [ ] T136 [US2] Create components/r2-images/r2-folder-navigation.tsx computing breadcrumb items from currentFolder path
-- [ ] T137 [US2] Create components/r2-images/r2-folder-navigation.tsx handling breadcrumb click to navigate up folders
-- [ ] T138 [US2] Create components/r2-images/r2-folder-navigation.tsx rendering folder list when folders.length > 0
-- [ ] T139 [US2] Create components/r2-images/r2-folder-navigation.tsx handling folder click to call onFolderClick with folder path
-- [ ] T140 [US2] Update lib/hooks/use-r2-images.ts adding navigateToFolder() function updating currentFolder and resetting images
-- [ ] T141 [US2] Update components/r2-images/r2-image-gallery.tsx rendering r2-folder-navigation component
-- [ ] T142 [US2] Update components/r2-images/r2-image-gallery.tsx handling folder navigation to call navigateToFolder()
+- [x] T132 [US2] Create components/r2-images/r2-folder-navigation.tsx as client component
+- [x] T133 [US2] Create components/r2-images/r2-folder-navigation.tsx accepting bucket, currentFolder, folders props
+- [x] T134 [US2] Create components/r2-images/r2-folder-navigation.tsx accepting onFolderClick callback prop
+- [x] T135 [US2] Create components/r2-images/r2-folder-navigation.tsx rendering breadcrumb navigation using shadcn/ui Breadcrumb
+- [x] T136 [US2] Create components/r2-images/r2-folder-navigation.tsx computing breadcrumb items from currentFolder path
+- [x] T137 [US2] Create components/r2-images/r2-folder-navigation.tsx handling breadcrumb click to navigate up folders
+- [x] T138 [US2] Create components/r2-images/r2-folder-navigation.tsx rendering folder list when folders.length > 0
+- [x] T139 [US2] Create components/r2-images/r2-folder-navigation.tsx handling folder click to call onFolderClick with folder path
+- [x] T140 [US2] Update lib/hooks/use-r2-images.ts adding navigateToFolder() function updating currentFolder and resetting images
+- [x] T141 [US2] Update components/r2-images/r2-image-gallery.tsx rendering r2-folder-navigation component
+- [x] T142 [US2] Update components/r2-images/r2-image-gallery.tsx handling folder navigation to call navigateToFolder()
 
 ---
 
@@ -283,11 +283,11 @@ Phase 1: Setup
 
 ### Error Handling in Hooks
 
-- [ ] T143 [US3] Update lib/hooks/use-r2-images.ts with try-catch in loadMore() catching fetch errors
-- [ ] T144 [US3] Update lib/hooks/use-r2-images.ts setting error state with user-friendly message on fetch failure
-- [ ] T145 [US3] Update lib/hooks/use-r2-images.ts with try-catch in refreshGallery() catching fetch errors
-- [ ] T146 [US3] Update lib/hooks/use-r2-images.ts handling HTTP error responses (400, 401, 403, 500)
-- [ ] T147 [US3] Update lib/hooks/use-r2-images.ts distinguishing network errors from API errors
+- [x] T143 [US3] Update lib/hooks/use-r2-images.ts with try-catch in loadMore() catching fetch errors
+- [x] T144 [US3] Update lib/hooks/use-r2-images.ts setting error state with user-friendly message on fetch failure
+- [x] T145 [US3] Update lib/hooks/use-r2-images.ts with try-catch in refreshGallery() catching fetch errors
+- [x] T146 [US3] Update lib/hooks/use-r2-images.ts handling HTTP error responses (400, 401, 403, 500)
+- [x] T147 [US3] Update lib/hooks/use-r2-images.ts distinguishing network errors from API errors
 
 ### Error UI Components
 
@@ -297,8 +297,8 @@ Phase 1: Setup
 - [ ] T151 [US3] Create components/r2-images/r2-image-error.tsx displaying error icon and message
 - [ ] T152 [US3] Create components/r2-images/r2-image-error.tsx adding retry button calling retry callback
 - [ ] T153 [US3] Update components/r2-images/r2-image-gallery.tsx rendering r2-image-error when error is not null
-- [ ] T154 [US3] Update components/r2-images/r2-image-item.tsx adding error placeholder for failed image loads
-- [ ] T155 [US3] Update components/r2-images/r2-image-item.tsx using onError handler on img tag to show placeholder
+- [x] T154 [US3] Update components/r2-images/r2-image-item.tsx adding error placeholder for failed image loads
+- [x] T155 [US3] Update components/r2-images/r2-image-item.tsx using onError handler on img tag to show placeholder
 
 ### Tab Error Handling
 
@@ -342,8 +342,8 @@ Phase 1: Setup
 
 ### Image Sorting
 
-- [ ] T175 Update lib/r2/list-objects.ts sorting images by lastModified descending (newest first) before returning
-- [ ] T176 Update lib/utils/image-utils.ts ensuring sortImagesByDate() handles missing lastModified gracefully
+- [x] T175 Update lib/r2/list-objects.ts sorting images by lastModified descending (newest first) before returning
+- [x] T176 Update lib/utils/image-utils.ts ensuring sortImagesByDate() handles missing lastModified gracefully
 
 ### Empty States
 
@@ -353,7 +353,7 @@ Phase 1: Setup
 ### Accessibility
 
 - [ ] T179 Update components/r2-images/r2-image-tabs.tsx adding ARIA labels for tabs
-- [ ] T180 Update components/r2-images/r2-image-item.tsx adding alt text to img tags using image filename
+- [x] T180 Update components/r2-images/r2-image-item.tsx adding alt text to img tags using image filename
 - [ ] T181 Update components/r2-images/r2-image-modal.tsx adding keyboard navigation (Arrow keys for next/prev if implemented)
 
 ---

@@ -1,0 +1,593 @@
+---
+alwaysApply: true
+---
+
+this is `gitingest` + `github pim repo` + `gemini` extraction.
+
+This is the extraction of all Cloudflare R2 related source codes, configurations, and documentation sections from the provided files.
+
+-----
+
+## 1. R2 Configuration and Setup
+
+This section includes environment variables and the dedicated setup guide for Cloudflare R2.
+
+### Environment Variables (`README.md` and `R2_SETUP.md`)
+
+```bash
+# Cloudflare R2 (Required for image gallery)
+R2_ACCOUNT_ID=your_r2_account_id
+R2_ACCESS_KEY_ID=your_r2_access_key
+R2_SECRET_ACCESS_KEY=your_r2_secret_key
+R2_BUCKET_NAME=your_bucket_name
+
+# R2 Public URL (if you enabled public access)
+NEXT_PUBLIC_R2_PUBLIC_URL=https://pub-xxxxx.r2.dev
+
+# R2 Endpoint (your account endpoint)
+NEXT_PUBLIC_R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
+```
+
+### R2 Setup Guide (`R2_SETUP.md`)
+
+````markdown
+# Cloudflare R2 Setup Guide
+
+This guide will help you set up Cloudflare R2 for the image gallery feature.
+
+## Prerequisites
+
+1. A Cloudflare account
+2. R2 bucket created in Cloudflare dashboard
+
+## Step 1: Create R2 Bucket
+
+1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. Navigate to **R2 Object Storage**
+3. Click **Create bucket**
+4. Choose a unique bucket name (e.g., `my-app-static-assets`)
+5. Select a location close to your users
+6. Click **Create bucket**
+
+## Step 2: Generate API Token
+
+1. In the R2 dashboard, go to **Manage R2 API tokens**
+2. Click **Create API token**
+3. Choose **Custom token**
+4. Set permissions:
+   - **Account**: `Cloudflare R2:Edit`
+   - **Zone Resources**: Include your bucket
+5. Click **Continue to summary**
+6. Copy the **Access Key ID** and **Secret Access Key**
+
+## Step 3: Configure Public Access (Optional)
+
+If you want public access to your images:
+
+1. Go to your bucket settings
+2. Navigate to **Settings** tab
+3. Under **Public access**, click **Allow Access**
+4. Copy the **R2.dev subdomain** URL (e.g., `https://pub-xxxxx.r2.dev`)
+
+## Step 4: Environment Variables
+
+Create a `.env.local` file in your project root with the following variables:
+
+```bash
+# R2 Credentials
+R2_ACCESS_KEY_ID=your_access_key_here
+R2_SECRET_ACCESS_KEY=your_secret_key_here
+R2_BUCKET_NAME=your_bucket_name_here
+
+# R2 Public URL (if you enabled public access)
+NEXT_PUBLIC_R2_PUBLIC_URL=[https://pub-xxxxx.r2.dev](https://pub-xxxxx.r2.dev)
+
+# Supabase Configuration (required for authentication and storage features)
+NEXT_PUBLIC_SUPABASE_URL=[https://your-project.supabase.co](https://your-project.supabase.co)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET=your-bucket-name
+
+# Optional: Server-side operations only
+# SECURITY WARNING: Never expose this key in client-side code
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+
+# R2 Endpoint (your account endpoint)
+NEXT_PUBLIC_R2_ENDPOINT=[https://your-account-id.r2.cloudflarestorage.com](https://your-account-id.r2.cloudflarestorage.com)
+````
+
+## Step 5: Upload Test Images
+
+1.  Go to your R2 bucket in the Cloudflare dashboard
+2.  Click **Upload** and add some test images (JPG, PNG, GIF, WebP)
+3.  Make sure the images are in the root of the bucket or note their path
+
+## Step 6: Test the Gallery
+
+1.  Start your development server: `npm run dev`
+2.  Navigate to `/r2-gallery`
+3.  You should see your uploaded images
+
+<!-- end list -->
+
+````
+
+***
+
+## 2. R2 Backend & Data Access Logic
+
+This is the core server-side logic using the AWS S3 SDK configured for R2.
+
+### Dependencies (`package.json`)
+
+```json
+{
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.910.0",
+    ...
+  }
+}
+````
+
+### R2 Client (`lib/r2-client.ts`)
+
+```typescript
+import { S3Client, ListObjectsV2Command, GetObjectCommand } from '@aws-sdk/client-s3';
+import { R2ImageAsset, R2ListResponse } from '@/types/r2';
+
+// Check if R2 environment variables are configured
+const isR2Configured = () => {
+  return !!(
+    process.env.R2_ENDPOINT_URL &&
+    process.env.R2_ACCESS_KEY_ID &&
+    process.env.R2_SECRET_ACCESS_KEY &&
+    process.env.R2_BUCKET_NAME &&
+    process.env.R2_PUBLIC_URL
+  );
+};
+
+const r2Client = new S3Client({
+  region: 'auto',
+  endpoint: process.env.R2_ENDPOINT_URL,
+  credentials: {
+    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+  },
+});
+
+const BUCKET_NAME = process.env.R2_BUCKET_NAME!;
+const PUBLIC_URL_PREFIX = process.env.R2_PUBLIC_URL!;
+
+export async function listImages(cursor?: string, limit: number = 50): Promise<R2ListResponse> {
+  if (!isR2Configured()) {
+    throw new Error('R2 configuration is missing. Please check your environment variables.');
+  }
+
+  try {
+    const command = new ListObjectsV2Command({
+      Bucket: BUCKET_NAME,
+      MaxKeys: limit,
+      ContinuationToken: cursor,
+    });
+
+    const response = await r2Client.send(command);
+    
+    const assets: R2ImageAsset[] = (response.Contents || [])
+      .filter(obj => {
+        const contentType = obj.Key?.split('.').pop()?.toLowerCase();
+        return contentType && ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(contentType);
+      })
+      .map(obj => ({
+        key: obj.Key!,
+        size: obj.Size!,
+        lastModified: obj.LastModified!,
+        etag: obj.ETag!,
+        url: `${PUBLIC_URL_PREFIX}/${obj.Key}`,
+        type: obj.Key!.split('.').pop()?.toLowerCase() || '',
+      }));
+
+    return {
+      assets,
+      nextCursor: response.NextContinuationToken,
+      hasMore: !!response.NextContinuationToken,
+    };
+  } catch (error) {
+    console.error('Error listing R2 images:', error);
+    throw error;
+  }
+}
+
+export async function getImageMetadata(key: string): Promise<Partial<R2ImageAsset>> {
+  if (!isR2Configured()) {
+    throw new Error('R2 configuration is missing. Please check your environment variables.');
+  }
+
+  try {
+    const command = new GetObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: key,
+    });
+
+    const response = await r2Client.send(command);
+    const metadata = response.Metadata || {};
+
+    return {
+      width: metadata.width ? parseInt(metadata.width) : undefined,
+      height: metadata.height ? parseInt(metadata.height) : undefined,
+    };
+  } catch (error) {
+    console.error('Error getting image metadata:', error);
+    return {};
+  }
+}
+
+export const r2Utils = {
+  listImages,
+  getImageMetadata,
+};
+```
+
+### R2 API Route (`app/api/r2/images/route.ts`)
+
+```typescript
+import { NextRequest, NextResponse } from 'next/server';
+import { r2Utils } from '@/lib/r2-client';
+
+/**
+ * API route to fetch images from R2
+ * GET /api/r2/images?cursor=...&limit=50
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const cursor = searchParams.get('cursor') || undefined;
+    const limit = parseInt(searchParams.get('limit') || '50');
+
+    const response = await r2Utils.listImages(cursor, limit);
+    
+    return NextResponse.json(response);
+  } catch (error) {
+    console.error('Error fetching R2 images:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch images' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+-----
+
+## 3\. R2 Frontend and Page Logic
+
+This includes the main page, navigation, TypeScript types, and the hook for infinite scrolling.
+
+### R2 Gallery Page (`app/r2-gallery/page.tsx`)
+
+```typescript
+import { r2Utils } from '@/lib/r2-client';
+
+export default async function R2GalleryPage() {
+  let images: any[] = [];
+  let error: string | null = null;
+
+  try {
+    const response = await r2Utils.listImages(undefined, 50);
+    images = response.assets || [];
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'Failed to load images';
+  }
+
+  if (error) {
+    return (
+      <div className="p-4">
+        <div className="mb-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Image Gallery</h1>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+    );
+  }
+
+  return (
+    <div className="p-4">
+      <div className="mb-4">
+        <h1 className="text-2xl font-bold">Image Gallery</h1>
+        <p className="text-gray-600 mt-2">Found {images.length} images</p>
+      </div>
+      
+      {images.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-gray-500">No images found</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {images.map((image) => (
+            <div
+              key={image.key}
+              className="relative group cursor-pointer overflow-hidden rounded-lg"
+            >
+              <img
+                src={image.url}
+                alt={image.filename || image.key}
+                className="w-full h-auto object-cover transition-transform duration-200 group-hover:scale-105"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### R2 Gallery Navigation (`app/components/main-nav.tsx`)
+
+```typescript
+const routes = [
+  { path: '/', label: 'Home' },
+  { path: '/r2-gallery', label: 'Gallery' }, // The R2 Gallery route
+  { path: '/translator', label: 'Translator' },
+  // ... other routes
+];
+```
+
+### R2 Image Types (`types/r2.ts`)
+
+```typescript
+export interface R2ImageAsset {
+  key: string;
+  size: number;
+  lastModified: Date;
+  etag: string;
+  url: string;
+  type: string;
+  contentType?: string;
+  filename?: string;
+  width?: number;
+  height?: number;
+}
+
+export interface R2ListResponse {
+  assets: R2ImageAsset[];
+  nextCursor?: string;
+  hasMore: boolean;
+}
+
+export interface ImageGalleryState {
+  images: R2ImageAsset[];
+  loading: boolean;
+  error?: string;
+  hasMore: boolean;
+  cursor?: string;
+}
+
+export type ImageSortOption = 'date' | 'name' | 'size';
+export type ImageViewMode = 'grid' | 'list';
+
+export interface ImageGalleryFilter {
+  sortBy: ImageSortOption;
+  viewMode: ImageViewMode;
+  search?: string;
+  fileTypes?: string[];
+}
+```
+
+### R2 Infinite Scroll Hook (`lib/useImageGallery.ts`)
+
+```typescript
+import { useState, useEffect, useCallback } from 'react';
+import { ImageGalleryState, R2ImageAsset, ImageGalleryFilter, R2ListResponse } from '@/types/r2';
+
+const ITEMS_PER_PAGE = 50;
+
+export function useImageGallery(initialFilter?: Partial<ImageGalleryFilter>) {
+  const [state, setState] = useState<ImageGalleryState>({
+    images: [],
+    loading: false,
+    error: undefined,
+    hasMore: true,
+    cursor: undefined,
+  });
+
+  const [filter, setFilter] = useState<ImageGalleryFilter>({
+    sortBy: 'date',
+    viewMode: 'grid',
+    ...initialFilter,
+  });
+
+  const loadMore = useCallback(async () => {
+    if (state.loading || !state.hasMore) return;
+
+    setState(prev => ({ ...prev, loading: true }));
+
+    try {
+      const params = new URLSearchParams();
+      if (state.cursor) params.set('cursor', state.cursor);
+      params.set('limit', ITEMS_PER_PAGE.toString());
+
+      const response = await fetch(`/api/r2/images?${params}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: R2ListResponse = await response.json();
+      
+      setState(prev => ({
+        ...prev,
+        images: [...prev.images, ...data.assets],
+        loading: false,
+        hasMore: data.hasMore,
+        cursor: data.nextCursor,
+        error: undefined,
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load images',
+      }));
+    }
+  }, [state.cursor, state.hasMore, state.loading]);
+
+  const refreshGallery = useCallback(async () => {
+    console.log('refreshGallery: Starting to fetch images');
+    setState({
+      images: [],
+      loading: true,
+      error: undefined,
+      hasMore: true,
+      cursor: undefined,
+    });
+
+    try {
+      const params = new URLSearchParams();
+      params.set('limit', ITEMS_PER_PAGE.toString());
+
+      console.log('refreshGallery: Fetching from /api/r2/images');
+      const response = await fetch(`/api/r2/images?${params}`);
+      console.log('refreshGallery: Response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: R2ListResponse = await response.json();
+      console.log('refreshGallery: Received', data.assets.length, 'images');
+      
+      setState({
+        images: data.assets,
+        loading: false,
+        error: undefined,
+        hasMore: data.hasMore,
+        cursor: data.nextCursor,
+      });
+    } catch (error) {
+      console.error('refreshGallery: Error occurred:', error);
+      setState({
+        images: [],
+        loading: false,
+        error: error instanceof Error ? error.message : 'Failed to load images',
+        hasMore: false,
+        cursor: undefined,
+      });
+    }
+  }, []);
+
+  const updateFilter = useCallback((newFilter: Partial<ImageGalleryFilter>) => {
+    setFilter(prev => ({ ...prev, ...newFilter }));
+  }, []);
+
+  useEffect(() => {
+    console.log('useImageGallery: useEffect called, calling refreshGallery');
+    refreshGallery();
+  }, [refreshGallery]);
+
+  return {
+    ...state,
+    filter,
+    updateFilter,
+    loadMore,
+    refreshGallery,
+  };
+}
+```
+
+-----
+
+## 4\. R2 Specification and Documentation
+
+This includes the high-level plan and requirements for the R2 feature.
+
+### R2 Data Model (`specs/001-add-r2-image/data-model.md`)
+
+````markdown
+# R2 Image Gallery - Data Model
+
+## Entities
+
+### R2Image
+
+Represents an image asset stored in Cloudflare R2.
+
+#### Properties
+
+| Property | Type | Description | Validation Rules |
+|----------|------|-------------|------------------|
+| key | string | Unique identifier/path in R2 bucket | Required, must be valid path |
+| url | string | Public URL for the image | Required, must be valid URL |
+| size | number | File size in bytes | Required, > 0 |
+| lastModified | Date | Last modification timestamp | Required |
+| contentType | string | MIME type of the image | Required, must be valid image type |
+| width | number? | Image width in pixels | Optional |
+| height | number? | Image height in pixels | Optional |
+| filename | string | Original filename | Required |
+
+#### State
+
+This is a read-only entity. All modifications are handled through the R2 bucket directly.
+
+#### Validation Rules
+
+- `contentType` must be one of:
+  - image/jpeg
+  - image/png
+  - image/gif
+  - image/webp
+  - image/svg+xml
+
+### ImageGalleryState
+
+Manages the state of the image gallery view.
+
+#### Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| images | R2Image[] | Currently loaded images |
+| loading | boolean | Loading state for infinite scroll |
+| error | string? | Error message if loading fails |
+| lastLoadedKey | string? | Key of last loaded image for pagination |
+
+## Relationships
+
+- R2Image entities are independent and have no relationships to other entities
+- ImageGalleryState maintains an ordered list of R2Image entities
+
+## API Contracts
+
+### List Images
+
+```typescript
+interface ListImagesRequest {
+  limit: number;         // Number of images to load (default: 20)
+  startAfter?: string;  // Key to start loading from
+}
+
+interface ListImagesResponse {
+  images: R2Image[];
+  hasMore: boolean;     // Whether more images are available
+}
+````
+
+### Get Image Details
+
+```typescript
+interface GetImageDetailsRequest {
+  key: string;  // Image key in R2
+}
+
+interface GetImageDetailsResponse {
+  image: R2Image;
+}
+```
+
