@@ -100,6 +100,45 @@ lib/
 
 > **No violations detected - standard Next.js App Router structure**
 
+## Reference Implementation Pattern
+
+**Note**: This feature follows the proven `pim-gallery` pattern documented in cursor rules. Key patterns to adopt:
+
+1. **R2 Client Library Pattern** (`lib/r2-client.ts`):
+   - Configuration check function `isR2Configured()`
+   - S3Client initialization with environment variables
+   - Utility functions: `listImages()`, `getImageMetadata()`
+   - Public URL prefix support for direct access
+
+2. **API Route Pattern** (`app/api/r2/images/route.ts`):
+   - Simple GET endpoint with cursor-based pagination
+   - Error handling with proper HTTP status codes
+   - Query parameters: `cursor`, `limit`
+
+3. **Custom Hook Pattern** (`lib/useImageGallery.ts`):
+   - State management: `images`, `loading`, `error`, `hasMore`, `cursor`
+   - `loadMore()` function for infinite scroll
+   - `refreshGallery()` function for reset/reload
+   - Filter state management
+
+4. **Type Definitions** (`types/r2.ts`):
+   - `R2ImageAsset` interface
+   - `R2ListResponse` interface
+   - `ImageGalleryState` interface
+   - `ImageGalleryFilter` interface
+
+5. **Page Component Pattern**:
+   - Server component for initial data fetch
+   - Error boundary handling
+   - Loading states
+
+**Key Differences from pim-gallery**:
+- Support for **three buckets** (not single bucket)
+- **Tab navigation** between buckets
+- **Sub-folder navigation** with breadcrumbs
+- **Three display modes** (grid, masonry, list)
+- **Multi-bucket configuration** in environment variables
+
 ## Phase 0: Research & Technical Decisions
 
 See [research.md](./research.md) for detailed research findings.

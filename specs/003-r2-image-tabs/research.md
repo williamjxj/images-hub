@@ -8,6 +8,8 @@
 
 This document consolidates research findings for implementing a tabbed image gallery interface that displays images from three Cloudflare R2 buckets with sub-folder navigation, infinite scroll, and multiple display modes.
 
+**Reference Pattern**: This implementation follows the proven `pim-gallery` pattern documented in cursor rules, extending it for multi-bucket support with tabs and sub-folder navigation. Key patterns from pim-gallery are referenced throughout this document.
+
 ## Research Topics
 
 ### 1. Cloudflare R2 Integration with Next.js
@@ -35,11 +37,14 @@ const r2Client = new S3Client({
 });
 ```
 
-**Environment Variables**:
-- `R2_ACCESS_KEY_ID`: R2 API access key ID
-- `R2_SECRET_ACCESS_KEY`: R2 API secret access key
+**Environment Variables** (following pim-gallery pattern):
 - `R2_ACCOUNT_ID`: Cloudflare account ID (for endpoint)
-- `R2_PUBLIC_URL`: Optional public URL if buckets have public access
+- `R2_ACCESS_KEY_ID`: R2 API access key ID (shared across all three buckets)
+- `R2_SECRET_ACCESS_KEY`: R2 API secret access key (shared across all three buckets)
+- `NEXT_PUBLIC_R2_PUBLIC_URL`: Optional public URL if buckets have public access
+- `NEXT_PUBLIC_R2_ENDPOINT`: R2 endpoint URL (computed from account ID: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`)
+
+**Note**: Unlike pim-gallery which uses `R2_BUCKET_NAME` for a single bucket, this feature uses three hardcoded bucket names: `bestitconsulting-assets`, `juewei-assets`, `static-assets`.
 
 **Alternatives Considered**:
 - Direct REST API calls: Rejected - SDK provides better error handling and type safety
