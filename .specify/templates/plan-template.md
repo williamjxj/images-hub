@@ -31,7 +31,31 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+**Code Quality**:
+- [ ] Feature uses TypeScript with strict mode (no `any` types)
+- [ ] Components follow functional React + TypeScript conventions
+- [ ] File/folder naming uses kebab-case
+- [ ] All exports include JSDoc/TypeScript doc comments
+
+**Testing Standards**:
+- [ ] API routes have integration test coverage planned
+- [ ] Custom hooks have unit test coverage planned
+- [ ] Utility functions have unit test coverage planned
+- [ ] Component accessibility testing planned
+
+**User Experience Consistency**:
+- [ ] Feature includes loading states for async operations
+- [ ] Feature includes error states with user-friendly messages
+- [ ] Feature includes empty states where applicable
+- [ ] Responsive design covers mobile/tablet/desktop breakpoints
+- [ ] shadcn/ui components used for UI primitives
+- [ ] Accessibility requirements met (ARIA labels, keyboard navigation)
+
+**Performance Requirements**:
+- [ ] API route performance targets defined (< 500ms p95)
+- [ ] Image optimization strategy defined (Next.js Image component)
+- [ ] Code splitting strategy identified
+- [ ] Caching strategy defined where applicable
 
 ## Project Structure
 
