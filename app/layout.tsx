@@ -9,6 +9,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Link from "next/link";
+import { ChatWidget } from "@/components/chat-widget/chat-widget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,8 +23,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Chatbox",
-  description: "AI-powered chat application",
+  title: "Stock Image Search Hub",
+  description: "Search for images across Unsplash, Pixabay, and Pexels",
 };
 
 export default function RootLayout({
@@ -41,24 +42,30 @@ export default function RootLayout({
           <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
         <nav className="flex items-center gap-4">
           <Link href="/" className="text-sm font-medium hover:underline">
-            Chat
+            Stock Images
           </Link>
-          <SignedIn>
-            <Link
-              href="/r2-images"
-              className="text-sm font-medium hover:underline"
-            >
-              Cloudflare Images
-            </Link>
-            <Link
-              href="/images-hub"
-              className="text-sm font-medium hover:underline"
-            >
-              Stock Images
-            </Link>
-          </SignedIn>
         </nav>
             <div className="flex items-center gap-4">
+              <div className="text-xs text-muted-foreground hidden md:block">
+                Powered by{' '}
+                <a
+                  href="https://www.bestitconsulting.ca"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Best IT Consulting
+                </a>
+                {' & '}
+                <a
+                  href="https://www.bestitconsultants.ca"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Best IT Consultants
+                </a>
+              </div>
               <SignedOut>
                 <SignInButton mode="modal" />
                 <SignUpButton mode="modal">
@@ -73,6 +80,7 @@ export default function RootLayout({
             </div>
           </header>
           {children}
+          <ChatWidget />
         </body>
       </html>
     </ClerkProvider>

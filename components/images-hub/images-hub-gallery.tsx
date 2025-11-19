@@ -7,6 +7,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import Link from "next/link";
 import { ImagesHubSearch } from "./images-hub-search";
 import { ImagesHubProviderFilter } from "./images-hub-provider-filter";
 import { ImagesHubGrid } from "./images-hub-grid";
@@ -71,10 +72,20 @@ export function ImagesHubGallery() {
     <div className="container mx-auto p-4 space-y-6">
       {/* Header */}
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold">Stock Image Search Hub</h1>
-        <p className="text-muted-foreground">
-          Search for images across Unsplash, Pixabay, and Pexels
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Stock Image Search Hub</h1>
+            <p className="text-muted-foreground">
+              Search for images across Unsplash, Pixabay, and Pexels
+            </p>
+          </div>
+          <Link
+            href="/r2-images"
+            className="text-sm font-medium hover:underline text-primary"
+          >
+            Cloudflare Images →
+          </Link>
+        </div>
       </div>
 
       {/* Search and Filters */}

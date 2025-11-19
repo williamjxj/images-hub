@@ -10,6 +10,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { ImageSkeleton } from "@/components/loading-placeholders/image-skeleton";
 import { formatFileSize, formatDate } from "@/lib/utils/image-utils";
 import type { R2Object } from "@/types/r2";
 
@@ -73,7 +74,9 @@ export function R2ImageItem({ image, onClick }: R2ImageItemProps) {
         unoptimized={true}
       />
       {!imageLoaded && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
+        <div className="absolute inset-0">
+          <ImageSkeleton aspectRatio="square" animated />
+        </div>
       )}
       {/* Persistent metadata overlay */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">

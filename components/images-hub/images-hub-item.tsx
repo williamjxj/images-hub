@@ -10,6 +10,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import Image from "next/image";
+import { ImageSkeleton } from "@/components/loading-placeholders/image-skeleton";
 import type { ImageResult } from "@/lib/hub/types";
 
 interface ImagesHubItemProps {
@@ -68,7 +69,9 @@ export function ImagesHubItem({ image, onClick }: ImagesHubItemProps) {
         quality={85}
       />
       {!imageLoaded && (
-        <div className="absolute inset-0 bg-muted animate-pulse" />
+        <div className="absolute inset-0">
+          <ImageSkeleton aspectRatio="square" animated />
+        </div>
       )}
       
       {/* Provider badge */}

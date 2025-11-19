@@ -1,25 +1,10 @@
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { ImagesHubGallery } from "@/components/images-hub/images-hub-gallery";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Stock Image Search Hub",
-  description: "Search for images across Unsplash, Pixabay, and Pexels",
-};
 
 /**
- * Images Hub Page
+ * Redirect old /images-hub route to home page
  * 
- * Requires authentication - redirects to sign-in if not authenticated
+ * The Stock Images page is now at the root URL (/)
  */
-export default async function ImagesHubPage() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  return <ImagesHubGallery />;
+export default function ImagesHubRedirect() {
+  redirect("/");
 }
-
