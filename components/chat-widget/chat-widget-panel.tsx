@@ -12,9 +12,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, X, AlertCircle } from 'lucide-react';
+import { Send, X, AlertCircle, Copy, Check } from 'lucide-react';
 import Image from 'next/image';
 import { useChatWidget } from '@/lib/hooks/use-chat-widget';
+import { FeedbackPrompt } from '@/components/feedback/feedback-prompt';
 import type { Message } from '@/types/chat-widget';
 
 interface ChatWidgetPanelProps {
@@ -30,6 +31,8 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const { messages: persistedMessages, addMessage } = useChatWidget();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
@@ -96,14 +99,25 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
     });
   }, [messages, addMessage, persistedMessages]);
 
+  const isLoading = status === 'streaming' || status === 'submitted';
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollAreaRef.current && isOpen) {
       scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
     }
   }, [messages, isOpen]);
-
-  const isLoading = status === 'streaming' || status === 'submitted';
+  
+  // Show feedback prompt after chat interaction
+  useEffect(() => {
+    if (messages.length > 0 && status === 'idle' && !isLoading) {
+      // Show feedback prompt after a short delay
+      const timer = setTimeout(() => {
+        setShowFeedbackPrompt(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [messages.length, status, isLoading]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +128,22 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
     setInput('');
   };
 
+  const handleCopyMessage = async (messageId: string, content: string) => {
+    try {
+      await navigator.clipboard.writeText(content);
+      setCopiedMessageId(messageId);
+      setTimeout(() => setCopiedMessageId(null), 2000);
+    } catch (error) {
+      console.error('Failed to copy message:', error);
+    }
+  };
+  
+  const formatTimestamp = (timestamp?: number) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+  
   const handleRetry = () => {
     if (messages.length > 0) {
       const lastUserMessage = [...messages].reverse().find((msg) => msg.role === 'user');
@@ -130,6 +160,20 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
       }
     }
   };
+
+  // Handle Escape key to close chat widget
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence>
@@ -195,7 +239,37 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
                             : 'bg-muted'
                         }`}
                       >
-                        <p className="text-sm whitespace-pre-wrap">{content}</p>
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="text-sm whitespace-pre-wrap flex-1">{content}</p>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            {message.timestamp && (
+                              <span className={`text-xs ${
+                                message.role === 'user'
+                                  ? 'text-primary-foreground/70'
+                                  : 'text-muted-foreground'
+                              }`}>
+                                {formatTimestamp(message.timestamp)}
+                              </span>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={`h-6 w-6 ${
+                                message.role === 'user'
+                                  ? 'text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/20'
+                                  : 'text-muted-foreground hover:text-foreground'
+                              }`}
+                              onClick={() => handleCopyMessage(message.id, content)}
+                              aria-label="Copy message"
+                            >
+                              {copiedMessageId === message.id ? (
+                                <Check className="h-3 w-3" />
+                              ) : (
+                                <Copy className="h-3 w-3" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );
@@ -233,6 +307,16 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
               </div>
             </ScrollArea>
 
+            {showFeedbackPrompt && messages.length > 0 && (
+              <div className="px-4 pb-2">
+                <FeedbackPrompt
+                  context="Chat interaction"
+                  onDismiss={() => setShowFeedbackPrompt(false)}
+                  onSubmitted={() => setShowFeedbackPrompt(false)}
+                />
+              </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="p-4 border-t">
               <div className="flex gap-2">
                 <Input

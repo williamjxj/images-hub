@@ -16,6 +16,10 @@ import { ImagesHubLoading } from "./images-hub-loading";
 import { ImagesHubError } from "./images-hub-error";
 import { useImageSearch } from "@/lib/hooks/use-image-search";
 import { useInfiniteScroll } from "@/lib/hooks/use-infinite-scroll";
+import { AriaLiveRegion } from "@/components/accessibility/aria-live-region";
+import { FeedbackPrompt } from "@/components/feedback/feedback-prompt";
+import { announceToScreenReader } from "@/lib/utils/accessibility";
+import { useEffect } from "react";
 import type { ImageResult } from "@/lib/hub/types";
 
 export function ImagesHubGallery() {
@@ -67,6 +71,29 @@ export function ImagesHubGallery() {
   const hasProviderErrors = useMemo(() => {
     return Object.keys(results?.errors || {}).length > 0;
   }, [results]);
+  
+  // Announce search results to screen readers
+  useEffect(() => {
+    if (results && hasResults) {
+      const totalImages = results.providers.reduce(
+        (sum, p) => sum + p.images.length,
+        0
+      );
+      announceToScreenReader(
+        `Found ${totalImages} images across ${results.providers.length} provider${results.providers.length > 1 ? 's' : ''}`,
+        'polite'
+      );
+    } else if (results && !hasResults && !loading) {
+      announceToScreenReader('No images found. Try a different search query.', 'polite');
+    }
+  }, [results, hasResults, loading]);
+  
+  // Announce loading state
+  useEffect(() => {
+    if (loading && !results) {
+      announceToScreenReader('Searching for images...', 'polite');
+    }
+  }, [loading, results]);
 
   return (
     <div className="container mx-auto p-4 space-y-6">
@@ -91,11 +118,14 @@ export function ImagesHubGallery() {
       {/* Search and Filters */}
       <div className="space-y-4">
         <ImagesHubSearch onSearch={search} disabled={loading} />
-        <ImagesHubProviderFilter
-          providers={providers}
-          onChange={handleProviderChange}
-          disabled={loading}
-        />
+        <div className="flex items-center gap-2">
+          <ImagesHubProviderFilter
+            providers={providers}
+            onChange={handleProviderChange}
+            disabled={loading}
+          />
+          {/* Advanced filters will be added here in future phase */}
+        </div>
       </div>
 
       {/* Error Display */}
@@ -116,12 +146,21 @@ export function ImagesHubGallery() {
       {/* Loading State */}
       {loading && !results && <ImagesHubLoading />}
 
+      {/* ARIA Live Region for announcements */}
+      <AriaLiveRegion priority="polite" />
+      
       {/* Results */}
       {results && hasResults && (
         <>
           <ImagesHubGrid
             providers={results.providers}
             onImageClick={handleImageClick}
+          />
+          
+          {/* Feedback Prompt */}
+          <FeedbackPrompt
+            context={`Search results for "${query}"`}
+            onDismiss={() => {}}
           />
           
           {/* Infinite Scroll Trigger */}

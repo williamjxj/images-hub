@@ -1,0 +1,165 @@
+openapi: 3.0.0
+info:
+  title: Feedback API
+  description: API endpoint for submitting user feedback via email
+  version: 1.0.0
+servers:
+  - url: /api/feedback
+    description: Feedback submission endpoint
+
+paths:
+  /api/feedback:
+    post:
+      summary: Submit user feedback
+      description: |
+        Submits user feedback via email to service@bestitconsulting.ca.
+        No database storage - email only.
+        Automatically captures contextual information (page URL, browser info, etc.).
+      operationId: submitFeedback
+      tags:
+        - feedback
+      security:
+        - ClerkAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackRequest'
+            examples:
+              errorReport:
+                summary: Error report example
+                value:
+                  type: "error"
+                  description: "I encountered an error when searching for images"
+                  userEmail: "user@example.com"
+              featureRequest:
+                summary: Feature request example
+                value:
+                  type: "feature-request"
+                  description: "It would be great to have batch download functionality"
+                  userEmail: "user@example.com"
+              helpfulPrompt:
+                summary: Helpful prompt example
+                value:
+                  type: "helpful-prompt"
+                  description: "The search suggestions feature was very helpful!"
+                  rating: "positive"
+      responses:
+        '200':
+          description: Feedback submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackResponse'
+              example:
+                success: true
+                message: "Feedback submitted successfully"
+        '400':
+          description: Bad request - validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Bad Request"
+                message: "Description is required"
+        '401':
+          description: Unauthorized - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Unauthorized"
+                message: "Authentication required"
+        '500':
+          description: Internal server error - email sending failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Internal Server Error"
+                message: "Failed to send feedback email"
+
+components:
+  schemas:
+    FeedbackRequest:
+      type: object
+      required:
+        - type
+        - description
+      properties:
+        type:
+          type: string
+          enum:
+            - error
+            - feature-request
+            - general
+            - helpful-prompt
+          description: Type of feedback
+        description:
+          type: string
+          maxLength: 2000
+          description: User's feedback description (required, max 2000 characters)
+        userEmail:
+          type: string
+          format: email
+          maxLength: 255
+          description: Optional user email for follow-up
+        rating:
+          type: string
+          enum:
+            - positive
+            - negative
+          description: Rating for helpful-prompt type feedback
+        userActions:
+          type: array
+          items:
+            type: string
+          description: Array of recent user actions (auto-captured)
+        errorDetails:
+          type: object
+          description: Error details for error type feedback (auto-captured)
+          properties:
+            message:
+              type: string
+            stack:
+              type: string
+            componentStack:
+              type: string
+      additionalProperties: false
+
+    FeedbackResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Whether feedback was submitted successfully
+        message:
+          type: string
+          description: Success message
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error type
+        message:
+          type: string
+          description: Error message
+
+  securitySchemes:
+    ClerkAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Clerk authentication token
+

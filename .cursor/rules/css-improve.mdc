@@ -1,0 +1,13 @@
+---
+alwaysApply: true
+---
+
+1.	Use shadcn/ui integrated with the hot Magic UI library to enhance UI components like navbar buttons and breadcrumb buttons. Magic UI supplies animated, visually appealing React components built with Tailwind CSS and Framer Motion, which can effortlessly replace or extend shadcn/ui elements, adding motion and interactivity without external dependencies. For breadcrumbs, use shadcn/ui’s accessible Breadcrumb component combined with Magic UI’s animation effects for a modern look .
+	
+2.	For dynamic text and decorative icons or images animation, employ GSAP (GreenSock Animation Platform). GSAP excels at animating text by splitting it into characters or words and animating them with timelines for sophisticated effects. Complement this with Framer Motion and CSS `@keyframes` or fade animations for UI transitions or component fades. Framer Motion works well in React apps to create smooth keyframe animations, including opacity fades with precise timing control .
+
+3.	Responsive design should follow best practices like mobile-first approach, using flexible grids and fluid layouts, percentage-based widths instead of fixed pixels, and setting media queries on standard breakpoints for devices (e.g., 480px, 768px, 1024px). Avoid fixed heights; let content flow naturally, ensuring usability across devices. Also incorporate accessibility considerations such as keyboard navigation for buttons and links .
+
+4.	Dynamic theme switching is possible. You can implement a theme switcher in React by toggling Tailwind CSS class variables or CSS custom properties dynamically. The TweakCN visual theme editor supports shadcn/ui and lets you customize and create themes visually, exporting Tailwind CSS configurations that can be switched at runtime. This approach integrates well with shadcn/ui styles and can be customized programmatically or using TweakCN’s presets .
+
+5.	Useful references for design inspiration and technical implementation include sites like https://civitai.com/ and https://liblib.art/ for UI/UX ideas, Magic UI Design for animated UI components, official docs of Tailwind CSS for styling and responsiveness, CSS Text Animations for advanced text effects, and shadcn/ui docs for accessible component usage and customization

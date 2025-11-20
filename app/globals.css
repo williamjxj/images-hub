@@ -181,4 +181,86 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Enhanced focus indicators for WCAG AA compliance (minimum 3:1 contrast) */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+    outline-style: solid;
+  }
+  
+  /* Screen reader only class */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  
+  /* Show sr-only content when focused */
+  .sr-only:focus,
+  .sr-only:focus-visible {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+  
+  /* Fade animations */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in ease-in-out forwards;
+  }
+  
+  .animate-fade-out {
+    animation: fade-out ease-in-out forwards;
+  }
+  
+  /* Clerk component styling to match app theme */
+  [data-clerk-element] {
+    @apply font-sans;
+  }
+  
+  .cl-rootBox,
+  .cl-modalContent,
+  .cl-card {
+    @apply bg-background text-foreground border-border;
+  }
+  
+  .cl-button {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  
+  .cl-input {
+    @apply bg-background border-input text-foreground;
+  }
+  
+  .cl-footerActionLink {
+    @apply text-primary hover:text-primary/80;
+  }
 }

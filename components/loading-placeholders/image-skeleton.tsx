@@ -4,9 +4,11 @@
  * Image skeleton loading placeholder component
  */
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { ShimmerEffect } from './shimmer-effect';
+import { announceToScreenReader } from '@/lib/utils/accessibility';
 
 interface ImageSkeletonProps {
   aspectRatio?: 'square' | 'landscape' | 'portrait' | number;
@@ -32,6 +34,11 @@ export function ImageSkeleton({
     typeof aspectRatio === 'number'
       ? `aspect-[${aspectRatio}]`
       : aspectRatioMap[aspectRatio];
+  
+  // Announce loading state to screen readers
+  useEffect(() => {
+    announceToScreenReader('Loading image...', 'polite');
+  }, []);
 
   return (
     <div
@@ -41,6 +48,8 @@ export function ImageSkeleton({
         className
       )}
       aria-label="Loading image"
+      role="status"
+      aria-live="polite"
     >
       {animated && (
         <ShimmerEffect className="bg-gradient-to-r from-muted via-muted/50 to-muted" />

@@ -17,9 +17,10 @@ import type { R2Object } from "@/types/r2";
 interface R2MediaItemProps {
   media: R2Object;
   onClick?: () => void;
+  isMasonry?: boolean;
 }
 
-export function R2MediaItem({ media, onClick }: R2MediaItemProps) {
+export function R2MediaItem({ media, onClick, isMasonry = false }: R2MediaItemProps) {
   const [mediaError, setMediaError] = useState(false);
   const [mediaLoaded, setMediaLoaded] = useState(false);
   const isVideo = media.mediaType === "video";
@@ -52,7 +53,7 @@ export function R2MediaItem({ media, onClick }: R2MediaItemProps) {
       initial={{ opacity: 0 }}
       animate={{ opacity: mediaLoaded ? 1 : 0 }}
       transition={{ duration: 0.2 }}
-      className="relative group cursor-pointer overflow-hidden rounded-lg bg-muted w-full aspect-square"
+      className={`relative group cursor-pointer overflow-hidden rounded-lg bg-muted w-full ${isMasonry ? '' : 'aspect-square'}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -88,16 +89,30 @@ export function R2MediaItem({ media, onClick }: R2MediaItemProps) {
       ) : (
         <>
           {/* Image */}
-          <Image
-            src={media.url}
-            alt={media.name}
-            fill
-            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-            onError={handleMediaError}
-            onLoad={handleMediaLoad}
-            className="object-cover transition-transform duration-200 group-hover:scale-105"
-            unoptimized={true}
-          />
+          {isMasonry ? (
+            <Image
+              src={media.url}
+              alt={media.name}
+              width={800}
+              height={600}
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              onError={handleMediaError}
+              onLoad={handleMediaLoad}
+              className="w-full h-auto object-cover transition-transform duration-200 group-hover:scale-105"
+              unoptimized={true}
+            />
+          ) : (
+            <Image
+              src={media.url}
+              alt={media.name}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              onError={handleMediaError}
+              onLoad={handleMediaLoad}
+              className="object-cover transition-transform duration-200 group-hover:scale-105"
+              unoptimized={true}
+            />
+          )}
           {!mediaLoaded && (
             <div className="absolute inset-0 bg-muted animate-pulse" />
           )}

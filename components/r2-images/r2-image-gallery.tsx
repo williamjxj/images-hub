@@ -24,6 +24,9 @@ import { R2_BUCKETS } from "@/lib/r2/constants";
 import { Card } from "@/components/ui/card";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AlertCircle } from "lucide-react";
+import { AriaLiveRegion } from "@/components/accessibility/aria-live-region";
+import { announceToScreenReader } from "@/lib/utils/accessibility";
+import { useEffect } from "react";
 import type { R2Object, ImageGalleryFilter } from "@/types/r2";
 
 export function R2ImageGallery() {
@@ -42,6 +45,15 @@ export function R2ImageGallery() {
 
   const { displayMode, setDisplayMode } = useDisplayMode();
   const [selectedMedia, setSelectedMedia] = useState<R2Object | null>(null);
+  
+  // Announce image loading updates to screen readers
+  useEffect(() => {
+    if (loading && images.length === 0) {
+      announceToScreenReader('Loading images...', 'polite');
+    } else if (!loading && images.length > 0) {
+      announceToScreenReader(`Loaded ${images.length} image${images.length > 1 ? 's' : ''}`, 'polite');
+    }
+  }, [loading, images.length]);
   const [filter, setFilter] = useState<ImageGalleryFilter>({
     sortBy: "date",
     viewMode: displayMode,
@@ -153,39 +165,41 @@ export function R2ImageGallery() {
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col h-screen">
-        {/* Tab Navigation */}
-        <div className="border-b p-4">
-          <div className="flex items-center justify-between">
-            <R2ImageTabs
-              buckets={R2_BUCKETS}
-              activeBucket={activeBucket}
-              onTabChange={switchBucket}
-            />
-            <R2DisplayModeSelector
-              mode={displayMode}
-              onModeChange={setDisplayMode}
-            />
-          </div>
-        </div>
-
-        {/* Folder Navigation */}
-        {(folders.length > 0 || currentFolder) && (
+      <AriaLiveRegion priority="polite" />
+      <div className="flex flex-col min-h-screen">
+        <div className="container mx-auto flex flex-col flex-1">
+          {/* Tab Navigation */}
           <div className="border-b p-4">
-            <R2FolderNavigation
-              bucket={activeBucket}
-              currentFolder={currentFolder}
-              folders={folders}
-              onFolderClick={navigateToFolder}
-              filter={filter}
-              onFilterChange={setFilter}
-              imageCount={filteredImages.length}
-            />
+            <div className="flex items-center justify-between">
+              <R2ImageTabs
+                buckets={R2_BUCKETS}
+                activeBucket={activeBucket}
+                onTabChange={switchBucket}
+              />
+              <R2DisplayModeSelector
+                mode={displayMode}
+                onModeChange={setDisplayMode}
+              />
+            </div>
           </div>
-        )}
 
-        {/* Main Content Area */}
-        <div className="flex-1 overflow-auto p-4">
+          {/* Folder Navigation */}
+          {(folders.length > 0 || currentFolder) && (
+            <div className="border-b p-4">
+              <R2FolderNavigation
+                bucket={activeBucket}
+                currentFolder={currentFolder}
+                folders={folders}
+                onFolderClick={navigateToFolder}
+                filter={filter}
+                onFilterChange={setFilter}
+                imageCount={filteredImages.length}
+              />
+            </div>
+          )}
+
+          {/* Main Content Area */}
+          <div className="flex-1 overflow-auto p-4">
           {loading && images.length === 0 ? (
             <R2ImageLoading count={12} mode={displayMode} />
           ) : error ? (
@@ -214,27 +228,28 @@ export function R2ImageGallery() {
               )}
             </>
           )}
+          </div>
+
+          {/* Image Modal */}
+          {selectedMedia && selectedMedia.mediaType === "image" && (
+            <R2ImageModal
+              image={selectedMedia}
+              images={filteredImages}
+              onClose={() => setSelectedMedia(null)}
+              onNavigate={handleImageModalNavigate}
+            />
+          )}
+
+          {/* Video Modal */}
+          {selectedMedia && selectedMedia.mediaType === "video" && (
+            <R2VideoModal
+              video={selectedMedia}
+              videos={filteredImages}
+              onClose={() => setSelectedMedia(null)}
+              onNavigate={handleVideoModalNavigate}
+            />
+          )}
         </div>
-
-        {/* Image Modal */}
-        {selectedMedia && selectedMedia.mediaType === "image" && (
-          <R2ImageModal
-            image={selectedMedia}
-            images={filteredImages}
-            onClose={() => setSelectedMedia(null)}
-            onNavigate={handleImageModalNavigate}
-          />
-        )}
-
-        {/* Video Modal */}
-        {selectedMedia && selectedMedia.mediaType === "video" && (
-          <R2VideoModal
-            video={selectedMedia}
-            videos={filteredImages}
-            onClose={() => setSelectedMedia(null)}
-            onNavigate={handleVideoModalNavigate}
-          />
-        )}
       </div>
     </TooltipProvider>
   );

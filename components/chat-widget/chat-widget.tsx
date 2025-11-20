@@ -4,20 +4,29 @@
  * Main chat widget component that combines icon and panel
  */
 
-import { useChatWidget } from '@/lib/hooks/use-chat-widget';
+import { useState } from 'react';
 import { ChatWidgetIcon } from './chat-widget-icon';
 import { ChatWidgetPanel } from './chat-widget-panel';
 
 /**
  * Chat widget component that appears on all pages
+ * Icon and panel toggle visibility - only one is visible at a time
  */
 export function ChatWidget() {
-  const { isOpen, openWidget, closeWidget, toggleWidget } = useChatWidget();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleWidget = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const closeWidget = () => {
+    setIsOpen(false);
+  };
 
   return (
     <>
-      <ChatWidgetIcon onClick={toggleWidget} isOpen={isOpen} />
-      <ChatWidgetPanel isOpen={isOpen} onClose={closeWidget} />
+      {!isOpen && <ChatWidgetIcon onClick={toggleWidget} isOpen={isOpen} />}
+      {isOpen && <ChatWidgetPanel isOpen={isOpen} onClose={closeWidget} />}
     </>
   );
 }

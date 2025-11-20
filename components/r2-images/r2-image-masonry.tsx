@@ -29,6 +29,7 @@ export function R2ImageMasonry({ images, onImageClick }: R2ImageMasonryProps) {
           <R2MediaItem
             media={media}
             onClick={() => onImageClick?.(media)}
+            isMasonry={true}
           />
         </div>
       ))}

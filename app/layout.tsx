@@ -10,6 +10,14 @@ import {
 } from "@clerk/nextjs";
 import Link from "next/link";
 import { ChatWidget } from "@/components/chat-widget/chat-widget";
+import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts/keyboard-shortcuts-provider";
+import { KeyboardShortcutsDialog } from "@/components/keyboard-shortcuts/keyboard-shortcuts-dialog";
+import { SkipLink } from "@/components/accessibility/skip-link";
+import { AppLogo } from "@/components/branding/app-logo";
+import { BestITLogo } from "@/components/branding/bestit-logo";
+import { BestITConsultantsLogo } from "@/components/branding/bestit-consultants-logo";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+import { ThemeToggle } from "@/components/theme/theme-toggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,6 +33,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Stock Image Search Hub",
   description: "Search for images across Unsplash, Pixabay, and Pexels",
+  icons: {
+    icon: [
+      { url: '/favicon_io/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon_io/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/favicon_io/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
+  manifest: '/favicon_io/site.webmanifest',
 };
 
 export default function RootLayout({
@@ -39,33 +57,24 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
           suppressHydrationWarning
         >
-          <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
-        <nav className="flex items-center gap-4">
-          <Link href="/" className="text-sm font-medium hover:underline">
-            Stock Images
+          <ThemeProvider>
+            <KeyboardShortcutsProvider>
+            <SkipLink />
+            <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
+        <nav className="flex items-center gap-4 h-full">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity h-full">
+            <AppLogo size="sm" showText={false} />
+            <span className="text-sm font-medium hidden sm:inline">Stock Images</span>
           </Link>
         </nav>
-            <div className="flex items-center gap-4">
-              <div className="text-xs text-muted-foreground hidden md:block">
-                Powered by{' '}
-                <a
-                  href="https://www.bestitconsulting.ca"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  Best IT Consulting
-                </a>
-                {' & '}
-                <a
-                  href="https://www.bestitconsultants.ca"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:underline"
-                >
-                  Best IT Consultants
-                </a>
+            <div className="flex items-center gap-4 h-full">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground hidden md:flex h-full">
+                <span>Powered by</span>
+                <BestITLogo size="sm" />
+                <span>&</span>
+                <BestITConsultantsLogo size="sm" />
               </div>
+              <ThemeToggle />
               <SignedOut>
                 <SignInButton mode="modal" />
                 <SignUpButton mode="modal">
@@ -79,8 +88,13 @@ export default function RootLayout({
               </SignedIn>
             </div>
           </header>
-          {children}
+          <main id="main-content">
+            {children}
+          </main>
           <ChatWidget />
+          <KeyboardShortcutsDialog />
+          </KeyboardShortcutsProvider>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
