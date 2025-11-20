@@ -110,14 +110,14 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
   
   // Show feedback prompt after chat interaction
   useEffect(() => {
-    if (messages.length > 0 && status === 'idle' && !isLoading) {
+    if (messages.length > 0 && status === 'idle' && !isLoading && !showFeedbackPrompt) {
       // Show feedback prompt after a short delay
       const timer = setTimeout(() => {
         setShowFeedbackPrompt(true);
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [messages.length, status, isLoading]);
+  }, [messages.length, status, isLoading, showFeedbackPrompt]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -307,8 +307,8 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
               </div>
             </ScrollArea>
 
-            {showFeedbackPrompt && messages.length > 0 && (
-              <div className="px-4 pb-2">
+            {showFeedbackPrompt && messages.length > 0 && status === 'idle' && (
+              <div className="px-4 pb-2 border-t">
                 <FeedbackPrompt
                   context="Chat interaction"
                   onDismiss={() => setShowFeedbackPrompt(false)}

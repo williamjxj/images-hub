@@ -18,6 +18,7 @@ import { useImageSearch } from "@/lib/hooks/use-image-search";
 import { useInfiniteScroll } from "@/lib/hooks/use-infinite-scroll";
 import { AriaLiveRegion } from "@/components/accessibility/aria-live-region";
 import { FeedbackPrompt } from "@/components/feedback/feedback-prompt";
+import { AnimatedText } from "@/components/animations/text-animations";
 import { announceToScreenReader } from "@/lib/utils/accessibility";
 import { useEffect } from "react";
 import type { ImageResult } from "@/lib/hub/types";
@@ -101,10 +102,16 @@ export function ImagesHubGallery() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">Stock Image Search Hub</h1>
-            <p className="text-muted-foreground">
-              Search for images across Unsplash, Pixabay, and Pexels
-            </p>
+            <h1 className="text-3xl font-bold">
+              <AnimatedText animation="reveal" delay={0}>
+                Stock Image Search Hub
+              </AnimatedText>
+            </h1>
+            <div className="text-muted-foreground">
+              <AnimatedText animation="fade" delay={0.2}>
+                Search for images across Unsplash, Pixabay, and Pexels
+              </AnimatedText>
+            </div>
           </div>
           <Link
             href="/r2-images"

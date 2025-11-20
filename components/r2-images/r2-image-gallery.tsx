@@ -223,7 +223,7 @@ export function R2ImageGallery() {
               {/* Infinite scroll trigger */}
               {hasMore && (
                 <div ref={infiniteScrollRef} className="h-20 flex items-center justify-center mt-8">
-                  {loading && <R2ImageLoading count={4} mode={displayMode} />}
+                  {loading && <R2ImageLoading count={8} mode={displayMode} />}
                 </div>
               )}
             </>

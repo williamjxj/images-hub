@@ -27,7 +27,7 @@ export function useR2Images(
 ) {
   const [images, setImages] = useState<R2Object[]>([]);
   const [folders, setFolders] = useState<R2Object[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Start with loading true for initial load
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
@@ -135,6 +135,7 @@ export function useR2Images(
     setFolders([]);
     setCursor(undefined);
     setHasMore(true);
+    setLoading(true); // Show loading state when switching
   }, []);
 
   /**
@@ -146,6 +147,7 @@ export function useR2Images(
     setFolders([]);
     setCursor(undefined);
     setHasMore(true);
+    setLoading(true); // Show loading state when navigating
   }, []);
 
   // Refresh gallery when bucket or folder changes

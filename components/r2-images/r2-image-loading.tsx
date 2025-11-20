@@ -47,10 +47,10 @@ export function R2ImageLoading({
             key={i}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: i * 0.05 }}
+            transition={{ delay: i * 0.05, duration: 0.2 }}
             className="break-inside-avoid mb-4 w-full"
           >
-            <div className="w-full rounded-lg bg-muted animate-pulse aspect-[4/3]" />
+            <div className="w-full rounded-lg bg-muted animate-pulse" style={{ height: `${[150, 200, 180, 220, 160, 190, 170, 210, 185, 195, 175, 205][i % 12]}px` }} />
           </motion.div>
         ))}
       </div>
@@ -65,11 +65,9 @@ export function R2ImageLoading({
           key={i}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: i * 0.05 }}
-          className="aspect-square w-full"
-        >
-          <div className="w-full h-full rounded-lg bg-muted animate-pulse" />
-        </motion.div>
+          transition={{ delay: i * 0.05, duration: 0.2 }}
+          className="aspect-square w-full bg-muted animate-pulse rounded-lg"
+        />
       ))}
     </div>
   );
