@@ -1,33 +1,34 @@
 /**
  * Theme Toggle Component
- * 
+ *
  * Button to switch between light, dark, and system themes
  */
 
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Moon, Sun, Monitor } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from "react";
+import { Moon, Sun, Monitor } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useTheme } from '@/lib/hooks/use-theme';
+} from "@/components/ui/dropdown-menu";
+import { useTheme } from "@/lib/hooks/use-theme";
 
 /**
  * Theme Toggle Component
- * 
+ *
  * Provides a dropdown menu to switch between light, dark, and system themes
  */
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   // Only render dropdown after client-side hydration to avoid ID mismatch
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -52,15 +53,15 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
+        <DropdownMenuItem onClick={() => setTheme("light")}>
           <Sun className="mr-2 h-4 w-4" />
           <span>Light</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
           <Moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
           <Monitor className="mr-2 h-4 w-4" />
           <span>System</span>
         </DropdownMenuItem>
@@ -68,4 +69,3 @@ export function ThemeToggle() {
     </DropdownMenu>
   );
 }
-

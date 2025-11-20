@@ -1,6 +1,6 @@
 /**
  * Error Display Component for Images Hub
- * 
+ *
  * Displays error messages with retry functionality
  */
 
@@ -37,4 +37,3 @@ export function ImagesHubError({ message, onRetry }: ImagesHubErrorProps) {
     </Card>
   );
 }
-

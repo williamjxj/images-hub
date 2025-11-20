@@ -1,12 +1,12 @@
 /**
  * Search Skeleton Component
- * 
+ *
  * Loading placeholder for search results
  */
 
-'use client';
+"use client";
 
-import { ImageSkeleton } from './image-skeleton';
+import { ImageSkeleton } from "./image-skeleton";
 
 /**
  * Props for SearchSkeleton component
@@ -18,7 +18,7 @@ interface SearchSkeletonProps {
 
 /**
  * Search Skeleton Component
- * 
+ *
  * Displays skeleton loading placeholders for search results
  */
 export function SearchSkeleton({ count = 12 }: SearchSkeletonProps) {
@@ -35,4 +35,3 @@ export function SearchSkeleton({ count = 12 }: SearchSkeletonProps) {
     </div>
   );
 }
-

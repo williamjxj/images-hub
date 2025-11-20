@@ -1,14 +1,15 @@
 ## Q:
+
 I want to create a webpage as a hub to search/display images from unsplash, pixabay, pexels using their apis. is it a good idea? recommend/suggest me how to do it?
 
 ## Gemini
 
-| Aspect | Rationale |
-| :--- | :--- |
-| **Diversity & Quality** | You combine the best of three worlds: **Unsplash** (high-end, artistic photos), **Pexels** (curated, modern stock videos/photos), and **Pixabay** (large volume, vector graphics). |
-| **Centralized UX** | Users only need one interface to search across all three platforms, significantly improving efficiency. |
-| **API Control** | You maintain control over how images are displayed, filtered, and categorized, which is essential for a **custom user experience (UX)**. |
-| **Learning Opportunity** | It's an excellent project to learn **API integration**, handling **asynchronous data**, **data normalization**, and **cross-platform filtering**. |
+| Aspect                   | Rationale                                                                                                                                                                          |
+| :----------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Diversity & Quality**  | You combine the best of three worlds: **Unsplash** (high-end, artistic photos), **Pexels** (curated, modern stock videos/photos), and **Pixabay** (large volume, vector graphics). |
+| **Centralized UX**       | Users only need one interface to search across all three platforms, significantly improving efficiency.                                                                            |
+| **API Control**          | You maintain control over how images are displayed, filtered, and categorized, which is essential for a **custom user experience (UX)**.                                           |
+| **Learning Opportunity** | It's an excellent project to learn **API integration**, handling **asynchronous data**, **data normalization**, and **cross-platform filtering**.                                  |
 
 ### 1. 🛠️ Beautiful gallery layout
 
@@ -26,23 +27,23 @@ The API Keys are in app-root .env.local file which can be direct used in the cod
 
 Each API returns a different data structure. You need a **single, unified `Image` object** for your frontend to consume.
 
-| Normalized Field | Example Source Field (Unsplash) | Notes |
-| :--- | :--- | :--- |
-| `id` | `id` | A unique identifier (append a prefix like `u-` or `p-` to ensure global uniqueness, e.g., `u-abc123`). |
-| `source` | "Unsplash" | Essential for filtering and display. |
-| `urlFull` | `urls.full` | Link for the highest resolution image. |
-| `urlThumb` | `urls.small` | Link for the gallery thumbnail. |
-| `description` | `alt_description` | Text used for display and accessibility. |
-| `width`, `height` | `width`, `height` | Necessary for calculating aspect ratio and grid layout. |
-| `creator` | `user.name` | Photographer credit. |
+| Normalized Field  | Example Source Field (Unsplash) | Notes                                                                                                  |
+| :---------------- | :------------------------------ | :----------------------------------------------------------------------------------------------------- |
+| `id`              | `id`                            | A unique identifier (append a prefix like `u-` or `p-` to ensure global uniqueness, e.g., `u-abc123`). |
+| `source`          | "Unsplash"                      | Essential for filtering and display.                                                                   |
+| `urlFull`         | `urls.full`                     | Link for the highest resolution image.                                                                 |
+| `urlThumb`        | `urls.small`                    | Link for the gallery thumbnail.                                                                        |
+| `description`     | `alt_description`               | Text used for display and accessibility.                                                               |
+| `width`, `height` | `width`, `height`               | Necessary for calculating aspect ratio and grid layout.                                                |
+| `creator`         | `user.name`                     | Photographer credit.                                                                                   |
 
 **Search Query Logic:**
 
 1.  Client sends: `GET /api/search-images?q=sunset&page=2`
 2.  Server calls:
-    * `Unsplash/search?query=sunset&page=2`
-    * `Pixabay/search?q=sunset&page=2`
-    * `Pexels/search?query=sunset&page=2`
+    - `Unsplash/search?query=sunset&page=2`
+    - `Pixabay/search?q=sunset&page=2`
+    - `Pexels/search?query=sunset&page=2`
 3.  Server **merges** the three result arrays after normalizing each item into your `Image` object.
 4.  Server returns the combined, normalized list.
 
@@ -52,7 +53,6 @@ Each API returns a different data structure. You need a **single, unified `Image
 2.  **Filter/Source Selectors:** Add buttons or checkboxes to allow the user to limit the search to **Unsplash only**, **Pexels only**, etc.
 3.  **Image Grid Component:** Use a library like `react-masonry-css` (or a similar solution) to render the images in a dynamic, aesthetically pleasing layout based on the `width` and `height` properties from your normalized data.
 4.  **Infinite Scroll:** Implement the **Intersection Observer API** to automatically trigger the `loadMore` function (calling `/api/search-images?q=...&page=3`) when the user reaches the bottom of the current images.
-
 
 ## Claude
 
@@ -76,7 +76,7 @@ User Search → Next.js API Route → Parallel API Calls → Merge Results → D
 - Infinite scroll pagination
 - Advanced filters (color, orientation, size)
 - Favorites/Collections
-🏗️ Implementation Plan
+  🏗️ Implementation Plan
 
 ### Phase 1: Basic MVP (I can help you build this)
 
@@ -84,7 +84,7 @@ User Search → Next.js API Route → Parallel API Calls → Merge Results → D
 - Set up API routes for each platform
 - Build unified search interface
 - Display results in a masonry grid
-= Add proper attribution links
+  = Add proper attribution links
 
 ### Phase 2: Enhancements
 

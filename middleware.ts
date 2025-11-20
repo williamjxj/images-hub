@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/webhooks(.*)",
   // API routes handle their own authentication
   "/api/r2(.*)",
+  "/api/feedback(.*)", // Allow anonymous feedback submissions
 ]);
 
 // Note: Next.js 16 deprecates middleware.ts in favor of proxy.ts
@@ -27,4 +28,3 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
-

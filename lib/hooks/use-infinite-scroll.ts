@@ -1,12 +1,12 @@
 /**
  * Custom hook for infinite scroll using Intersection Observer
- * 
+ *
  * Automatically loads more content when the target element comes into view.
  */
 
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { useInView } from "react-intersection-observer";
 
 interface UseInfiniteScrollOptions {
@@ -45,4 +45,3 @@ export function useInfiniteScroll({
 
   return { ref };
 }
-

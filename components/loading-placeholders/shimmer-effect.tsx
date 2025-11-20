@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
 /**
  * Shimmer effect component for loading animations
  */
 
-import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface ShimmerEffectProps {
   className?: string;
@@ -22,19 +22,18 @@ export function ShimmerEffect({
   return (
     <motion.div
       className={cn(
-        'absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent',
+        "absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent",
         className
       )}
       animate={{
-        x: ['-100%', '100%'],
+        x: ["-100%", "100%"],
       }}
       transition={{
         duration,
         repeat: Infinity,
-        ease: 'linear',
+        ease: "linear",
       }}
-      style={{ width: '200%' }}
+      style={{ width: "200%" }}
     />
   );
 }
-

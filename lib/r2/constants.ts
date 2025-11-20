@@ -1,6 +1,6 @@
 /**
  * R2 Constants
- * 
+ *
  * Constants that can be safely imported by both client and server code
  */
 
@@ -20,4 +20,3 @@ export const R2_BUCKETS: readonly R2BucketName[] = [
  * Type export for R2 bucket names
  */
 export type { R2BucketName };
-

@@ -1,6 +1,6 @@
 /**
  * List objects from R2 bucket
- * 
+ *
  * Provides functionality to list images and folders from Cloudflare R2 buckets
  * with support for folder navigation and pagination
  */
@@ -13,7 +13,7 @@ import { sortImagesByDate } from "@/lib/utils/image-utils";
 
 /**
  * List objects (images and folders) in an R2 bucket
- * 
+ *
  * @param bucket - Bucket name
  * @param prefix - Folder path prefix (empty string for root)
  * @param cursor - Continuation token for pagination
@@ -44,7 +44,7 @@ export async function listObjects(
         // Extract folder name from prefix (e.g., "images/2024/" -> "2024")
         const parts = prefixKey.split("/").filter(Boolean);
         const folderName = parts[parts.length - 1] || prefixKey;
-        
+
         return {
           key: prefixKey,
           name: folderName,
@@ -99,4 +99,3 @@ export async function listObjects(
     throw error;
   }
 }
-

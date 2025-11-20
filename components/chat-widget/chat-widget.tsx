@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
 /**
  * Main chat widget component that combines icon and panel
  */
 
-import { useState } from 'react';
-import { ChatWidgetIcon } from './chat-widget-icon';
-import { ChatWidgetPanel } from './chat-widget-panel';
+import { useState } from "react";
+import { ChatWidgetIcon } from "./chat-widget-icon";
+import { ChatWidgetPanel } from "./chat-widget-panel";
 
 /**
  * Chat widget component that appears on all pages
@@ -30,4 +30,3 @@ export function ChatWidget() {
     </>
   );
 }
-

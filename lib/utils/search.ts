@@ -6,27 +6,27 @@
  * Popular search terms used as fallback when user has no recent search history
  */
 const POPULAR_SEARCHES = [
-  'nature',
-  'business',
-  'technology',
-  'people',
-  'architecture',
-  'travel',
-  'food',
-  'animals',
-  'abstract',
-  'landscape',
-  'city',
-  'ocean',
-  'sunset',
-  'mountains',
-  'flowers',
+  "nature",
+  "business",
+  "technology",
+  "people",
+  "architecture",
+  "travel",
+  "food",
+  "animals",
+  "abstract",
+  "landscape",
+  "city",
+  "ocean",
+  "sunset",
+  "mountains",
+  "flowers",
 ];
 
 /**
  * Calculate Levenshtein distance between two strings
  * Used for fuzzy search and typo tolerance
- * 
+ *
  * @param a First string
  * @param b Second string
  * @returns Edit distance (number of character changes needed)
@@ -34,12 +34,12 @@ const POPULAR_SEARCHES = [
 export function levenshteinDistance(a: string, b: string): number {
   const aLen = a.length;
   const bLen = b.length;
-  
+
   // Create matrix
   const matrix: number[][] = Array(aLen + 1)
     .fill(null)
     .map(() => Array(bLen + 1).fill(0));
-  
+
   // Initialize first row and column
   for (let i = 0; i <= aLen; i++) {
     matrix[i][0] = i;
@@ -47,7 +47,7 @@ export function levenshteinDistance(a: string, b: string): number {
   for (let j = 0; j <= bLen; j++) {
     matrix[0][j] = j;
   }
-  
+
   // Fill matrix
   for (let i = 1; i <= aLen; i++) {
     for (let j = 1; j <= bLen; j++) {
@@ -59,13 +59,13 @@ export function levenshteinDistance(a: string, b: string): number {
       );
     }
   }
-  
+
   return matrix[aLen][bLen];
 }
 
 /**
  * Find similar searches using Levenshtein distance
- * 
+ *
  * @param query Search query
  * @param candidates Array of candidate search terms
  * @param maxDistance Maximum edit distance allowed (default: 2)
@@ -79,9 +79,9 @@ export function findSimilarSearches(
   if (!query || query.length < 2) {
     return [];
   }
-  
+
   const queryLower = query.toLowerCase();
-  
+
   return candidates
     .map((candidate) => ({
       candidate,
@@ -95,7 +95,7 @@ export function findSimilarSearches(
 
 /**
  * Get popular search terms
- * 
+ *
  * @returns Array of popular search terms
  */
 export function getPopularSearches(): string[] {
@@ -104,7 +104,7 @@ export function getPopularSearches(): string[] {
 
 /**
  * Filter searches by query (case-insensitive substring match)
- * 
+ *
  * @param query Search query
  * @param candidates Array of candidate search terms
  * @returns Array of matching search terms
@@ -116,11 +116,10 @@ export function filterSearchesByQuery(
   if (!query || query.length < 2) {
     return [];
   }
-  
+
   const queryLower = query.toLowerCase();
-  
+
   return candidates
     .filter((candidate) => candidate.toLowerCase().includes(queryLower))
     .slice(0, 10); // Return top 10 matches
 }
-

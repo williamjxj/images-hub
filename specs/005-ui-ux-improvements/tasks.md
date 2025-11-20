@@ -16,6 +16,7 @@ This document breaks down the UI/UX improvements feature into actionable, depend
 **MVP First**: Start with User Story 1 (Keyboard Navigation) to establish foundational UX improvements. This provides immediate value by enabling faster workflows and improving accessibility compliance.
 
 **Incremental Delivery**: Each user story phase delivers independently testable functionality:
+
 - Phase 3 (US1): Keyboard shortcuts and navigation - Core UX improvement
 - Phase 4 (US2): Enhanced search experience - Search improvements
 - Phase 5 (US3): Accessibility enhancements - Compliance and usability
@@ -48,6 +49,7 @@ Phase 9 (Polish & Testing)
 ```
 
 **Story Dependencies**:
+
 - US1 (P1): Requires Phase 2 (constants, types), can start immediately after
 - US2 (P2): Requires Phase 2 (utilities, hooks), can run parallel with US1 after Phase 2
 - US3 (P2): Requires Phase 2 (accessibility utilities), can run parallel with US1/US2 after Phase 2
@@ -100,6 +102,7 @@ Phase 9 (Polish & Testing)
 **Independent Test**: Navigate to Stock Images page, press `/` to focus search, press `Esc` to close modals, press arrow keys in image modal, press `Cmd/Ctrl + /` for help dialog.
 
 **Acceptance Criteria**:
+
 - `/` shortcut focuses search input on Stock Images page
 - `Esc` closes modals/widgets and returns focus
 - Arrow keys navigate images in modal
@@ -131,6 +134,7 @@ Phase 9 (Polish & Testing)
 **Independent Test**: Type in search field, see suggestions appear, click search field to see history, apply advanced filters, test typo tolerance.
 
 **Acceptance Criteria**:
+
 - Search suggestions appear after 2+ characters (recent → popular fallback)
 - Search history dropdown shows up to 10 recent searches for authenticated users
 - Advanced filters work (orientation, color, size)
@@ -164,6 +168,7 @@ Phase 9 (Polish & Testing)
 **Independent Test**: Navigate with keyboard only, verify skip link appears, check ARIA announcements, verify color contrast.
 
 **Acceptance Criteria**:
+
 - Skip to main content link appears on Tab key press
 - All interactive elements have visible focus indicators (WCAG AA)
 - ARIA live regions announce dynamic content updates
@@ -194,6 +199,7 @@ Phase 9 (Polish & Testing)
 **Independent Test**: Submit feedback form, see contextual prompt, report error, verify email sent.
 
 **Acceptance Criteria**:
+
 - Feedback form opens from error reporting button
 - Contextual "Was this helpful?" prompts appear after key actions
 - Feedback form allows feature requests and suggestions
@@ -301,4 +307,3 @@ Phase 9 (Polish & Testing)
 **Parallel Opportunities**: Tasks marked with [P] can be executed in parallel within their phase.
 
 **MVP Scope**: Phase 1-3 (Setup, Foundational, User Story 1) - Tasks T001-T041 for core keyboard navigation functionality.
-

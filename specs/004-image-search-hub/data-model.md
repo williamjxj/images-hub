@@ -16,33 +16,36 @@ This document defines the data structures and entities for the Stock Image Searc
 
 **Attributes**:
 
-| Field | Type | Required | Description | Example |
-|-------|------|----------|-------------|---------|
-| `id` | `string` | Yes | Unique identifier with provider prefix | `"u-abc123"`, `"px-456789"`, `"pb-789012"` |
-| `source` | `'unsplash' \| 'pexels' \| 'pixabay'` | Yes | Provider source | `"unsplash"` |
-| `urlThumb` | `string` | Yes | Thumbnail URL (400-640px width) | `"https://images.unsplash.com/..."` |
-| `urlRegular` | `string` | Yes | Regular size URL (1080-1280px width) | `"https://images.unsplash.com/..."` |
-| `urlFull` | `string` | Yes | Full-size URL (original) | `"https://images.unsplash.com/..."` |
-| `width` | `number` | Yes | Image width in pixels | `1920` |
-| `height` | `number` | Yes | Image height in pixels | `1080` |
-| `description` | `string \| null` | Yes | Image description/alt text | `"Beautiful sunset over mountains"` |
-| `author` | `string` | Yes | Photographer/creator name | `"John Doe"` |
-| `authorUrl` | `string \| null` | Yes | Link to photographer's profile | `"https://unsplash.com/@johndoe"` |
-| `sourceUrl` | `string` | Yes | Link to image on provider site | `"https://unsplash.com/photos/abc123"` |
-| `tags` | `string[]` | Yes | Array of tags/keywords | `["sunset", "mountains", "nature"]` |
-| `attribution` | `string` | Yes | Formatted attribution text | `"Photo by John Doe on Unsplash"` |
+| Field         | Type                                  | Required | Description                            | Example                                    |
+| ------------- | ------------------------------------- | -------- | -------------------------------------- | ------------------------------------------ |
+| `id`          | `string`                              | Yes      | Unique identifier with provider prefix | `"u-abc123"`, `"px-456789"`, `"pb-789012"` |
+| `source`      | `'unsplash' \| 'pexels' \| 'pixabay'` | Yes      | Provider source                        | `"unsplash"`                               |
+| `urlThumb`    | `string`                              | Yes      | Thumbnail URL (400-640px width)        | `"https://images.unsplash.com/..."`        |
+| `urlRegular`  | `string`                              | Yes      | Regular size URL (1080-1280px width)   | `"https://images.unsplash.com/..."`        |
+| `urlFull`     | `string`                              | Yes      | Full-size URL (original)               | `"https://images.unsplash.com/..."`        |
+| `width`       | `number`                              | Yes      | Image width in pixels                  | `1920`                                     |
+| `height`      | `number`                              | Yes      | Image height in pixels                 | `1080`                                     |
+| `description` | `string \| null`                      | Yes      | Image description/alt text             | `"Beautiful sunset over mountains"`        |
+| `author`      | `string`                              | Yes      | Photographer/creator name              | `"John Doe"`                               |
+| `authorUrl`   | `string \| null`                      | Yes      | Link to photographer's profile         | `"https://unsplash.com/@johndoe"`          |
+| `sourceUrl`   | `string`                              | Yes      | Link to image on provider site         | `"https://unsplash.com/photos/abc123"`     |
+| `tags`        | `string[]`                            | Yes      | Array of tags/keywords                 | `["sunset", "mountains", "nature"]`        |
+| `attribution` | `string`                              | Yes      | Formatted attribution text             | `"Photo by John Doe on Unsplash"`          |
 
 **Relationships**:
+
 - Belongs to a `SearchQuery` (many-to-one)
 - Grouped by `Provider` (many-to-one)
 
 **Validation Rules**:
+
 - `id` must start with provider prefix (`u-`, `px-`, `pb-`)
 - `urlThumb`, `urlRegular`, `urlFull` must be valid URLs
 - `width` and `height` must be positive numbers
 - `tags` must be non-empty array (can be empty array `[]`)
 
 **Example**:
+
 ```typescript
 {
   id: "u-abc123",
@@ -69,24 +72,27 @@ This document defines the data structures and entities for the Stock Image Searc
 
 **Attributes**:
 
-| Field | Type | Required | Description | Example |
-|-------|------|----------|-------------|---------|
-| `query` | `string` | Yes | Search query text | `"sunset mountains"` |
-| `providers` | `('unsplash' \| 'pexels' \| 'pixabay')[]` | Yes | Selected providers to search | `["unsplash", "pexels"]` |
-| `page` | `number` | Yes | Current page number (1-indexed) | `1` |
-| `perPage` | `number` | Yes | Results per page per provider | `20` |
+| Field       | Type                                      | Required | Description                     | Example                  |
+| ----------- | ----------------------------------------- | -------- | ------------------------------- | ------------------------ |
+| `query`     | `string`                                  | Yes      | Search query text               | `"sunset mountains"`     |
+| `providers` | `('unsplash' \| 'pexels' \| 'pixabay')[]` | Yes      | Selected providers to search    | `["unsplash", "pexels"]` |
+| `page`      | `number`                                  | Yes      | Current page number (1-indexed) | `1`                      |
+| `perPage`   | `number`                                  | Yes      | Results per page per provider   | `20`                     |
 
 **Relationships**:
+
 - Has many `ImageResult` (one-to-many)
 - Has many `ProviderResult` (one-to-many)
 
 **Validation Rules**:
+
 - `query` must be non-empty string (trimmed)
 - `providers` must contain at least one provider
 - `page` must be positive integer (>= 1)
 - `perPage` must be between 1 and 200
 
 **Example**:
+
 ```typescript
 {
   query: "sunset mountains",
@@ -104,21 +110,23 @@ This document defines the data structures and entities for the Stock Image Searc
 
 **Attributes**:
 
-| Field | Type | Required | Description | Example |
-|-------|------|----------|-------------|---------|
-| `provider` | `'unsplash' \| 'pexels' \| 'pixabay'` | Yes | Provider name | `"unsplash"` |
-| `images` | `ImageResult[]` | Yes | Array of normalized image results | `[...]` |
-| `total` | `number` | Yes | Total results available from provider | `1250` |
-| `totalPages` | `number` | Yes | Total pages available | `63` |
-| `currentPage` | `number` | Yes | Current page number | `1` |
-| `hasMore` | `boolean` | Yes | Whether more pages are available | `true` |
-| `error` | `string \| null` | Yes | Error message if provider failed | `null` or `"Rate limit exceeded"` |
+| Field         | Type                                  | Required | Description                           | Example                           |
+| ------------- | ------------------------------------- | -------- | ------------------------------------- | --------------------------------- |
+| `provider`    | `'unsplash' \| 'pexels' \| 'pixabay'` | Yes      | Provider name                         | `"unsplash"`                      |
+| `images`      | `ImageResult[]`                       | Yes      | Array of normalized image results     | `[...]`                           |
+| `total`       | `number`                              | Yes      | Total results available from provider | `1250`                            |
+| `totalPages`  | `number`                              | Yes      | Total pages available                 | `63`                              |
+| `currentPage` | `number`                              | Yes      | Current page number                   | `1`                               |
+| `hasMore`     | `boolean`                             | Yes      | Whether more pages are available      | `true`                            |
+| `error`       | `string \| null`                      | Yes      | Error message if provider failed      | `null` or `"Rate limit exceeded"` |
 
 **Relationships**:
+
 - Belongs to a `SearchQuery` (many-to-one)
 - Has many `ImageResult` (one-to-many)
 
 **Validation Rules**:
+
 - `images` must be array (can be empty if error occurred)
 - `total` must be non-negative integer
 - `totalPages` must be positive integer (>= 1)
@@ -126,6 +134,7 @@ This document defines the data structures and entities for the Stock Image Searc
 - If `error` is not null, `images` may be empty
 
 **Example**:
+
 ```typescript
 {
   provider: "unsplash",
@@ -149,25 +158,28 @@ This document defines the data structures and entities for the Stock Image Searc
 
 **Attributes**:
 
-| Field | Type | Required | Description | Example |
-|-------|------|----------|-------------|---------|
-| `query` | `string` | Yes | Original search query | `"sunset mountains"` |
-| `providers` | `ProviderResult[]` | Yes | Results grouped by provider | `[...]` |
-| `totalResults` | `number` | Yes | Total images across all providers | `3750` |
-| `hasMore` | `boolean` | Yes | Whether more results available from any provider | `true` |
-| `errors` | `Record<string, string>` | Yes | Provider-specific errors | `{ "pixabay": "Rate limit exceeded" }` |
+| Field          | Type                     | Required | Description                                      | Example                                |
+| -------------- | ------------------------ | -------- | ------------------------------------------------ | -------------------------------------- |
+| `query`        | `string`                 | Yes      | Original search query                            | `"sunset mountains"`                   |
+| `providers`    | `ProviderResult[]`       | Yes      | Results grouped by provider                      | `[...]`                                |
+| `totalResults` | `number`                 | Yes      | Total images across all providers                | `3750`                                 |
+| `hasMore`      | `boolean`                | Yes      | Whether more results available from any provider | `true`                                 |
+| `errors`       | `Record<string, string>` | Yes      | Provider-specific errors                         | `{ "pixabay": "Rate limit exceeded" }` |
 
 **Relationships**:
+
 - Contains many `ProviderResult` (one-to-many)
 - Contains many `ImageResult` (one-to-many, via ProviderResult)
 
 **Validation Rules**:
+
 - `providers` must contain results for all requested providers (even if empty/error)
 - `providers` must be ordered: Unsplash → Pixabay → Pexels
 - `totalResults` must equal sum of all provider totals
 - `hasMore` must be true if any provider has more results
 
 **Example**:
+
 ```typescript
 {
   query: "sunset mountains",
@@ -285,7 +297,7 @@ Each provider requires a normalization function to convert provider-specific res
 // Unified image result
 export interface ImageResult {
   id: string;
-  source: 'unsplash' | 'pexels' | 'pixabay';
+  source: "unsplash" | "pexels" | "pixabay";
   urlThumb: string;
   urlRegular: string;
   urlFull: string;
@@ -302,14 +314,14 @@ export interface ImageResult {
 // Search query
 export interface SearchQuery {
   query: string;
-  providers: ('unsplash' | 'pexels' | 'pixabay')[];
+  providers: ("unsplash" | "pexels" | "pixabay")[];
   page: number;
   perPage: number;
 }
 
 // Provider result
 export interface ProviderResult {
-  provider: 'unsplash' | 'pexels' | 'pixabay';
+  provider: "unsplash" | "pexels" | "pixabay";
   images: ImageResult[];
   total: number;
   totalPages: number;
@@ -335,23 +347,27 @@ export interface SearchResponse {
 ## Validation Rules Summary
 
 ### ImageResult
+
 - ✅ ID must have provider prefix
 - ✅ URLs must be valid HTTP/HTTPS URLs
 - ✅ Dimensions must be positive integers
 - ✅ Tags must be array of strings
 
 ### SearchQuery
+
 - ✅ Query must be non-empty (trimmed)
 - ✅ At least one provider must be selected
 - ✅ Page must be >= 1
 - ✅ PerPage must be 1-200
 
 ### ProviderResult
+
 - ✅ Total must be non-negative
 - ✅ Pages must be >= 1
 - ✅ If error, images may be empty
 
 ### SearchResponse
+
 - ✅ Providers must match requested providers
 - ✅ Providers must be in correct order
 - ✅ Total must match sum of provider totals
@@ -359,4 +375,3 @@ export interface SearchResponse {
 ---
 
 **Next Steps**: See `contracts/api-images-hub.yaml` for API endpoint definitions.
-

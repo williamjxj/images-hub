@@ -10,15 +10,14 @@ export interface WidgetState {
 
 export interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: number;
   parts?: MessagePart[];
 }
 
 export interface MessagePart {
-  type: 'text' | 'image' | 'tool';
+  type: "text" | "image" | "tool";
   text?: string;
   // ... other part types can be added as needed
 }
-

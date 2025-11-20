@@ -2,16 +2,16 @@
  * Email utilities for feedback submission
  */
 
-import type { UserFeedback } from '@/types/ui-ux';
+import type { UserFeedback } from "@/types/ui-ux";
 
 /**
  * Capture browser and device information
  */
-export function captureBrowserInfo(): UserFeedback['browserInfo'] {
-  if (typeof window === 'undefined') {
+export function captureBrowserInfo(): UserFeedback["browserInfo"] {
+  if (typeof window === "undefined") {
     return undefined;
   }
-  
+
   return {
     userAgent: navigator.userAgent,
     viewportWidth: window.innerWidth,
@@ -26,24 +26,24 @@ export function captureUserActions(): string[] {
   // This is a simplified implementation
   // In a full implementation, you would track user actions in a store/context
   // and return the most recent ones
-  
-  if (typeof window === 'undefined') {
+
+  if (typeof window === "undefined") {
     return [];
   }
-  
+
   // For now, return current page path as a basic action
   return [window.location.pathname];
 }
 
 /**
  * Format feedback email HTML content
- * 
+ *
  * @param feedback Feedback data
  * @returns HTML string for email
  */
 export function formatFeedbackEmail(feedback: UserFeedback): string {
   const timestamp = new Date(feedback.timestamp).toLocaleString();
-  
+
   return `
     <!DOCTYPE html>
     <html>
@@ -74,14 +74,14 @@ export function formatFeedbackEmail(feedback: UserFeedback): string {
           
           <div class="section">
             <span class="label">Description:</span>
-            <div class="value">${feedback.description.replace(/\n/g, '<br>')}</div>
+            <div class="value">${feedback.description.replace(/\n/g, "<br>")}</div>
           </div>
           
           <div class="section">
             <span class="label">User:</span>
             <span class="value">
-              ${feedback.userId || 'Anonymous'}
-              ${feedback.userEmail ? `(${feedback.userEmail})` : ''}
+              ${feedback.userId || "Anonymous"}
+              ${feedback.userEmail ? `(${feedback.userEmail})` : ""}
             </span>
           </div>
           
@@ -90,40 +90,62 @@ export function formatFeedbackEmail(feedback: UserFeedback): string {
             <span class="value">${feedback.pageUrl}</span>
           </div>
           
-          ${feedback.rating ? `
+          ${
+            feedback.rating
+              ? `
             <div class="section">
               <span class="label">Rating:</span>
               <span class="value">${feedback.rating}</span>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
           
-          ${feedback.errorDetails ? `
+          ${
+            feedback.errorDetails
+              ? `
             <div class="section">
               <span class="label">Error Details:</span>
               <div class="error-details">
                 <p><strong>Message:</strong> ${feedback.errorDetails.message}</p>
-                ${feedback.errorDetails.stack ? `
+                ${
+                  feedback.errorDetails.stack
+                    ? `
                   <p><strong>Stack Trace:</strong></p>
                   <pre>${feedback.errorDetails.stack}</pre>
-                ` : ''}
-                ${feedback.errorDetails.componentStack ? `
+                `
+                    : ""
+                }
+                ${
+                  feedback.errorDetails.componentStack
+                    ? `
                   <p><strong>Component Stack:</strong></p>
                   <pre>${feedback.errorDetails.componentStack}</pre>
-                ` : ''}
+                `
+                    : ""
+                }
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
           
-          ${feedback.userActions && feedback.userActions.length > 0 ? `
+          ${
+            feedback.userActions && feedback.userActions.length > 0
+              ? `
             <div class="section">
               <span class="label">User Actions:</span>
               <ul class="value">
-                ${feedback.userActions.map((action) => `<li>${action}</li>`).join('')}
+                ${feedback.userActions.map((action) => `<li>${action}</li>`).join("")}
               </ul>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
           
-          ${feedback.browserInfo ? `
+          ${
+            feedback.browserInfo
+              ? `
             <div class="section">
               <span class="label">Browser Information:</span>
               <div class="browser-info">
@@ -131,10 +153,11 @@ export function formatFeedbackEmail(feedback: UserFeedback): string {
                 <p><strong>Viewport:</strong> ${feedback.browserInfo.viewportWidth} x ${feedback.browserInfo.viewportHeight}</p>
               </div>
             </div>
-          ` : ''}
+          `
+              : ""
+          }
         </div>
       </body>
     </html>
   `;
 }
-

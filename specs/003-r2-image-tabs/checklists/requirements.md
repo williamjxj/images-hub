@@ -35,4 +35,3 @@
 - Specification is ready for `/speckit.clarify` or `/speckit.plan`
 - No clarifications needed - all requirements are clear and testable
 - The spec focuses on user-facing functionality for displaying images from three R2 buckets in a tabbed interface
-

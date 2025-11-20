@@ -1,6 +1,6 @@
 /**
  * Provider Filter Component for Images Hub
- * 
+ *
  * Allows users to select which providers to search (Unsplash, Pixabay, Pexels)
  */
 
@@ -11,15 +11,15 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 
 interface ImagesHubProviderFilterProps {
-  providers: ('unsplash' | 'pexels' | 'pixabay')[];
-  onChange: (providers: ('unsplash' | 'pexels' | 'pixabay')[]) => void;
+  providers: ("unsplash" | "pexels" | "pixabay")[];
+  onChange: (providers: ("unsplash" | "pexels" | "pixabay")[]) => void;
   disabled?: boolean;
 }
 
 const PROVIDER_LABELS = {
-  unsplash: 'Unsplash',
-  pexels: 'Pexels',
-  pixabay: 'Pixabay',
+  unsplash: "Unsplash",
+  pexels: "Pexels",
+  pixabay: "Pixabay",
 };
 
 export function ImagesHubProviderFilter({
@@ -27,9 +27,11 @@ export function ImagesHubProviderFilter({
   onChange,
   disabled = false,
 }: ImagesHubProviderFilterProps) {
-  const handleProviderToggle = (provider: 'unsplash' | 'pexels' | 'pixabay') => {
+  const handleProviderToggle = (
+    provider: "unsplash" | "pexels" | "pixabay"
+  ) => {
     if (disabled) return;
-    
+
     if (providers.includes(provider)) {
       // Don't allow deselecting all providers
       if (providers.length > 1) {
@@ -45,13 +47,16 @@ export function ImagesHubProviderFilter({
       <div className="space-y-3">
         <Label className="text-sm font-medium">Search Providers</Label>
         <div className="flex flex-wrap gap-4">
-          {(['unsplash', 'pexels', 'pixabay'] as const).map((provider) => (
+          {(["unsplash", "pexels", "pixabay"] as const).map((provider) => (
             <div key={provider} className="flex items-center space-x-2">
               <Checkbox
                 id={`provider-${provider}`}
                 checked={providers.includes(provider)}
                 onCheckedChange={() => handleProviderToggle(provider)}
-                disabled={disabled || (providers.length === 1 && providers.includes(provider))}
+                disabled={
+                  disabled ||
+                  (providers.length === 1 && providers.includes(provider))
+                }
                 aria-label={`Include ${PROVIDER_LABELS[provider]} in search`}
               />
               <Label
@@ -67,4 +72,3 @@ export function ImagesHubProviderFilter({
     </Card>
   );
 }
-

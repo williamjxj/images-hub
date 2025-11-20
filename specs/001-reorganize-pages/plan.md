@@ -9,7 +9,8 @@
 
 Reorganize the application structure to make Stock Images the home page, convert AI Chat into a floating widget accessible across all pages, and reposition Cloudflare Images as a demo link accessible from the Stock Images page. This reorganization focuses on business value by positioning Stock Images as the primary feature while maintaining AI chat functionality as a secondary, non-intrusive assistant widget. The implementation includes navigation updates, widget state management, chat history persistence, and enhanced UI components using Magic UI and Tailwind CSS animations.
 
-**Technical Approach**: 
+**Technical Approach**:
+
 - Move Stock Images page (`/images-hub`) to root (`/`) as home page
 - Extract AI Chat component into a floating widget with persistent state management
 - Update navigation to include Cloudflare Images link in header and add "powered by" branding
@@ -21,6 +22,7 @@ Reorganize the application structure to make Stock Images the home page, convert
 
 **Language/Version**: TypeScript 5.x, Node.js 20+  
 **Primary Dependencies**:
+
 - `next: 16.0.3` - Next.js framework with App Router
 - `react: 19.2.0` - React library
 - `@clerk/nextjs: ^6.35.2` - Authentication (existing)
@@ -30,17 +32,20 @@ Reorganize the application structure to make Stock Images the home page, convert
 - `tailwindcss-animate: ^1.0.7` - Tailwind animation utilities (existing)
 - Magic UI MCP - UI component library (to be integrated)
 
-**Storage**: 
+**Storage**:
+
 - Client-side localStorage for widget state and chat history persistence
 - No server-side storage changes required
 
-**Testing**: 
+**Testing**:
+
 - Component tests for widget state management
 - Integration tests for navigation and routing
 - E2E tests for user flows (widget open/close, navigation persistence)
 - Accessibility tests for widget and navigation
 
 **Target Platform**:
+
 - Web browser (modern browsers supporting React 19)
 - Responsive design: mobile (320px+), tablet (768px+), desktop (1024px+)
 - Vercel deployment platform
@@ -48,18 +53,21 @@ Reorganize the application structure to make Stock Images the home page, convert
 **Project Type**: Web application (Next.js App Router)
 
 **Performance Goals**:
+
 - Page load time < 2 seconds (LCP < 2.5s)
 - Widget open/close animation < 300ms
 - Chat history persistence read/write < 50ms
 - Image loading placeholders render immediately
 
 **Constraints**:
+
 - Must maintain 100% feature parity with existing Stock Images and Cloudflare Images functionality
 - Widget must not interfere with page content or accessibility
 - Chat history must persist across page navigation within browser session
 - Must support mobile devices (320px+ screen width)
 
 **Scale/Scope**:
+
 - 3 main pages to reorganize (home, stock images, cloudflare images)
 - 1 new widget component (AI chat widget)
 - Navigation updates across all pages
@@ -67,21 +75,24 @@ Reorganize the application structure to make Stock Images the home page, convert
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 **Code Quality**:
+
 - [x] Feature uses TypeScript with strict mode (no `any` types)
 - [x] Components follow functional React + TypeScript conventions
 - [x] File/folder naming uses kebab-case
 - [x] All exports include JSDoc/TypeScript doc comments
 
 **Testing Standards**:
+
 - [x] API routes have integration test coverage planned (N/A - no new API routes)
 - [x] Custom hooks have unit test coverage planned (widget state hook)
 - [x] Utility functions have unit test coverage planned (localStorage utilities)
 - [x] Component accessibility testing planned (widget, navigation)
 
 **User Experience Consistency**:
+
 - [x] Feature includes loading states for async operations (image loading placeholders)
 - [x] Feature includes error states with user-friendly messages (existing chat error handling maintained)
 - [x] Feature includes empty states where applicable (widget empty state)
@@ -90,6 +101,7 @@ Reorganize the application structure to make Stock Images the home page, convert
 - [x] Accessibility requirements met (ARIA labels, keyboard navigation for widget)
 
 **Performance Requirements**:
+
 - [x] API route performance targets defined (N/A - no new routes, existing routes maintained)
 - [x] Image optimization strategy defined (Next.js Image component with loading placeholders)
 - [x] Code splitting strategy identified (automatic with App Router)
@@ -152,5 +164,5 @@ lib/
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| N/A | N/A | N/A |
+| --------- | ---------- | ------------------------------------ |
+| N/A       | N/A        | N/A                                  |

@@ -1,6 +1,6 @@
 /**
  * Main Gallery Component for Images Hub
- * 
+ *
  * Orchestrates search, filtering, display, and infinite scroll functionality
  */
 
@@ -48,7 +48,7 @@ export function ImagesHubGallery() {
 
   // Handle provider filter change
   const handleProviderChange = useCallback(
-    (newProviders: ('unsplash' | 'pexels' | 'pixabay')[]) => {
+    (newProviders: ("unsplash" | "pexels" | "pixabay")[]) => {
       setProviders(newProviders);
       // If we have a query, re-search with new providers
       if (query) {
@@ -72,7 +72,7 @@ export function ImagesHubGallery() {
   const hasProviderErrors = useMemo(() => {
     return Object.keys(results?.errors || {}).length > 0;
   }, [results]);
-  
+
   // Announce search results to screen readers
   useEffect(() => {
     if (results && hasResults) {
@@ -81,18 +81,21 @@ export function ImagesHubGallery() {
         0
       );
       announceToScreenReader(
-        `Found ${totalImages} images across ${results.providers.length} provider${results.providers.length > 1 ? 's' : ''}`,
-        'polite'
+        `Found ${totalImages} images across ${results.providers.length} provider${results.providers.length > 1 ? "s" : ""}`,
+        "polite"
       );
     } else if (results && !hasResults && !loading) {
-      announceToScreenReader('No images found. Try a different search query.', 'polite');
+      announceToScreenReader(
+        "No images found. Try a different search query.",
+        "polite"
+      );
     }
   }, [results, hasResults, loading]);
-  
+
   // Announce loading state
   useEffect(() => {
     if (loading && !results) {
-      announceToScreenReader('Searching for images...', 'polite');
+      announceToScreenReader("Searching for images...", "polite");
     }
   }, [loading, results]);
 
@@ -136,9 +139,7 @@ export function ImagesHubGallery() {
       </div>
 
       {/* Error Display */}
-      {error && (
-        <ImagesHubError message={error} onRetry={retry} />
-      )}
+      {error && <ImagesHubError message={error} onRetry={retry} />}
 
       {/* Provider Errors Warning */}
       {hasProviderErrors && results && (
@@ -154,8 +155,14 @@ export function ImagesHubGallery() {
       {loading && !results && <ImagesHubLoading />}
 
       {/* ARIA Live Region for announcements */}
-      <AriaLiveRegion priority="polite" />
-      
+      <AriaLiveRegion priority="polite">
+        {hasResults && results
+          ? `Found ${results.providers.reduce((sum, p) => sum + p.images.length, 0)} images`
+          : results && !hasResults && !loading
+            ? "No images found"
+            : ""}
+      </AriaLiveRegion>
+
       {/* Results */}
       {results && hasResults && (
         <>
@@ -163,16 +170,19 @@ export function ImagesHubGallery() {
             providers={results.providers}
             onImageClick={handleImageClick}
           />
-          
+
           {/* Feedback Prompt */}
           <FeedbackPrompt
             context={`Search results for "${query}"`}
             onDismiss={() => {}}
           />
-          
+
           {/* Infinite Scroll Trigger */}
           {hasMore && (
-            <div ref={infiniteScrollRef} className="h-20 flex items-center justify-center">
+            <div
+              ref={infiniteScrollRef}
+              className="h-20 flex items-center justify-center"
+            >
               {loading && <ImagesHubLoading count={8} />}
             </div>
           )}
@@ -206,4 +216,3 @@ export function ImagesHubGallery() {
     </div>
   );
 }
-

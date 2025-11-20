@@ -37,6 +37,7 @@ CLERK_SECRET_KEY=...
 ```
 
 **Getting API Keys**:
+
 - **Unsplash**: https://unsplash.com/developers (free tier: 50 req/hour)
 - **Pixabay**: https://pixabay.com/api/docs/ (free tier: 5,000 req/hour)
 - **Pexels**: https://www.pexels.com/api/ (free tier: 200 req/hour)
@@ -130,13 +131,13 @@ async search(query: string, page: number = 1, perPage: number = 20): Promise<Ima
 **File**: `lib/hub/normalizer.ts`
 
 ```typescript
-import { ImageResult } from './types';
-import { UnsplashPhoto, PexelsPhoto, PixabayHit } from './types';
+import { ImageResult } from "./types";
+import { UnsplashPhoto, PexelsPhoto, PixabayHit } from "./types";
 
 export function normalizeUnsplash(photo: UnsplashPhoto): ImageResult {
   return {
     id: `u-${photo.id}`,
-    source: 'unsplash',
+    source: "unsplash",
     urlThumb: photo.urls.small,
     urlRegular: photo.urls.regular,
     urlFull: photo.urls.full,
@@ -146,7 +147,7 @@ export function normalizeUnsplash(photo: UnsplashPhoto): ImageResult {
     author: photo.user.name,
     authorUrl: photo.user.links?.html || null,
     sourceUrl: photo.links.html,
-    tags: photo.tags?.map(t => t.title) || [],
+    tags: photo.tags?.map((t) => t.title) || [],
     attribution: `Photo by ${photo.user.name} on Unsplash`,
   };
 }
@@ -159,15 +160,19 @@ export function normalizeUnsplash(photo: UnsplashPhoto): ImageResult {
 **File**: `lib/hub/search-aggregator.ts`
 
 ```typescript
-import { UnsplashClient } from './unsplash-client';
-import { PexelsClient } from './pexels-client';
-import { PixabayClient } from './pixabay-client';
-import { normalizeUnsplash, normalizePexels, normalizePixabay } from './normalizer';
-import { SearchResponse, ProviderResult } from './types';
+import { UnsplashClient } from "./unsplash-client";
+import { PexelsClient } from "./pexels-client";
+import { PixabayClient } from "./pixabay-client";
+import {
+  normalizeUnsplash,
+  normalizePexels,
+  normalizePixabay,
+} from "./normalizer";
+import { SearchResponse, ProviderResult } from "./types";
 
 export async function searchImages(
   query: string,
-  providers: ('unsplash' | 'pexels' | 'pixabay')[],
+  providers: ("unsplash" | "pexels" | "pixabay")[],
   page: number = 1,
   perPage: number = 20
 ): Promise<SearchResponse> {
@@ -177,13 +182,13 @@ export async function searchImages(
 
   // Call providers in parallel
   const results = await Promise.allSettled([
-    providers.includes('unsplash') 
+    providers.includes("unsplash")
       ? unsplashClient.search(query, page, perPage)
       : Promise.resolve([]),
-    providers.includes('pexels')
+    providers.includes("pexels")
       ? pexelsClient.search(query, page, perPage)
       : Promise.resolve([]),
-    providers.includes('pixabay')
+    providers.includes("pixabay")
       ? pixabayClient.search(query, page, perPage)
       : Promise.resolve([]),
   ]);
@@ -198,45 +203,50 @@ export async function searchImages(
 **File**: `app/api/images-hub/search/route.ts`
 
 ```typescript
-import { auth } from '@clerk/nextjs/server';
-import { NextRequest, NextResponse } from 'next/server';
-import { searchImages } from '@/lib/hub/search-aggregator';
+import { auth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
+import { searchImages } from "@/lib/hub/search-aggregator";
 
 export async function GET(request: NextRequest) {
   // Check authentication
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json(
-      { error: 'Unauthorized', message: 'Authentication required' },
+      { error: "Unauthorized", message: "Authentication required" },
       { status: 401 }
     );
   }
 
   // Extract query parameters
   const searchParams = request.nextUrl.searchParams;
-  const query = searchParams.get('q');
-  const providersParam = searchParams.get('providers') || 'unsplash,pexels,pixabay';
-  const page = parseInt(searchParams.get('page') || '1');
-  const perPage = parseInt(searchParams.get('per_page') || '20');
+  const query = searchParams.get("q");
+  const providersParam =
+    searchParams.get("providers") || "unsplash,pexels,pixabay";
+  const page = parseInt(searchParams.get("page") || "1");
+  const perPage = parseInt(searchParams.get("per_page") || "20");
 
   // Validate query
-  if (!query || query.trim() === '') {
+  if (!query || query.trim() === "") {
     return NextResponse.json(
-      { error: 'Bad Request', message: "Query parameter 'q' is required" },
+      { error: "Bad Request", message: "Query parameter 'q' is required" },
       { status: 400 }
     );
   }
 
   // Parse providers
-  const providers = providersParam.split(',') as ('unsplash' | 'pexels' | 'pixabay')[];
+  const providers = providersParam.split(",") as (
+    | "unsplash"
+    | "pexels"
+    | "pixabay"
+  )[];
 
   try {
     const results = await searchImages(query.trim(), providers, page, perPage);
     return NextResponse.json(results);
   } catch (error) {
-    console.error('Search error:', error);
+    console.error("Search error:", error);
     return NextResponse.json(
-      { error: 'Internal Server Error', message: 'Failed to fetch images' },
+      { error: "Internal Server Error", message: "Failed to fetch images" },
       { status: 500 }
     );
   }
@@ -248,43 +258,46 @@ export async function GET(request: NextRequest) {
 **File**: `lib/hooks/use-image-search.ts`
 
 ```typescript
-import { useState, useCallback } from 'react';
-import { SearchResponse, ImageResult } from '@/lib/hub/types';
+import { useState, useCallback } from "react";
+import { SearchResponse, ImageResult } from "@/lib/hub/types";
 
 export function useImageSearch() {
   const [results, setResults] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = useCallback(async (
-    query: string,
-    providers: ('unsplash' | 'pexels' | 'pixabay')[],
-    page: number = 1
-  ) => {
-    setLoading(true);
-    setError(null);
+  const search = useCallback(
+    async (
+      query: string,
+      providers: ("unsplash" | "pexels" | "pixabay")[],
+      page: number = 1
+    ) => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      const params = new URLSearchParams({
-        q: query,
-        providers: providers.join(','),
-        page: page.toString(),
-        per_page: '20',
-      });
+      try {
+        const params = new URLSearchParams({
+          q: query,
+          providers: providers.join(","),
+          page: page.toString(),
+          per_page: "20",
+        });
 
-      const response = await fetch(`/api/images-hub/search?${params}`);
-      if (!response.ok) {
-        throw new Error('Search failed');
+        const response = await fetch(`/api/images-hub/search?${params}`);
+        if (!response.ok) {
+          throw new Error("Search failed");
+        }
+
+        const data: SearchResponse = await response.json();
+        setResults(data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Search failed");
+      } finally {
+        setLoading(false);
       }
-
-      const data: SearchResponse = await response.json();
-      setResults(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Search failed');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    },
+    []
+  );
 
   return { results, loading, error, search };
 }
@@ -409,6 +422,7 @@ curl -X GET "http://localhost:3000/api/images-hub/search?q=sunset&providers=unsp
 ### Issue: No results from a provider
 
 **Possible Causes**:
+
 - API key invalid or missing
 - Rate limit exceeded
 - Provider API is down
@@ -418,6 +432,7 @@ curl -X GET "http://localhost:3000/api/images-hub/search?q=sunset&providers=unsp
 ### Issue: Images not loading
 
 **Possible Causes**:
+
 - CORS issues with provider URLs
 - Invalid image URLs
 - Network errors
@@ -427,11 +442,13 @@ curl -X GET "http://localhost:3000/api/images-hub/search?q=sunset&providers=unsp
 ### Issue: Slow performance
 
 **Possible Causes**:
+
 - Too many providers selected
 - Large images loading
 - No caching
 
-**Solution**: 
+**Solution**:
+
 - Use smaller image sizes for grid (`urlRegular` instead of `urlFull`)
 - Implement client-side caching
 - Consider server-side caching for popular queries
@@ -451,7 +468,7 @@ curl -X GET "http://localhost:3000/api/images-hub/search?q=sunset&providers=unsp
 ---
 
 **References**:
+
 - API Documentation: See `contracts/api-images-hub.yaml`
 - Data Model: See `data-model.md`
 - Research: See `research.md`
-

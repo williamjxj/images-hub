@@ -9,7 +9,7 @@ export interface KeyboardShortcut {
   /** Key combination (e.g., "/", "Escape", "ArrowLeft") */
   key: string;
   /** Modifier keys (e.g., ["Meta", "Control"]) */
-  modifiers?: ('Meta' | 'Control' | 'Alt' | 'Shift')[];
+  modifiers?: ("Meta" | "Control" | "Alt" | "Shift")[];
   /** Action identifier (e.g., "focus-search", "close-modal") */
   action: string;
   /** Human-readable description for help dialog */
@@ -37,7 +37,7 @@ export interface SearchHistoryEntry {
  */
 export interface UserFeedback {
   /** Feedback type */
-  type: 'error' | 'feature-request' | 'general' | 'helpful-prompt';
+  type: "error" | "feature-request" | "general" | "helpful-prompt";
   /** User's feedback description */
   description: string;
   /** Clerk user ID (if authenticated) */
@@ -63,7 +63,7 @@ export interface UserFeedback {
   /** Unix timestamp of submission (milliseconds since epoch) */
   timestamp: number;
   /** Rating for helpful-prompt type feedback */
-  rating?: 'positive' | 'negative';
+  rating?: "positive" | "negative";
 }
 
 /**
@@ -71,8 +71,7 @@ export interface UserFeedback {
  */
 export interface ThemePreference {
   /** Theme value */
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
   /** Resolved theme (light or dark) */
-  resolvedTheme?: 'light' | 'dark';
+  resolvedTheme?: "light" | "dark";
 }
-

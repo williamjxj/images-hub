@@ -1,6 +1,6 @@
 /**
  * Custom hook for managing display mode with localStorage persistence
- * 
+ *
  * Persists the user's display mode preference across sessions.
  */
 
@@ -20,7 +20,10 @@ export function useDisplayMode() {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved && (saved === "grid" || saved === "masonry" || saved === "list")) {
+      if (
+        saved &&
+        (saved === "grid" || saved === "masonry" || saved === "list")
+      ) {
         setDisplayMode(saved as DisplayMode);
       }
     } catch (error) {
@@ -46,4 +49,3 @@ export function useDisplayMode() {
     isLoaded,
   };
 }
-

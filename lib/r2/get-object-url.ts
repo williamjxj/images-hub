@@ -1,6 +1,6 @@
 /**
  * Generate presigned URLs for R2 objects
- * 
+ *
  * Creates time-limited presigned URLs for secure image access
  */
 
@@ -11,7 +11,7 @@ import type { R2BucketName } from "@/types/r2";
 
 /**
  * Generate a presigned URL for accessing an R2 object
- * 
+ *
  * @param bucket - Bucket name
  * @param key - Object key/path
  * @param expiresIn - Expiration time in seconds (default: 3600 = 1 hour)
@@ -43,4 +43,3 @@ export async function getPresignedUrl(
     throw error;
   }
 }
-

@@ -14,7 +14,7 @@
 - Q: What should be the primary source for search suggestions/autocomplete? → A: User's recent searches first, then popular searches as fallback
 - Q: On which pages should the `/` keyboard shortcut focus the search input? → A: Only the Stock Images home page (primary search feature)
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Keyboard Navigation and Shortcuts (Priority: P1)
 
@@ -100,7 +100,7 @@ Users can provide feedback about their experience and report issues easily, enab
 - How does the system handle feedback submission failures (network errors, validation errors)?
 - What happens when users submit duplicate feedback or spam?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -126,13 +126,13 @@ Users can provide feedback about their experience and report issues easily, enab
 - **FR-019**: System MUST disable keyboard shortcuts when focus is within text input fields (except for Esc to close modals) to prevent conflicts with typing
 - **FR-020**: System MUST handle keyboard shortcut conflicts with browser shortcuts gracefully (e.g., use alternative shortcuts or provide user preference settings)
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Search History Entry**: Represents a previously executed search query, including the query text, timestamp, and optionally the number of results found. Used to display recent searches and enable quick re-searching.
 - **User Feedback**: Represents feedback submitted by users, including feedback type (error report, feature request, general feedback), description, optional user contact information, contextual metadata (page URL, user actions, browser/device info), and timestamp.
 - **Keyboard Shortcut Configuration**: Represents the mapping of keyboard shortcuts to actions, including the key combination, target action, and any conditions (e.g., only active when modal is open). Used to manage shortcut behavior and display in help dialog.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

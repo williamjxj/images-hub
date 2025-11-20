@@ -35,14 +35,26 @@ export const metadata: Metadata = {
   description: "Search for images across Unsplash, Pixabay, and Pexels",
   icons: {
     icon: [
-      { url: '/favicon_io/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon_io/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      {
+        url: "/favicon_io/favicon-16x16.png",
+        sizes: "16x16",
+        type: "image/png",
+      },
+      {
+        url: "/favicon_io/favicon-32x32.png",
+        sizes: "32x32",
+        type: "image/png",
+      },
     ],
     apple: [
-      { url: '/favicon_io/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+      {
+        url: "/favicon_io/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
   },
-  manifest: '/favicon_io/site.webmanifest',
+  manifest: "/favicon_io/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -59,41 +71,44 @@ export default function RootLayout({
         >
           <ThemeProvider>
             <KeyboardShortcutsProvider>
-            <SkipLink />
-            <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
-        <nav className="flex items-center gap-4 h-full">
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity h-full">
-            <AppLogo size="sm" showText={false} />
-            <span className="text-sm font-medium hidden sm:inline">Stock Images</span>
-          </Link>
-        </nav>
-            <div className="flex items-center gap-4 h-full">
-              <div className="flex items-center gap-2 text-xs text-muted-foreground hidden md:flex h-full">
-                <span>Powered by</span>
-                <BestITLogo size="sm" />
-                <span>&</span>
-                <BestITConsultantsLogo size="sm" />
-              </div>
-              <ThemeToggle />
-              <SignedOut>
-                <SignInButton mode="modal" />
-                <SignUpButton mode="modal">
-                  <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm px-4 h-10 cursor-pointer hover:bg-[#5a3ae6]">
-                    Sign Up
-                  </button>
-                </SignUpButton>
-              </SignedOut>
-              <SignedIn>
-                <UserButton afterSignOutUrl="/" />
-              </SignedIn>
-            </div>
-          </header>
-          <main id="main-content">
-            {children}
-          </main>
-          <ChatWidget />
-          <KeyboardShortcutsDialog />
-          </KeyboardShortcutsProvider>
+              <SkipLink />
+              <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
+                <nav className="flex items-center gap-4 h-full">
+                  <Link
+                    href="/"
+                    className="flex items-center gap-2 hover:opacity-80 transition-opacity h-full"
+                  >
+                    <AppLogo size="sm" showText={false} />
+                    <span className="text-sm font-medium hidden sm:inline">
+                      Stock Images
+                    </span>
+                  </Link>
+                </nav>
+                <div className="flex items-center gap-4 h-full">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground hidden md:flex h-full">
+                    <span>Powered by</span>
+                    <BestITLogo size="sm" />
+                    <span>&</span>
+                    <BestITConsultantsLogo size="sm" />
+                  </div>
+                  <ThemeToggle />
+                  <SignedOut>
+                    <SignInButton mode="modal" />
+                    <SignUpButton mode="modal">
+                      <button className="bg-[#6c47ff] text-white rounded-full font-medium text-sm px-4 h-10 cursor-pointer hover:bg-[#5a3ae6]">
+                        Sign Up
+                      </button>
+                    </SignUpButton>
+                  </SignedOut>
+                  <SignedIn>
+                    <UserButton afterSignOutUrl="/" />
+                  </SignedIn>
+                </div>
+              </header>
+              <main id="main-content">{children}</main>
+              <ChatWidget />
+              <KeyboardShortcutsDialog />
+            </KeyboardShortcutsProvider>
           </ThemeProvider>
         </body>
       </html>

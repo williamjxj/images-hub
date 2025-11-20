@@ -1,6 +1,6 @@
 /**
  * R2 Image Filter Component
- * 
+ *
  * Provides search and advanced filtering options for images.
  * Includes search by filename, filter by file type, size range, and date range.
  */
@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { motion, AnimatePresence } from "framer-motion";
 import type { ImageGalleryFilter } from "@/types/r2";
 
 interface R2ImageFilterProps {
@@ -40,7 +39,6 @@ const FILE_TYPES = [
   { value: "mkv", label: "MKV", category: "video" },
   { value: "m4v", label: "M4V", category: "video" },
 ];
-
 
 export function R2ImageFilter({
   filter,
@@ -155,21 +153,28 @@ export function R2ImageFilter({
                     Images
                   </Label>
                   <div className="space-y-2">
-                    {FILE_TYPES.filter((t) => t.category === "image").map((type) => (
-                      <div key={type.value} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`filter-type-${type.value}`}
-                          checked={selectedFileTypes.includes(type.value)}
-                          onCheckedChange={() => handleFileTypeToggle(type.value)}
-                        />
-                        <Label
-                          htmlFor={`filter-type-${type.value}`}
-                          className="text-sm font-normal cursor-pointer"
+                    {FILE_TYPES.filter((t) => t.category === "image").map(
+                      (type) => (
+                        <div
+                          key={type.value}
+                          className="flex items-center space-x-2"
                         >
-                          {type.label}
-                        </Label>
-                      </div>
-                    ))}
+                          <Checkbox
+                            id={`filter-type-${type.value}`}
+                            checked={selectedFileTypes.includes(type.value)}
+                            onCheckedChange={() =>
+                              handleFileTypeToggle(type.value)
+                            }
+                          />
+                          <Label
+                            htmlFor={`filter-type-${type.value}`}
+                            className="text-sm font-normal cursor-pointer"
+                          >
+                            {type.label}
+                          </Label>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
                 {/* Videos */}
@@ -178,26 +183,32 @@ export function R2ImageFilter({
                     Videos
                   </Label>
                   <div className="space-y-2">
-                    {FILE_TYPES.filter((t) => t.category === "video").map((type) => (
-                      <div key={type.value} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={`filter-type-${type.value}`}
-                          checked={selectedFileTypes.includes(type.value)}
-                          onCheckedChange={() => handleFileTypeToggle(type.value)}
-                        />
-                        <Label
-                          htmlFor={`filter-type-${type.value}`}
-                          className="text-sm font-normal cursor-pointer"
+                    {FILE_TYPES.filter((t) => t.category === "video").map(
+                      (type) => (
+                        <div
+                          key={type.value}
+                          className="flex items-center space-x-2"
                         >
-                          {type.label}
-                        </Label>
-                      </div>
-                    ))}
+                          <Checkbox
+                            id={`filter-type-${type.value}`}
+                            checked={selectedFileTypes.includes(type.value)}
+                            onCheckedChange={() =>
+                              handleFileTypeToggle(type.value)
+                            }
+                          />
+                          <Label
+                            htmlFor={`filter-type-${type.value}`}
+                            className="text-sm font-normal cursor-pointer"
+                          >
+                            {type.label}
+                          </Label>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-
 
             {/* Results count */}
             {imageCount > 0 && (
@@ -211,4 +222,3 @@ export function R2ImageFilter({
     </div>
   );
 }
-

@@ -1,6 +1,6 @@
 /**
  * R2 Image List Component
- * 
+ *
  * Displays images in a horizontal list layout with thumbnails and metadata.
  * Efficient for browsing many images quickly.
  */
@@ -65,7 +65,10 @@ export function R2ImageList({ images, onImageClick }: R2ImageListProps) {
                   )}
                   {isVideo && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                      <Play className="h-6 w-6 text-white" fill="currentColor" />
+                      <Play
+                        className="h-6 w-6 text-white"
+                        fill="currentColor"
+                      />
                     </div>
                   )}
                 </>
@@ -91,4 +94,3 @@ export function R2ImageList({ images, onImageClick }: R2ImageListProps) {
     </div>
   );
 }
-

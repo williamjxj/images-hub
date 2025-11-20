@@ -8,6 +8,7 @@
 ## Summary
 
 Build a unified image search hub that aggregates search results from three stock photo providers (Unsplash, Pixabay, Pexels) into a single interface. The feature includes:
+
 - Unified search interface across multiple providers
 - Masonry/waterfall grid layout for image results
 - Provider filtering and selection
@@ -24,13 +25,15 @@ Build a unified image search hub that aggregates search results from three stock
 **Testing**: Jest + React Testing Library (to be added)  
 **Target Platform**: Web (Next.js App Router), modern browsers  
 **Project Type**: Web application (Next.js App Router)  
-**Performance Goals**: 
+**Performance Goals**:
+
 - Search results displayed within 3 seconds (SC-001)
 - Support 50+ images without performance degradation (SC-007)
 - Handle API errors gracefully - partial results when providers fail (SC-004)
 - 95% success rate for displaying results from at least one provider (SC-002)
 
-**Constraints**: 
+**Constraints**:
+
 - Must use API keys from `.env.local` (UNSPLASH_ACCESS_KEY, PIXABAY_API_KEY, PEXELS_API_KEY)
 - Authentication required (Clerk integration - consistent with R2 gallery)
 - Infinite scroll instead of traditional pagination
@@ -38,13 +41,15 @@ Build a unified image search hub that aggregates search results from three stock
 - Must handle rate limiting gracefully (show partial results with warnings)
 - Must normalize different API response formats into unified data structure
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - 3 external API providers (Unsplash, Pixabay, Pexels)
 - Unlimited search results per query (via infinite scroll)
 - All authenticated users have access
 - Rate limits vary by provider (must handle gracefully)
 
-**Existing Codebase**: 
+**Existing Codebase**:
+
 - `lib/hub/` folder contains working implementations:
   - `unsplash-client.ts` - Unsplash API client (needs enhancement for search queries)
   - `pexels-client.ts` - Pexels API client (needs enhancement for search queries)
@@ -55,6 +60,7 @@ Build a unified image search hub that aggregates search results from three stock
 - Follow patterns from R2 image gallery (`003-r2-image-tabs`) for UI components
 
 **NEEDS CLARIFICATION**:
+
 - API rate limits per provider (to determine caching strategy)
 - Exact API response structures for search endpoints (to finalize normalization)
 - Whether to implement client-side caching for search results
@@ -112,6 +118,7 @@ lib/
 ```
 
 **Structure Decision**: Using Next.js App Router structure with:
+
 - Server components for data fetching (API routes)
 - Client components for interactive UI (gallery, search, filters)
 - Separation of concerns: API clients in `/lib/hub`, UI components in `/components/images-hub`
@@ -122,6 +129,7 @@ lib/
 ## Complexity Tracking
 
 **Estimated Complexity**: Medium-High
+
 - **API Integration**: Medium (3 different APIs with different formats)
 - **Data Normalization**: Medium (need to unify different response structures)
 - **UI Components**: Medium (reuse patterns from R2 gallery)
@@ -129,6 +137,7 @@ lib/
 - **State Management**: Medium (multiple providers, pagination, filters)
 
 **Risk Areas**:
+
 - API rate limiting and error handling
 - Data normalization complexity
 - Performance with large result sets
@@ -164,12 +173,14 @@ PIXABAY_URL=https://pixabay.com/api/  # Optional, defaults to this
 ## Reference Implementation Pattern
 
 **R2 Image Gallery (`003-r2-image-tabs`)**:
+
 - Similar gallery UI patterns (masonry grid, infinite scroll, modals)
 - Similar component structure and organization
 - Similar state management patterns
 - Can reuse: `use-infinite-scroll.ts`, display mode patterns, loading skeletons
 
 **Key Differences**:
+
 - R2 gallery: Server-side data (R2 buckets), single source
 - Images Hub: External APIs, multiple sources, requires normalization
 - R2 gallery: Folder navigation, this feature: search-based
@@ -180,6 +191,7 @@ PIXABAY_URL=https://pixabay.com/api/  # Optional, defaults to this
 **Goal**: Resolve all NEEDS CLARIFICATION items and make technical decisions
 
 **Research Tasks**:
+
 1. ✅ Research Unsplash, Pixabay, Pexels API documentation for:
    - Search endpoint structures
    - Rate limits and quotas
@@ -198,6 +210,7 @@ PIXABAY_URL=https://pixabay.com/api/  # Optional, defaults to this
 **Prerequisites**: ✅ `research.md` complete
 
 **Design Tasks**:
+
 1. ✅ **Data Model**: Define unified `ImageResult` type and normalization mapping
 2. ✅ **API Contracts**: Design unified search API endpoint
 3. ✅ **Component Design**: Design component hierarchy and props
@@ -210,6 +223,7 @@ PIXABAY_URL=https://pixabay.com/api/  # Optional, defaults to this
 **Prerequisites**: Phase 1 complete
 
 **Planning Tasks**:
+
 1. Break down into implementation tasks
 2. Define task dependencies
 3. Estimate complexity
@@ -219,8 +233,8 @@ PIXABAY_URL=https://pixabay.com/api/  # Optional, defaults to this
 
 ---
 
-**Next Steps**: 
+**Next Steps**:
+
 1. Execute Phase 0: Generate `research.md`
 2. Execute Phase 1: Generate `data-model.md`, `contracts/`, `quickstart.md`
 3. Run `/speckit.tasks` to create task breakdown
-

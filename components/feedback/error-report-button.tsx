@@ -1,37 +1,37 @@
 /**
  * Error Report Button Component
- * 
+ *
  * Button that opens feedback form for error reporting
  */
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { FeedbackForm } from './feedback-form';
-import type { UserFeedback } from '@/types/ui-ux';
+} from "@/components/ui/dialog";
+import { FeedbackForm } from "./feedback-form";
+import type { UserFeedback } from "@/types/ui-ux";
 
 /**
  * Props for ErrorReportButton component
  */
 interface ErrorReportButtonProps {
   /** Error details to include in report */
-  errorDetails?: UserFeedback['errorDetails'];
+  errorDetails?: UserFeedback["errorDetails"];
   /** Custom error message */
   errorMessage?: string;
 }
 
 /**
  * Error Report Button Component
- * 
+ *
  * Opens a dialog with feedback form pre-filled for error reporting
  */
 export function ErrorReportButton({
@@ -39,7 +39,7 @@ export function ErrorReportButton({
   errorMessage,
 }: ErrorReportButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -54,7 +54,7 @@ export function ErrorReportButton({
         </DialogHeader>
         <FeedbackForm
           initialType="error"
-          initialDescription={errorMessage || ''}
+          initialDescription={errorMessage || ""}
           errorDetails={errorDetails}
           onSuccess={() => setIsOpen(false)}
           onClose={() => setIsOpen(false)}
@@ -63,4 +63,3 @@ export function ErrorReportButton({
     </Dialog>
   );
 }
-

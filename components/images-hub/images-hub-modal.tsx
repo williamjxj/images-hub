@@ -1,6 +1,6 @@
 /**
  * Image Modal Component for Images Hub
- * 
+ *
  * Displays full-size image with attribution and download options
  */
 
@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { X, ExternalLink, Copy, Download } from "lucide-react";
+import { X, ExternalLink, Copy } from "lucide-react";
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ export function ImagesHubModal({ image, onClose }: ImagesHubModalProps) {
   }, [image, onClose]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setImageError(false);
   }, [image]);
 
@@ -60,7 +61,9 @@ export function ImagesHubModal({ image, onClose }: ImagesHubModalProps) {
     <Dialog open={!!image} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-7xl w-full h-[90vh] p-0 bg-black/95 border-none overflow-hidden">
         <DialogTitle className="sr-only">
-          {image ? `Image: ${image.description || image.attribution}` : "Image viewer"}
+          {image
+            ? `Image: ${image.description || image.attribution}`
+            : "Image viewer"}
         </DialogTitle>
         <motion.div
           initial={{ opacity: 0 }}
@@ -166,4 +169,3 @@ export function ImagesHubModal({ image, onClose }: ImagesHubModalProps) {
     </Dialog>
   );
 }
-

@@ -3,7 +3,14 @@
  */
 
 const SUPPORTED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
-const SUPPORTED_VIDEO_EXTENSIONS = [".mp4", ".webm", ".mov", ".avi", ".mkv", ".m4v"];
+const SUPPORTED_VIDEO_EXTENSIONS = [
+  ".mp4",
+  ".webm",
+  ".mov",
+  ".avi",
+  ".mkv",
+  ".m4v",
+];
 
 /**
  * Check if a file key represents an image file based on extension
@@ -50,23 +57,31 @@ export function getMediaType(key: string): "image" | "video" | null {
  * @param images - Array of image objects to sort
  * @returns Sorted array with newest images first
  */
-export function sortImagesByDate<T extends { lastModified: Date | string | null | undefined }>(
-  images: T[]
-): T[] {
+export function sortImagesByDate<
+  T extends { lastModified: Date | string | null | undefined },
+>(images: T[]): T[] {
   return [...images].sort((a, b) => {
     // Handle missing lastModified gracefully
     if (!a.lastModified && !b.lastModified) return 0;
     if (!a.lastModified) return 1; // Put missing dates at end
     if (!b.lastModified) return -1;
-    
+
     // Convert to Date objects if strings
-    const dateA = typeof a.lastModified === "string" ? new Date(a.lastModified) : a.lastModified;
-    const dateB = typeof b.lastModified === "string" ? new Date(b.lastModified) : b.lastModified;
-    
+    const dateA =
+      typeof a.lastModified === "string"
+        ? new Date(a.lastModified)
+        : a.lastModified;
+    const dateB =
+      typeof b.lastModified === "string"
+        ? new Date(b.lastModified)
+        : b.lastModified;
+
     // Handle invalid dates
-    const timeA = dateA instanceof Date && !isNaN(dateA.getTime()) ? dateA.getTime() : 0;
-    const timeB = dateB instanceof Date && !isNaN(dateB.getTime()) ? dateB.getTime() : 0;
-    
+    const timeA =
+      dateA instanceof Date && !isNaN(dateA.getTime()) ? dateA.getTime() : 0;
+    const timeB =
+      dateB instanceof Date && !isNaN(dateB.getTime()) ? dateB.getTime() : 0;
+
     // Sort descending (newest first)
     return timeB - timeA;
   });
@@ -79,11 +94,11 @@ export function sortImagesByDate<T extends { lastModified: Date | string | null 
  */
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 Bytes";
-  
+
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
@@ -94,19 +109,18 @@ export function formatFileSize(bytes: number): string {
  */
 export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "Unknown date";
-  
+
   // Convert string to Date if needed
   const dateObj = typeof date === "string" ? new Date(date) : date;
-  
+
   // Check if date is valid
   if (isNaN(dateObj.getTime())) {
     return "Invalid date";
   }
-  
+
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   }).format(dateObj);
 }
-

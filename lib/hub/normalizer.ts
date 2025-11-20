@@ -8,7 +8,7 @@ import type {
   UnsplashPhoto,
   PexelsPhoto,
   PixabayHit,
-} from './types';
+} from "./types";
 
 /**
  * Normalize Unsplash photo to unified ImageResult format
@@ -16,7 +16,7 @@ import type {
 export function normalizeUnsplash(photo: UnsplashPhoto): ImageResult {
   return {
     id: `u-${photo.id}`,
-    source: 'unsplash',
+    source: "unsplash",
     urlThumb: photo.urls.small,
     urlRegular: photo.urls.regular,
     urlFull: photo.urls.full,
@@ -37,7 +37,7 @@ export function normalizeUnsplash(photo: UnsplashPhoto): ImageResult {
 export function normalizePexels(photo: PexelsPhoto): ImageResult {
   return {
     id: `px-${photo.id}`,
-    source: 'pexels',
+    source: "pexels",
     urlThumb: photo.src.small,
     urlRegular: photo.src.large,
     urlFull: photo.src.original,
@@ -56,12 +56,12 @@ export function normalizePexels(photo: PexelsPhoto): ImageResult {
  * Normalize Pixabay hit to unified ImageResult format
  */
 export function normalizePixabay(hit: PixabayHit): ImageResult {
-  const tags = hit.tags ? hit.tags.split(', ').filter(Boolean) : [];
+  const tags = hit.tags ? hit.tags.split(", ").filter(Boolean) : [];
   const sourceUrl = `https://pixabay.com/photos/${hit.id}/`;
 
   return {
     id: `pb-${hit.id}`,
-    source: 'pixabay',
+    source: "pixabay",
     urlThumb: hit.webformatURL,
     urlRegular: hit.largeImageURL,
     urlFull: hit.imageURL,
@@ -75,4 +75,3 @@ export function normalizePixabay(hit: PixabayHit): ImageResult {
     attribution: `Image by ${hit.user} from Pixabay`,
   };
 }
-

@@ -1,12 +1,12 @@
 /**
  * Search Input Component for Images Hub
- * 
+ *
  * Provides a search input with debouncing and submit functionality
  */
 
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useRef } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -48,7 +48,7 @@ export function ImagesHubSearch({
     },
     [query, onSearch, addToHistory]
   );
-  
+
   const handleSuggestionSelect = useCallback(
     (suggestion: string) => {
       setQuery(suggestion);
@@ -60,7 +60,7 @@ export function ImagesHubSearch({
     },
     [onSearch, addToHistory]
   );
-  
+
   const handleHistorySelect = useCallback(
     (historyQuery: string) => {
       setQuery(historyQuery);
@@ -70,7 +70,7 @@ export function ImagesHubSearch({
     },
     [onSearch]
   );
-  
+
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
     if (query.length < 2) {
@@ -81,7 +81,7 @@ export function ImagesHubSearch({
       setShowHistory(false);
     }
   }, [query]);
-  
+
   const handleInputBlur = useCallback(() => {
     setIsFocused(false);
     // Delay hiding to allow clicks on suggestions/history
@@ -90,7 +90,7 @@ export function ImagesHubSearch({
       setShowHistory(false);
     }, 200);
   }, []);
-  
+
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newQuery = e.target.value;
@@ -169,4 +169,3 @@ export function ImagesHubSearch({
     </form>
   );
 }
-

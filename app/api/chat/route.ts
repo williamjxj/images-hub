@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   try {
     const authResult = await auth();
     const { userId } = authResult;
-    
+
     if (!userId) {
       return new Response(
         JSON.stringify({

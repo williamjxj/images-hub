@@ -1,13 +1,13 @@
 /**
  * Theme Provider Component
- * 
+ *
  * Wraps next-themes ThemeProvider with app-specific configuration
  */
 
-'use client';
+"use client";
 
-import { ThemeProvider as NextThemesProvider } from 'next-themes';
-import type { ReactNode } from 'react';
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import type { ReactNode } from "react";
 
 /**
  * Props for ThemeProvider component
@@ -15,7 +15,7 @@ import type { ReactNode } from 'react';
 interface ThemeProviderProps {
   children: ReactNode;
   /** Default theme */
-  defaultTheme?: 'light' | 'dark' | 'system';
+  defaultTheme?: "light" | "dark" | "system";
   /** Whether to enable system theme detection */
   enableSystem?: boolean;
   /** Attribute name for theme class */
@@ -26,14 +26,14 @@ interface ThemeProviderProps {
 
 /**
  * Theme Provider Component
- * 
+ *
  * Provides theme context for the application using next-themes
  */
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
+  defaultTheme = "system",
   enableSystem = true,
-  attribute = 'class',
+  attribute = "class",
   disableTransitionOnChange = false,
 }: ThemeProviderProps) {
   return (
@@ -47,4 +47,3 @@ export function ThemeProvider({
     </NextThemesProvider>
   );
 }
-

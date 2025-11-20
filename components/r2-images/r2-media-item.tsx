@@ -1,6 +1,6 @@
 /**
  * R2 Media Item Component
- * 
+ *
  * Displays a single image or video with lazy loading and error handling.
  * Shows media metadata on hover. Videos display with a play button overlay.
  */
@@ -20,7 +20,11 @@ interface R2MediaItemProps {
   isMasonry?: boolean;
 }
 
-export function R2MediaItem({ media, onClick, isMasonry = false }: R2MediaItemProps) {
+export function R2MediaItem({
+  media,
+  onClick,
+  isMasonry = false,
+}: R2MediaItemProps) {
   const [mediaError, setMediaError] = useState(false);
   const [mediaLoaded, setMediaLoaded] = useState(false);
   const isVideo = media.mediaType === "video";
@@ -53,7 +57,7 @@ export function R2MediaItem({ media, onClick, isMasonry = false }: R2MediaItemPr
       initial={{ opacity: 0 }}
       animate={{ opacity: mediaLoaded ? 1 : 0 }}
       transition={{ duration: 0.2 }}
-      className={`relative group cursor-pointer overflow-hidden rounded-lg bg-muted w-full ${isMasonry ? '' : 'aspect-square'}`}
+      className={`relative group cursor-pointer overflow-hidden rounded-lg bg-muted w-full ${isMasonry ? "" : "aspect-square"}`}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -118,10 +122,13 @@ export function R2MediaItem({ media, onClick, isMasonry = false }: R2MediaItemPr
           )}
         </>
       )}
-      
+
       {/* Persistent metadata overlay */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <p className="text-white text-xs font-medium truncate" title={media.name}>
+        <p
+          className="text-white text-xs font-medium truncate"
+          title={media.name}
+        >
           {media.name}
         </p>
         <div className="flex items-center gap-2 mt-1 text-white/80 text-[10px]">
@@ -135,4 +142,3 @@ export function R2MediaItem({ media, onClick, isMasonry = false }: R2MediaItemPr
     </motion.div>
   );
 }
-

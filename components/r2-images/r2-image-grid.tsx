@@ -1,6 +1,6 @@
 /**
  * R2 Image Grid Component
- * 
+ *
  * Displays images in a responsive CSS Grid layout.
  * Supports 2 columns (mobile), 3 columns (tablet), 4 columns (desktop).
  */
@@ -42,4 +42,3 @@ export function R2ImageGrid({ images, onImageClick }: R2ImageGridProps) {
     </div>
   );
 }
-

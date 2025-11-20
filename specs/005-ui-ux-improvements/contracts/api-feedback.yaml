@@ -25,7 +25,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FeedbackRequest'
+              $ref: "#/components/schemas/FeedbackRequest"
             examples:
               errorReport:
                 summary: Error report example
@@ -46,39 +46,39 @@ paths:
                   description: "The search suggestions feature was very helpful!"
                   rating: "positive"
       responses:
-        '200':
+        "200":
           description: Feedback submitted successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FeedbackResponse'
+                $ref: "#/components/schemas/FeedbackResponse"
               example:
                 success: true
                 message: "Feedback submitted successfully"
-        '400':
+        "400":
           description: Bad request - validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Bad Request"
                 message: "Description is required"
-        '401':
+        "401":
           description: Unauthorized - authentication required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Unauthorized"
                 message: "Authentication required"
-        '500':
+        "500":
           description: Internal server error - email sending failed
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal Server Error"
                 message: "Failed to send feedback email"
@@ -162,4 +162,3 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: Clerk authentication token
-

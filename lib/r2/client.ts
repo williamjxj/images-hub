@@ -1,9 +1,9 @@
 /**
  * R2 Client Configuration
- * 
+ *
  * Initializes and exports the S3-compatible client for Cloudflare R2
  * Following the pim-gallery pattern with multi-bucket support
- * 
+ *
  * NOTE: This file should only be imported in server-side code (API routes, server components)
  * For client-side code, import from lib/r2/constants.ts instead
  */
@@ -37,7 +37,7 @@ function getR2Endpoint(): string {
 /**
  * Initialize R2 S3 client
  * Throws error if required environment variables are missing
- * 
+ *
  * This is initialized lazily to avoid accessing env vars at module load time
  */
 let _r2Client: S3Client | null = null;
@@ -60,4 +60,3 @@ export function getR2Client(): S3Client {
   }
   return _r2Client;
 }
-

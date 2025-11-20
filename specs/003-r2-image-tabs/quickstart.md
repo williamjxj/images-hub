@@ -37,6 +37,7 @@ R2_ACCOUNT_ID=your_cloudflare_account_id
 ```
 
 **How to get R2 credentials**:
+
 1. Log in to Cloudflare Dashboard
 2. Go to R2 → Manage R2 API Tokens
 3. Create API token with Read permissions
@@ -50,7 +51,11 @@ Create `lib/r2/client.ts`:
 ```typescript
 import { S3Client } from "@aws-sdk/client-s3";
 
-if (!process.env.R2_ACCESS_KEY_ID || !process.env.R2_SECRET_ACCESS_KEY || !process.env.R2_ACCOUNT_ID) {
+if (
+  !process.env.R2_ACCESS_KEY_ID ||
+  !process.env.R2_SECRET_ACCESS_KEY ||
+  !process.env.R2_ACCOUNT_ID
+) {
   throw new Error("Missing R2 environment variables");
 }
 
@@ -69,7 +74,7 @@ export const R2_BUCKETS = [
   "static-assets",
 ] as const;
 
-export type R2BucketName = typeof R2_BUCKETS[number];
+export type R2BucketName = (typeof R2_BUCKETS)[number];
 ```
 
 ### 4. Create API Routes
@@ -288,7 +293,7 @@ type DisplayMode = "grid" | "masonry" | "list";
 export function R2ImageGallery() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  
+
   const bucket = searchParams.get("bucket") || R2_BUCKETS[0];
   const folder = searchParams.get("folder") || "";
   const [displayMode, setDisplayMode] = useState<DisplayMode>("grid");
@@ -332,7 +337,7 @@ export function R2ImageGallery() {
         activeBucket={bucket}
         onTabChange={handleTabChange}
       />
-      
+
       <R2FolderNavigation
         bucket={bucket}
         currentFolder={folder}
@@ -426,4 +431,3 @@ curl -H "Authorization: Bearer YOUR_CLERK_TOKEN" \
 - [AWS SDK for JavaScript v3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/)
 - [Next.js App Router](https://nextjs.org/docs/app)
 - [React Intersection Observer](https://github.com/thebuilder/react-intersection-observer)
-

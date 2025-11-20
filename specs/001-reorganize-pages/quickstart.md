@@ -23,12 +23,12 @@ This guide provides step-by-step instructions for implementing the page reorgani
 Create `lib/hooks/use-chat-widget.ts`:
 
 ```typescript
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import type { Message } from '@/types/chat';
+import { useState, useEffect, useCallback } from "react";
+import type { Message } from "@/types/chat";
 
-const STORAGE_KEY = 'chat-widget-state';
+const STORAGE_KEY = "chat-widget-state";
 const DEBOUNCE_MS = 100;
 
 export function useChatWidget() {
@@ -46,7 +46,7 @@ export function useChatWidget() {
         setMessages(state.messages ?? []);
       }
     } catch (error) {
-      console.error('Failed to load widget state:', error);
+      console.error("Failed to load widget state:", error);
     }
   }, []);
 
@@ -59,7 +59,7 @@ export function useChatWidget() {
           JSON.stringify({ isOpen, messages, lastUpdated: Date.now() })
         );
       } catch (error) {
-        console.error('Failed to save widget state:', error);
+        console.error("Failed to save widget state:", error);
       }
     }, DEBOUNCE_MS);
 
@@ -455,7 +455,7 @@ Use Magic UI MCP to enhance navigation buttons and breadcrumbs:
 
 ```typescript
 // Example: Using Magic UI button
-import { Button } from '@magicui/react'; // Adjust import based on actual Magic UI structure
+import { Button } from "@magicui/react"; // Adjust import based on actual Magic UI structure
 ```
 
 ## Testing Checklist
@@ -477,8 +477,9 @@ import { Button } from '@magicui/react'; // Adjust import based on actual Magic 
 ### Issue: Widget state not persisting
 
 **Solution**: Check localStorage availability, add error handling:
+
 ```typescript
-if (typeof window !== 'undefined' && 'localStorage' in window) {
+if (typeof window !== "undefined" && "localStorage" in window) {
   // Use localStorage
 } else {
   // Fallback to in-memory state
@@ -488,15 +489,17 @@ if (typeof window !== 'undefined' && 'localStorage' in window) {
 ### Issue: Widget z-index conflicts
 
 **Solution**: Use high z-index (9999) and test with modals:
+
 ```typescript
-className="z-[9999]"
+className = "z-[9999]";
 ```
 
 ### Issue: Mobile layout issues
 
 **Solution**: Use responsive classes and test on real devices:
+
 ```typescript
-className="w-full md:w-[400px]"
+className = "w-full md:w-[400px]";
 ```
 
 ## Next Steps
@@ -514,4 +517,3 @@ className="w-full md:w-[400px]"
 - [Framer Motion Docs](https://www.framer.com/motion/)
 - [React Context API](https://react.dev/reference/react/useContext)
 - [localStorage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-

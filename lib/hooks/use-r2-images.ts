@@ -1,6 +1,6 @@
 /**
  * Custom hook for managing R2 image gallery state
- * 
+ *
  * Provides state management and functions for loading images from R2 buckets,
  * handling pagination, bucket switching, and folder navigation.
  */
@@ -8,16 +8,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import type {
-  R2Object,
-  R2BucketName,
-  R2ListResponse,
-} from "@/types/r2";
+import type { R2Object, R2BucketName, R2ListResponse } from "@/types/r2";
 import { R2_BUCKETS } from "@/lib/r2/constants";
 
 /**
  * Hook for managing R2 image gallery state
- * 
+ *
  * @param initialBucket - Initial bucket to load (defaults to first bucket)
  * @param initialFolder - Initial folder path (defaults to root "")
  */
@@ -57,7 +53,7 @@ export function useR2Images(
       params.set("maxKeys", "100");
 
       const response = await fetch(`/api/r2/list?${params}`);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
@@ -116,9 +112,7 @@ export function useR2Images(
       setHasMore(data.hasMore);
       setCursor(data.nextToken || undefined);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to load images"
-      );
+      setError(err instanceof Error ? err.message : "Failed to load images");
       setHasMore(false);
     } finally {
       setLoading(false);
@@ -170,4 +164,3 @@ export function useR2Images(
     navigateToFolder,
   };
 }
-

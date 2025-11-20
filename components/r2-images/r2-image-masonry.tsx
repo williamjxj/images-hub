@@ -1,6 +1,6 @@
 /**
  * R2 Image Masonry Component
- * 
+ *
  * Displays images in a masonry (Pinterest-style) layout using CSS columns.
  * Images maintain their natural aspect ratios.
  */
@@ -36,4 +36,3 @@ export function R2ImageMasonry({ images, onImageClick }: R2ImageMasonryProps) {
     </div>
   );
 }
-

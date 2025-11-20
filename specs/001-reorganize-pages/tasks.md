@@ -16,6 +16,7 @@ This document breaks down the page reorganization feature into actionable, depen
 **MVP First**: Start with User Story 1 to establish the primary user journey. This provides immediate business value by making Stock Images the home page.
 
 **Incremental Delivery**: Each user story phase delivers independently testable functionality:
+
 - Phase 3 (US1): Stock Images as home page - Core feature
 - Phase 4 (US2): AI Chat widget - Secondary feature, non-blocking
 - Phase 5 (US3): Cloudflare Images link - Navigation enhancement
@@ -39,6 +40,7 @@ Phase 6 (Polish)
 ```
 
 **Story Dependencies**:
+
 - US1 (P1): No dependencies (can start after Phase 2)
 - US2 (P2): Requires Phase 2 (localStorage utilities), can run parallel with US1
 - US3 (P3): Requires US1 (needs Stock Images page), can run parallel with US2
@@ -77,6 +79,7 @@ Phase 6 (Polish)
 **Independent Test**: Navigate to root URL, verify Stock Images interface displays with full search and gallery functionality intact.
 
 **Acceptance Criteria**:
+
 - Stock Images interface displays at root URL
 - Authentication flow works (redirects to sign-in if not authenticated)
 - All existing Stock Images functionality works identically
@@ -102,6 +105,7 @@ Phase 6 (Polish)
 **Independent Test**: Widget appears on all pages, can be opened/closed, maintains chat functionality, state persists across navigation.
 
 **Acceptance Criteria**:
+
 - Widget icon (angel.webp) appears in bottom-right corner on all pages
 - Widget opens to show chat interface (400px desktop, full-width mobile)
 - All existing chat functionality works (send, receive, error handling)
@@ -135,6 +139,7 @@ Phase 6 (Polish)
 **Independent Test**: Link appears in Stock Images header, navigates correctly, Cloudflare Images removed from main nav.
 
 **Acceptance Criteria**:
+
 - Cloudflare Images link visible in Stock Images page header/navigation area
 - Link navigates to Cloudflare Images page with all functionality intact
 - Cloudflare Images removed from top-level navigation menu
@@ -155,7 +160,7 @@ Phase 6 (Polish)
 **Independent Test**: All navigation elements work correctly, loading placeholders display, "Powered by" links functional.
 
 - [x] T049 Update `app/layout.tsx` navigation to add "Powered by Best IT Consulting" and "Best IT Consultants" links with proper styling
-- [x] T050 Add external link indicators (target="_blank", rel="noopener noreferrer") to "Powered by" links in `app/layout.tsx`
+- [x] T050 Add external link indicators (target="\_blank", rel="noopener noreferrer") to "Powered by" links in `app/layout.tsx`
 - [x] T051 Integrate Magic UI components for enhanced navigation buttons in `app/layout.tsx` (if available) - Skipped: Using existing shadcn/ui components
 - [x] T052 Integrate Tailwind CSS animations for navigation elements using `tailwindcss-animate` - Completed: Animations via Framer Motion and tailwindcss-animate
 - [x] T053 Implement dynamic loading placeholders in `components/images-hub/images-hub-item.tsx` using `ImageSkeleton` component
@@ -173,11 +178,13 @@ Phase 6 (Polish)
 ## Parallel Execution Examples
 
 ### User Story 1 (US1) - Can be done independently
+
 ```
 T012 → T013 → T014 → T015 → T016 → T017 → T018 → T019 → T020 → T021 → T022 → T023
 ```
 
 ### User Story 2 (US2) - Parallel opportunities after Phase 2
+
 ```
 T024 ─┐
 T025 ─┤ (can be done in parallel)
@@ -189,6 +196,7 @@ T037 → T038 → T039 → T040 → T041 (testing tasks)
 ```
 
 ### User Story 3 (US3) - Requires US1, can run parallel with US2
+
 ```
 T042 → T043 → T044 → T045 → T046 → T047 → T048
 ```
@@ -196,23 +204,27 @@ T042 → T043 → T044 → T045 → T046 → T047 → T048
 ## Testing Strategy
 
 ### Unit Tests
+
 - `use-chat-widget` hook: State management, localStorage persistence
 - `use-chat-history` hook: Message array management, storage operations
 - Storage utilities: Save/load/clear operations, error handling
 - `ImageSkeleton` component: Rendering, aspect ratios, animations
 
 ### Integration Tests
+
 - Widget open/close flow
 - Chat history persistence across navigation
 - Navigation link functionality
 - Route redirects
 
 ### E2E Tests
+
 - Complete user flow: Home → Widget → Chat → Navigate → Verify persistence
 - Mobile responsive behavior
 - Authentication flows
 
 ### Accessibility Tests
+
 - Keyboard navigation (Tab, Enter, Escape)
 - Screen reader compatibility
 - ARIA attribute verification
@@ -238,4 +250,3 @@ T042 → T043 → T044 → T045 → T046 → T047 → T048
 - Tasks marked with [US1], [US2], [US3] belong to specific user stories
 - MVP scope: Complete Phase 1, 2, and 3 for initial delivery
 - Each user story phase is independently testable and deployable
-

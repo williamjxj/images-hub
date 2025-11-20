@@ -18,6 +18,7 @@ This document provides a comprehensive summary of all implemented features in th
 ### 🎯 Core Features (MVP - 100% Complete)
 
 #### 1. Multi-Bucket Tab Navigation
+
 - ✅ Three tabs for three R2 buckets: `bestitconsulting-assets`, `juewei-assets`, `static-assets`
 - ✅ Tab labels use bucket names for clear identification
 - ✅ First tab active by default
@@ -26,6 +27,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Tab state persists during session
 
 #### 2. Media Display System (Images & Videos)
+
 - ✅ **Grid Mode**: Responsive CSS Grid layout (2 cols mobile, 3 tablet, 4 desktop)
 - ✅ **Masonry Mode**: Pinterest-style layout with natural aspect ratios
 - ✅ **List Mode**: Horizontal list with thumbnails and metadata
@@ -37,6 +39,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ **Unified Media Component**: Single component handles both images and videos
 
 #### 3. Folder Navigation
+
 - ✅ Breadcrumb navigation showing current folder path
 - ✅ Clickable breadcrumbs to navigate up folder hierarchy
 - ✅ Subfolder buttons for navigating into folders
@@ -45,6 +48,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Always visible when in a subfolder or when folders exist
 
 #### 4. Authentication & Security
+
 - ✅ Clerk authentication integration
 - ✅ Protected routes - redirects unauthenticated users to sign-in
 - ✅ Presigned URLs for secure image access (1-hour expiration)
@@ -56,6 +60,7 @@ This document provides a comprehensive summary of all implemented features in th
 ### 🚀 Enhanced Features
 
 #### 5. Infinite Scroll
+
 - ✅ Automatic loading on scroll using Intersection Observer API
 - ✅ Debounced requests to prevent rapid successive calls
 - ✅ Loading skeletons during fetch
@@ -63,6 +68,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Works seamlessly with filtering
 
 #### 6. Media Modal/Lightbox (Images & Videos)
+
 - ✅ **Image Modal**: Full-screen image viewer
 - ✅ **Video Modal**: Full-screen video player with native HTML5 controls
 - ✅ **Looping Navigation**: Previous/Next buttons wrap around (first ↔ last)
@@ -79,8 +85,9 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Video player controls (play, pause, volume, fullscreen)
 
 #### 7. Search & Filtering
+
 - ✅ **Real-time Search**: Filter media (images and videos) by filename (case-insensitive)
-- ✅ **File Type Filters**: 
+- ✅ **File Type Filters**:
   - **Images**: JPEG, PNG, WebP, GIF
   - **Videos**: MP4, WebM, MOV, AVI, MKV, M4V
 - ✅ Organized by category (Images / Videos sections)
@@ -93,6 +100,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Modal navigation respects filtered results
 
 #### 8. Media Metadata Display
+
 - ✅ **Persistent Overlay**: Metadata appears on hover (not just tooltip)
 - ✅ Shows filename, file size, upload date, and media type (Image/Video)
 - ✅ Gradient overlay for readability
@@ -101,6 +109,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Video indicator badge on video thumbnails
 
 #### 9. Loading States
+
 - ✅ Skeleton loaders for initial load
 - ✅ Skeleton loaders during infinite scroll
 - ✅ Mode-specific skeletons (Grid, Masonry, List)
@@ -108,6 +117,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Loading indicators with spinner
 
 #### 10. Error Handling
+
 - ✅ Try-catch blocks in all async operations
 - ✅ User-friendly error messages
 - ✅ HTTP error response handling (400, 401, 403, 500)
@@ -117,6 +127,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Graceful degradation
 
 #### 11. Performance Optimizations
+
 - ✅ Lazy loading images (`loading="lazy"`)
 - ✅ Video metadata preloading (`preload="metadata"` for thumbnails)
 - ✅ Memoized filtered results (`useMemo`)
@@ -126,6 +137,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Separate modals for images and videos (prevents unnecessary re-renders)
 
 #### 12. Accessibility (A11y)
+
 - ✅ ARIA labels on all interactive elements
 - ✅ Semantic HTML (grid, list, navigation roles)
 - ✅ Keyboard navigation support:
@@ -137,6 +149,7 @@ This document provides a comprehensive summary of all implemented features in th
 - ✅ Dialog title for screen readers (visually hidden)
 
 #### 13. Animations & Transitions
+
 - ✅ Framer Motion animations throughout
 - ✅ Tab switching animations
 - ✅ Folder navigation transitions
@@ -194,6 +207,7 @@ types/
 ## 🔧 Technical Implementation Details
 
 ### Backend (Server-Side)
+
 - **R2 Client**: AWS S3 SDK configured for Cloudflare R2
 - **API Routes**: Next.js API routes with Clerk authentication
 - **Presigned URLs**: 1-hour expiration for secure access
@@ -203,6 +217,7 @@ types/
 - **Media Type Assignment**: Automatically assigns `mediaType: "image" | "video"` to each object
 
 ### Frontend (Client-Side)
+
 - **State Management**: React hooks with `useState` and `useCallback`
 - **Filtering**: Client-side filtering with `useMemo` for performance
 - **Infinite Scroll**: Intersection Observer API
@@ -212,6 +227,7 @@ types/
 - **Modal Routing**: Separate modals for images and videos based on `mediaType`
 
 ### Environment Variables
+
 ```bash
 R2_ACCOUNT_ID=your_account_id
 R2_ACCESS_KEY_ID=your_access_key
@@ -222,22 +238,24 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 
 ## 📊 Feature Completion Status
 
-| Phase | Tasks | Status | Completion |
-|-------|-------|--------|------------|
-| Phase 1: Setup | 8 | ✅ Complete | 100% |
-| Phase 2: Foundational | 38 | ✅ Complete | 100% |
-| Phase 3: User Story 1 | 49 | ✅ Complete | 100% |
-| Phase 4: User Story 2 | 47 | 🔄 Partial | 70% |
-| Phase 5: User Story 3 | 24 | 🔄 Partial | 50% |
-| Phase 6: Polish | 15 | 🔄 Partial | 40% |
-| **Total** | **181** | **🔄 In Progress** | **73%** |
+| Phase                 | Tasks   | Status             | Completion |
+| --------------------- | ------- | ------------------ | ---------- |
+| Phase 1: Setup        | 8       | ✅ Complete        | 100%       |
+| Phase 2: Foundational | 38      | ✅ Complete        | 100%       |
+| Phase 3: User Story 1 | 49      | ✅ Complete        | 100%       |
+| Phase 4: User Story 2 | 47      | 🔄 Partial         | 70%        |
+| Phase 5: User Story 3 | 24      | 🔄 Partial         | 50%        |
+| Phase 6: Polish       | 15      | 🔄 Partial         | 40%        |
+| **Total**             | **181** | **🔄 In Progress** | **73%**    |
 
 ### Completed User Stories
+
 - ✅ **User Story 1**: View Images from Multiple R2 Buckets (100%)
 - 🔄 **User Story 2**: Navigate and Browse Images (75% - includes video support)
 - 🔄 **User Story 3**: Handle Errors and Edge Cases (50%)
 
 ### Additional Features Implemented
+
 - ✅ **Video Support**: Full video playback and navigation (NEW)
 - ✅ **Unified Media Gallery**: Images and videos displayed together seamlessly
 
@@ -246,6 +264,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ## 🎨 UI/UX Highlights
 
 ### Visual Design
+
 - Clean, modern interface with Tailwind CSS
 - Consistent spacing and typography
 - Smooth animations and transitions
@@ -253,6 +272,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 - Dark/light mode support (via shadcn/ui)
 
 ### User Experience
+
 - Intuitive tab navigation
 - Clear visual feedback for all actions
 - Persistent display mode preference
@@ -267,12 +287,14 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ## 🔍 Remaining Tasks (27%)
 
 ### High Priority
+
 - [ ] Per-bucket error handling (show errors per bucket, keep other tabs functional)
 - [ ] Enhanced empty states with icons/illustrations
 - [ ] URL caching for presigned URLs (check expiration before regenerating)
 - [ ] React.memo optimization for image items
 
 ### Medium Priority
+
 - [ ] Size range filtering (Small/Medium/Large)
 - [ ] Date range filtering
 - [ ] Sort options (by name, size, date)
@@ -283,6 +305,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 - [ ] Video duration display
 
 ### Low Priority (Nice to Have)
+
 - [ ] Media tagging/categorization
 - [ ] Favorites/bookmarks
 - [ ] Media sharing (generate shareable links)
@@ -302,6 +325,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 1. Performance Enhancements
 
 #### Media Optimization
+
 - **Recommendation**: Implement media optimization/transformation
   - Use Cloudflare Image Resizing API for image thumbnails
   - Generate video thumbnails server-side (better than browser-generated)
@@ -311,6 +335,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Faster page loads, reduced bandwidth, better video performance
 
 #### Caching Strategy
+
 - **Recommendation**: Implement URL caching with expiration checking
   - Cache presigned URLs in memory/state
   - Check expiration before regenerating
@@ -318,6 +343,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Reduced API calls, faster navigation
 
 #### Virtual Scrolling
+
 - **Recommendation**: Consider virtual scrolling for very large collections
   - Use `react-window` or `react-virtualized` for 1000+ images
   - Render only visible items
@@ -326,6 +352,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 2. User Experience Improvements
 
 #### Search Enhancements
+
 - **Recommendation**: Add advanced search options
   - Search by date range
   - Search by file size range
@@ -334,12 +361,14 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Better discoverability
 
 #### Sorting Options
+
 - **Recommendation**: Add sort dropdown
   - Sort by: Name (A-Z, Z-A), Date (newest/oldest), Size (largest/smallest)
   - Persist sort preference in localStorage
   - **Impact**: Better organization and navigation
 
 #### Bulk Operations
+
 - **Recommendation**: Add bulk selection and operations
   - Select multiple images (checkbox or shift-click)
   - Bulk delete, download, or move
@@ -348,6 +377,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 3. Feature Additions
 
 #### Media Management
+
 - **Recommendation**: Add media upload functionality
   - Drag-and-drop upload for images and videos
   - Upload progress indicator
@@ -356,6 +386,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Complete media management workflow
 
 #### Media Metadata
+
 - **Recommendation**: Display and edit media metadata
   - EXIF data display for images (camera, location, etc.)
   - Video metadata (duration, resolution, codec, etc.)
@@ -364,6 +395,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Better media organization and searchability
 
 #### Sharing & Collaboration
+
 - **Recommendation**: Add sharing features
   - Generate shareable links for images/folders
   - Public/private sharing options
@@ -373,6 +405,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 4. Accessibility Improvements
 
 #### Keyboard Shortcuts
+
 - **Recommendation**: Add comprehensive keyboard shortcuts
   - `/` to focus search
   - `G` for grid, `M` for masonry, `L` for list
@@ -380,6 +413,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Power user efficiency
 
 #### Screen Reader Enhancements
+
 - **Recommendation**: Enhanced screen reader support
   - Announce image count changes
   - Announce filter changes
@@ -389,12 +423,14 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 5. Error Handling & Resilience
 
 #### Per-Bucket Error Handling
+
 - **Recommendation**: Isolate errors per bucket
   - Show errors for specific bucket without affecting others
   - Retry mechanism per bucket
   - **Impact**: Better resilience and user experience
 
 #### Offline Support
+
 - **Recommendation**: Add offline support
   - Service worker for caching
   - Offline indicator
@@ -404,6 +440,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 6. Analytics & Monitoring
 
 #### Usage Analytics
+
 - **Recommendation**: Add analytics tracking
   - Track popular images/buckets
   - Track search queries
@@ -411,6 +448,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Data-driven improvements
 
 #### Performance Monitoring
+
 - **Recommendation**: Add performance monitoring
   - Track API response times
   - Track image load times
@@ -420,6 +458,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 7. Security Enhancements
 
 #### Access Control
+
 - **Recommendation**: Implement fine-grained access control
   - Role-based bucket access
   - Folder-level permissions
@@ -427,6 +466,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Better security and compliance
 
 #### Rate Limiting
+
 - **Recommendation**: Add rate limiting
   - Limit API requests per user
   - Prevent abuse
@@ -435,6 +475,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ### 8. Developer Experience
 
 #### Testing
+
 - **Recommendation**: Add comprehensive testing
   - Unit tests for utilities and hooks
   - Integration tests for API routes
@@ -442,6 +483,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
   - **Impact**: Better code quality and reliability
 
 #### Documentation
+
 - **Recommendation**: Enhance documentation
   - Component documentation with Storybook
   - API documentation
@@ -453,16 +495,19 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ## 🚀 Deployment Considerations
 
 ### Environment Setup
+
 - Ensure all R2 environment variables are configured
 - Set up Clerk authentication keys
 - Configure CORS if needed for R2 buckets
 
 ### Performance
+
 - Consider CDN for static assets
 - Enable Next.js image optimization
 - Monitor API rate limits
 
 ### Monitoring
+
 - Set up error tracking (Sentry, etc.)
 - Monitor API response times
 - Track user engagement metrics
@@ -487,6 +532,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 ## 🎯 Success Metrics
 
 ### Completed Goals ✅
+
 - ✅ Multi-bucket media browsing (images and videos)
 - ✅ Three display modes (Grid, Masonry, List)
 - ✅ Folder navigation
@@ -500,6 +546,7 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 - ✅ Accessibility compliance
 
 ### Future Goals 🎯
+
 - 🎯 Media upload functionality (images and videos)
 - 🎯 Bulk operations
 - 🎯 Advanced search and sorting
@@ -513,4 +560,3 @@ R2_SECRET_ACCESS_KEY=your_secret_key
 
 **Last Updated**: 2025-01-27  
 **Maintained By**: Development Team
-

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 /**
  * Home Page - Stock Images
- * 
+ *
  * Requires authentication - redirects to sign-in if not authenticated
  */
 export default async function HomePage() {

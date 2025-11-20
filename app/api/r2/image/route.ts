@@ -1,8 +1,8 @@
 /**
  * API Route: Get Image Presigned URL
- * 
+ *
  * GET /api/r2/image?bucket={name}&key={path}
- * 
+ *
  * Generates a presigned URL for accessing a specific image from an R2 bucket.
  * URLs expire after 1 hour for security.
  */
@@ -50,7 +50,8 @@ export async function GET(request: NextRequest) {
       {
         error: {
           type: "configuration",
-          message: "R2 configuration is missing. Please check your environment variables.",
+          message:
+            "R2 configuration is missing. Please check your environment variables.",
           retryable: false,
         },
       },
@@ -104,7 +105,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("R2 image URL error:", error);
-    
+
     // Check if it's a "not found" error
     if (
       error instanceof Error &&
@@ -137,4 +138,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

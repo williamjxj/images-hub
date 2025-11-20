@@ -1,6 +1,6 @@
 /**
  * Image Item Component for Images Hub
- * 
+ *
  * Displays a single image with metadata overlay and click handler
  */
 
@@ -35,7 +35,9 @@ export function ImagesHubItem({ image, onClick }: ImagesHubItemProps) {
       <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center min-h-[200px]">
         <div className="text-center p-4">
           <p className="text-sm text-muted-foreground">Failed to load</p>
-          <p className="text-xs text-muted-foreground mt-1">{image.description || image.id}</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            {image.description || image.id}
+          </p>
         </div>
       </div>
     );
@@ -73,7 +75,7 @@ export function ImagesHubItem({ image, onClick }: ImagesHubItemProps) {
           <ImageSkeleton aspectRatio="square" animated />
         </div>
       )}
-      
+
       {/* Provider badge */}
       <div className="absolute top-2 right-2 px-2 py-1 bg-black/70 text-white text-xs rounded-md backdrop-blur-sm">
         {image.source}
@@ -81,7 +83,10 @@ export function ImagesHubItem({ image, onClick }: ImagesHubItemProps) {
 
       {/* Metadata overlay */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/70 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <p className="text-white text-xs font-medium truncate" title={image.description || image.id}>
+        <p
+          className="text-white text-xs font-medium truncate"
+          title={image.description || image.id}
+        >
           {image.description || image.attribution}
         </p>
         <div className="flex items-center gap-2 mt-1 text-white/80 text-[10px]">
@@ -103,4 +108,3 @@ export function ImagesHubItem({ image, onClick }: ImagesHubItemProps) {
     </motion.div>
   );
 }
-

@@ -1,10 +1,10 @@
 <!--
   Sync Impact Report:
-  
+
   Version Change: N/A → 1.0.0 (Initial constitution)
-  
+
   Modified Principles: N/A (new constitution)
-  
+
   Added Sections:
   - Core Principles (Code Quality, Testing Standards, UX Consistency, Performance)
   - Code Quality Standards
@@ -13,12 +13,12 @@
   - Performance Requirements
   - Development Workflow
   - Governance
-  
+
   Templates Requiring Updates:
   - ✅ plan-template.md (Constitution Check section references constitution)
   - ✅ spec-template.md (No direct references, but principles apply)
   - ✅ tasks-template.md (No direct references, but principles apply)
-  
+
   Follow-up TODOs: None
 -->
 

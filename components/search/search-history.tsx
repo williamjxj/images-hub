@@ -1,15 +1,15 @@
 /**
  * Search History Component
- * 
+ *
  * Displays user's recent search history in a dropdown
  */
 
-'use client';
+"use client";
 
-import { Clock, X } from 'lucide-react';
-import { useSearchHistory } from '@/lib/hooks/use-search-history';
-import { useAuth } from '@clerk/nextjs';
-import { Button } from '@/components/ui/button';
+import { Clock, X } from "lucide-react";
+import { useSearchHistory } from "@/lib/hooks/use-search-history";
+import { useAuth } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 /**
  * Props for SearchHistory component
@@ -25,7 +25,7 @@ interface SearchHistoryProps {
 
 /**
  * Search History Component
- * 
+ *
  * Shows user's recent search history (only for authenticated users)
  */
 export function SearchHistory({
@@ -34,12 +34,14 @@ export function SearchHistory({
   onClose,
 }: SearchHistoryProps) {
   const { userId } = useAuth();
-  const { history, removeFromHistory, clearHistory } = useSearchHistory(userId || undefined);
-  
+  const { history, removeFromHistory, clearHistory } = useSearchHistory(
+    userId || undefined
+  );
+
   if (!isVisible || !userId || history.length === 0) {
     return null;
   }
-  
+
   return (
     <div className="absolute top-full left-0 right-0 mt-1 bg-popover border border-border rounded-md shadow-lg z-50 max-h-64 overflow-y-auto">
       <div className="flex items-center justify-between px-4 py-2 border-b">
@@ -74,6 +76,7 @@ export function SearchHistory({
               }}
               className="flex-1 text-left flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
               role="option"
+              aria-selected={false}
             >
               <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <span className="flex-1 truncate">{entry.query}</span>
@@ -96,4 +99,3 @@ export function SearchHistory({
     </div>
   );
 }
-

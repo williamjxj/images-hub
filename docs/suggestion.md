@@ -11,6 +11,7 @@
 This document provides comprehensive recommendations to improve the AI Chatbox application across multiple dimensions: testing, performance, security, user experience, monitoring, and code quality. The recommendations are prioritized by impact and implementation effort.
 
 **Key Findings**:
+
 - ✅ Strong foundation with modern tech stack (Next.js 16, TypeScript, Tailwind CSS)
 - ✅ Good error handling patterns in place
 - ✅ Solid accessibility implementation
@@ -24,6 +25,7 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 ## 1. Testing Infrastructure (CRITICAL - High Priority)
 
 ### Current State
+
 - **No test files found** in the codebase
 - No unit tests, integration tests, or E2E tests
 - No test coverage metrics
@@ -32,6 +34,7 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 ### Recommendations
 
 #### 1.1 Setup Testing Framework
+
 **Priority**: 🔴 Critical  
 **Effort**: Medium  
 **Impact**: High
@@ -45,6 +48,7 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 ```
 
 **Action Items**:
+
 - [ ] Install testing dependencies (`jest`, `@testing-library/react`, `@testing-library/jest-dom`)
 - [ ] Configure Jest with Next.js preset
 - [ ] Setup Playwright for E2E testing
@@ -53,23 +57,27 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 - [ ] Setup CI/CD test pipeline
 
 #### 1.2 Critical Path Testing
+
 **Priority**: 🔴 Critical  
 **Effort**: High  
 **Impact**: High
 
 **API Routes** (Must test):
+
 - [ ] `/api/chat` - Test authentication, validation, error handling, streaming
 - [ ] `/api/images-hub/search` - Test search logic, provider aggregation, error handling
 - [ ] `/api/r2/list` - Test bucket access, pagination, folder navigation
 - [ ] `/api/r2/image` - Test presigned URL generation, error handling
 
 **Custom Hooks** (Must test):
+
 - [ ] `use-chat-widget.ts` - State management, localStorage persistence
 - [ ] `use-image-search.ts` - Search logic, pagination, error handling
 - [ ] `use-r2-images.ts` - Image loading, pagination, folder navigation
 - [ ] `use-infinite-scroll.ts` - Scroll detection, loading triggers
 
 **Utilities** (Must test):
+
 - [ ] `lib/utils/storage.ts` - localStorage operations, error handling
 - [ ] `lib/hub/search-aggregator.ts` - Provider aggregation, error handling
 - [ ] `lib/auth.ts` - Permission checks, role validation
@@ -77,11 +85,13 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 **Target Coverage**: 80%+ for critical paths, 60%+ overall
 
 #### 1.3 E2E Testing
+
 **Priority**: 🟡 Medium  
 **Effort**: High  
 **Impact**: Medium
 
 **Critical User Flows**:
+
 - [ ] Authentication flow (sign-in, sign-up, sign-out)
 - [ ] Chat widget (open, send message, receive response, close)
 - [ ] Image search (search, filter providers, view modal, infinite scroll)
@@ -93,6 +103,7 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 ## 2. Performance Optimizations (High Priority)
 
 ### Current State
+
 - ✅ Lazy loading implemented for images
 - ✅ Infinite scroll with debouncing
 - ✅ Memoization in some hooks
@@ -104,16 +115,19 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 ### Recommendations
 
 #### 2.1 Image Optimization
+
 **Priority**: 🟠 High  
 **Effort**: Medium  
 **Impact**: High
 
 **Current Issues**:
+
 - External images from Unsplash/Pexels/Pixabay not optimized
 - R2 images use `unoptimized={true}` flag
 - No blur-up placeholders for better perceived performance
 
 **Recommendations**:
+
 - [ ] Use Next.js Image component for all images (already configured in `next.config.ts`)
 - [ ] Implement blur-up placeholder technique for stock images
 - [ ] Use Cloudflare Image Resizing API for R2 images (generate thumbnails server-side)
@@ -122,6 +136,7 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 - [ ] Consider using WebP/AVIF formats where supported
 
 **Example Implementation**:
+
 ```typescript
 // Replace <img> with Next.js Image component
 <Image
@@ -136,11 +151,13 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 ```
 
 #### 2.2 Caching Strategy
+
 **Priority**: 🟠 High  
 **Effort**: Medium  
 **Impact**: High
 
 **Client-Side Caching**:
+
 - [ ] Implement search result caching in `use-image-search.ts`
   - Cache key: `{query}-{providers}-{page}`
   - TTL: 5 minutes
@@ -150,17 +167,19 @@ This document provides comprehensive recommendations to improve the AI Chatbox a
 - [ ] Add cache headers to API responses
 
 **Server-Side Caching**:
+
 - [ ] Add Next.js `revalidate` option to API routes (5-10 minutes)
 - [ ] Implement Redis cache for image search results (if scaling)
 - [ ] Cache R2 bucket listings (short TTL: 1-2 minutes)
 
 **Example**:
+
 ```typescript
 // API route caching
 export const revalidate = 300; // 5 minutes
 
 // Client-side cache
-const cacheKey = `${query}-${providers.join(',')}-${page}`;
+const cacheKey = `${query}-${providers.join(",")}-${page}`;
 const cached = sessionStorage.getItem(cacheKey);
 if (cached && !isExpired(cached)) {
   return JSON.parse(cached);
@@ -168,6 +187,7 @@ if (cached && !isExpired(cached)) {
 ```
 
 #### 2.3 Code Splitting & Bundle Optimization
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -179,6 +199,7 @@ if (cached && !isExpired(cached)) {
 - [ ] Tree-shake unused code
 
 **Example**:
+
 ```typescript
 // Lazy load chat widget
 const ChatWidget = dynamic(() => import('@/components/chat-widget/chat-widget'), {
@@ -188,6 +209,7 @@ const ChatWidget = dynamic(() => import('@/components/chat-widget/chat-widget'),
 ```
 
 #### 2.4 Virtual Scrolling
+
 **Priority**: 🟡 Medium  
 **Effort**: High  
 **Impact**: Medium
@@ -204,6 +226,7 @@ const ChatWidget = dynamic(() => import('@/components/chat-widget/chat-widget'),
 ## 3. Monitoring & Analytics (High Priority)
 
 ### Current State
+
 - ❌ No production monitoring
 - ❌ No error tracking
 - ❌ No performance monitoring
@@ -213,16 +236,19 @@ const ChatWidget = dynamic(() => import('@/components/chat-widget/chat-widget'),
 ### Recommendations
 
 #### 3.1 Error Tracking
+
 **Priority**: 🟠 High  
 **Effort**: Low  
 **Impact**: High
 
 **Recommended Tools**:
+
 - **Sentry** (recommended) - Comprehensive error tracking
 - **LogRocket** - Session replay + error tracking
 - **Vercel Analytics** - Built-in error tracking
 
 **Implementation**:
+
 - [ ] Install Sentry SDK (`@sentry/nextjs`)
 - [ ] Setup error boundaries for React components
 - [ ] Track API errors with context (user ID, request details)
@@ -231,6 +257,7 @@ const ChatWidget = dynamic(() => import('@/components/chat-widget/chat-widget'),
 - [ ] Remove/replace console.log statements with proper logging
 
 **Example**:
+
 ```typescript
 // Error boundary component
 import * as Sentry from "@sentry/nextjs";
@@ -245,11 +272,13 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
 ```
 
 #### 3.2 Performance Monitoring
+
 **Priority**: 🟠 High  
 **Effort**: Low  
 **Impact**: High
 
 **Core Web Vitals Tracking**:
+
 - [ ] Install Vercel Analytics (`@vercel/analytics`)
 - [ ] Track LCP (Largest Contentful Paint) - Target: < 2.5s
 - [ ] Track FID (First Input Delay) - Target: < 100ms
@@ -258,6 +287,7 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
 - [ ] Setup performance budgets
 
 **Implementation**:
+
 ```typescript
 // app/layout.tsx
 import { Analytics } from '@vercel/analytics/react';
@@ -277,16 +307,19 @@ export default function RootLayout({ children }) {
 ```
 
 #### 3.3 User Analytics
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
 
 **Recommended Tools**:
+
 - **Vercel Analytics** - Built-in, privacy-focused
 - **PostHog** - Open-source, feature-rich
 - **Plausible** - Privacy-focused, lightweight
 
 **Track**:
+
 - [ ] Page views and navigation patterns
 - [ ] Feature usage (chat widget, image search, R2 gallery)
 - [ ] User engagement metrics (session duration, bounce rate)
@@ -294,6 +327,7 @@ export default function RootLayout({ children }) {
 - [ ] Error rates and retry patterns
 
 #### 3.4 Logging Infrastructure
+
 **Priority**: 🟡 Medium  
 **Effort**: Medium  
 **Impact**: Medium
@@ -306,15 +340,16 @@ export default function RootLayout({ children }) {
 - [ ] Setup log aggregation (Datadog, Logtail, or Vercel Logs)
 
 **Example**:
+
 ```typescript
 // lib/utils/logger.ts
-import pino from 'pino';
+import pino from "pino";
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  ...(process.env.NODE_ENV === 'development' && {
-    transport: { target: 'pino-pretty' }
-  })
+  level: process.env.LOG_LEVEL || "info",
+  ...(process.env.NODE_ENV === "development" && {
+    transport: { target: "pino-pretty" },
+  }),
 });
 ```
 
@@ -323,6 +358,7 @@ export const logger = pino({
 ## 4. SEO Optimization (Medium Priority)
 
 ### Current State
+
 - ✅ Basic metadata in layout.tsx
 - ⚠️ No dynamic metadata per page
 - ⚠️ No Open Graph tags
@@ -333,6 +369,7 @@ export const logger = pino({
 ### Recommendations
 
 #### 4.1 Enhanced Metadata
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -344,23 +381,26 @@ export const logger = pino({
 - [ ] Add favicon and apple-touch-icon
 
 **Example**:
+
 ```typescript
 // app/page.tsx
 export const metadata: Metadata = {
-  title: 'Stock Image Search Hub | AI Chatbox',
-  description: 'Search millions of free stock images from Unsplash, Pixabay, and Pexels',
+  title: "Stock Image Search Hub | AI Chatbox",
+  description:
+    "Search millions of free stock images from Unsplash, Pixabay, and Pexels",
   openGraph: {
-    title: 'Stock Image Search Hub',
-    description: 'Search millions of free stock images',
-    images: ['/og-image.png'],
+    title: "Stock Image Search Hub",
+    description: "Search millions of free stock images",
+    images: ["/og-image.png"],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
   },
 };
 ```
 
 #### 4.2 Structured Data
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Low
@@ -371,6 +411,7 @@ export const metadata: Metadata = {
   - BreadcrumbList schema for navigation
 
 #### 4.3 Technical SEO
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -386,6 +427,7 @@ export const metadata: Metadata = {
 ## 5. Security Enhancements (High Priority)
 
 ### Current State
+
 - ✅ Authentication with Clerk
 - ✅ API route protection
 - ✅ Role-based access control
@@ -397,6 +439,7 @@ export const metadata: Metadata = {
 ### Recommendations
 
 #### 5.1 API Rate Limiting
+
 **Priority**: 🟠 High  
 **Effort**: Medium  
 **Impact**: High
@@ -408,6 +451,7 @@ export const metadata: Metadata = {
 - [ ] Return proper `Retry-After` headers
 
 **Example**:
+
 ```typescript
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
@@ -420,7 +464,7 @@ const ratelimit = new Ratelimit({
 export async function POST(req: Request) {
   const { userId } = await auth();
   const identifier = userId || req.ip || "anonymous";
-  
+
   const { success } = await ratelimit.limit(identifier);
   if (!success) {
     return new Response("Rate limit exceeded", { status: 429 });
@@ -430,6 +474,7 @@ export async function POST(req: Request) {
 ```
 
 #### 5.2 Input Validation & Sanitization
+
 **Priority**: 🟠 High  
 **Effort**: Medium  
 **Impact**: High
@@ -441,18 +486,20 @@ export async function POST(req: Request) {
 - [ ] Implement request size limits
 
 **Example**:
+
 ```typescript
 import { z } from "zod";
 
 const searchSchema = z.object({
   q: z.string().min(1).max(200).trim(),
-  providers: z.array(z.enum(['unsplash', 'pexels', 'pixabay'])),
+  providers: z.array(z.enum(["unsplash", "pexels", "pixabay"])),
   page: z.number().int().min(1).max(100),
   per_page: z.number().int().min(1).max(200),
 });
 ```
 
 #### 5.3 Security Headers
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -463,33 +510,35 @@ const searchSchema = z.object({
 - [ ] Enable HSTS (HTTP Strict Transport Security)
 
 **Example**:
+
 ```typescript
 // next.config.ts
 const securityHeaders = [
   {
-    key: 'X-DNS-Prefetch-Control',
-    value: 'on'
+    key: "X-DNS-Prefetch-Control",
+    value: "on",
   },
   {
-    key: 'Strict-Transport-Security',
-    value: 'max-age=63072000; includeSubDomains; preload'
+    key: "Strict-Transport-Security",
+    value: "max-age=63072000; includeSubDomains; preload",
   },
   {
-    key: 'X-Frame-Options',
-    value: 'SAMEORIGIN'
+    key: "X-Frame-Options",
+    value: "SAMEORIGIN",
   },
   {
-    key: 'X-Content-Type-Options',
-    value: 'nosniff'
+    key: "X-Content-Type-Options",
+    value: "nosniff",
   },
   {
-    key: 'Referrer-Policy',
-    value: 'origin-when-cross-origin'
-  }
+    key: "Referrer-Policy",
+    value: "origin-when-cross-origin",
+  },
 ];
 ```
 
 #### 5.4 Environment Variable Security
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -505,6 +554,7 @@ const securityHeaders = [
 ## 6. Code Quality Improvements (Medium Priority)
 
 ### Current State
+
 - ✅ TypeScript strict mode enabled
 - ✅ ESLint configured
 - ✅ Prettier configured
@@ -515,6 +565,7 @@ const securityHeaders = [
 ### Recommendations
 
 #### 6.1 Remove Console Statements
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Low
@@ -524,6 +575,7 @@ const securityHeaders = [
 - [ ] Use ESLint rule to prevent console statements in production
 
 **ESLint Rule**:
+
 ```json
 {
   "rules": {
@@ -533,6 +585,7 @@ const securityHeaders = [
 ```
 
 #### 6.2 Code Documentation
+
 **Priority**: 🟡 Medium  
 **Effort**: Medium  
 **Impact**: Low
@@ -543,6 +596,7 @@ const securityHeaders = [
 - [ ] Create architecture documentation
 
 #### 6.3 Code Organization
+
 **Priority**: 🟡 Low  
 **Effort**: Low  
 **Impact**: Low
@@ -557,6 +611,7 @@ const securityHeaders = [
 ## 7. User Experience Enhancements (Medium Priority)
 
 ### Current State
+
 - ✅ Good loading states (skeletons)
 - ✅ Error handling with user-friendly messages
 - ✅ Responsive design
@@ -567,11 +622,13 @@ const securityHeaders = [
 ### Recommendations
 
 #### 7.1 Search Enhancements
+
 **Priority**: 🟡 Medium  
 **Effort**: Medium  
 **Impact**: Medium
 
 **Stock Image Search**:
+
 - [ ] Add search suggestions/autocomplete
 - [ ] Implement search history (recent searches)
 - [ ] Add advanced filters (orientation, color, size)
@@ -579,11 +636,13 @@ const securityHeaders = [
 - [ ] Implement fuzzy search (typo tolerance)
 
 **R2 Gallery**:
+
 - [ ] Add full-text search within bucket
 - [ ] Search by file type, date range, size
 - [ ] Implement folder search
 
 #### 7.2 Keyboard Shortcuts
+
 **Priority**: 🟡 Low  
 **Effort**: Low  
 **Impact**: Low
@@ -595,6 +654,7 @@ const securityHeaders = [
 - [ ] `Cmd/Ctrl + /` - Show keyboard shortcuts help
 
 #### 7.3 Offline Support
+
 **Priority**: 🟡 Low  
 **Effort**: High  
 **Impact**: Low
@@ -606,6 +666,7 @@ const securityHeaders = [
 - [ ] Queue actions when offline, sync when online
 
 #### 7.4 User Feedback Mechanisms
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -620,6 +681,7 @@ const securityHeaders = [
 ## 8. Accessibility Improvements (Medium Priority)
 
 ### Current State
+
 - ✅ ARIA labels implemented
 - ✅ Keyboard navigation support
 - ✅ Semantic HTML
@@ -630,6 +692,7 @@ const securityHeaders = [
 ### Recommendations
 
 #### 8.1 Enhanced Accessibility
+
 **Priority**: 🟡 Medium  
 **Effort**: Low  
 **Impact**: Medium
@@ -642,6 +705,7 @@ const securityHeaders = [
 - [ ] Add loading announcements for screen readers
 
 #### 8.2 Accessibility Testing
+
 **Priority**: 🟡 Medium  
 **Effort**: Medium  
 **Impact**: Medium
@@ -659,6 +723,7 @@ const securityHeaders = [
 ### Recommendations
 
 #### 9.1 Chat Widget Enhancements
+
 **Priority**: 🟡 Low  
 **Effort**: Medium  
 **Impact**: Medium
@@ -671,6 +736,7 @@ const securityHeaders = [
 - [ ] Add markdown rendering in chat messages
 
 #### 9.2 Image Hub Enhancements
+
 **Priority**: 🟡 Low  
 **Effort**: Medium  
 **Impact**: Medium
@@ -683,6 +749,7 @@ const securityHeaders = [
 - [ ] Share search results functionality
 
 #### 9.3 R2 Gallery Enhancements
+
 **Priority**: 🟡 Low  
 **Effort**: High  
 **Impact**: Medium
@@ -701,6 +768,7 @@ const securityHeaders = [
 ### Recommendations
 
 #### 10.1 CI/CD Improvements
+
 **Priority**: 🟡 Medium  
 **Effort**: Medium  
 **Impact**: Medium
@@ -713,6 +781,7 @@ const securityHeaders = [
 - [ ] Add preview deployments for PRs
 
 #### 10.2 Database Considerations
+
 **Priority**: 🟡 Low  
 **Effort**: High  
 **Impact**: Low
@@ -720,6 +789,7 @@ const securityHeaders = [
 **Current**: No database (using localStorage and external APIs)
 
 **Future Considerations**:
+
 - [ ] Consider Supabase/PostgreSQL for:
   - User preferences
   - Search history
@@ -728,6 +798,7 @@ const securityHeaders = [
 - [ ] Implement database only if needed (avoid premature optimization)
 
 #### 10.3 Backup & Recovery
+
 **Priority**: 🟡 Low  
 **Effort**: Low  
 **Impact**: Low
@@ -742,6 +813,7 @@ const securityHeaders = [
 ## Implementation Priority Matrix
 
 ### Phase 1: Critical (Immediate - Next 2 Weeks)
+
 1. ✅ Setup testing framework
 2. ✅ Implement error tracking (Sentry)
 3. ✅ Add API rate limiting
@@ -749,6 +821,7 @@ const securityHeaders = [
 5. ✅ Add input validation (Zod)
 
 ### Phase 2: High Priority (Next Month)
+
 1. ✅ Image optimization (Next.js Image component)
 2. ✅ Caching strategy implementation
 3. ✅ Performance monitoring (Vercel Analytics)
@@ -756,6 +829,7 @@ const securityHeaders = [
 5. ✅ Enhanced error boundaries
 
 ### Phase 3: Medium Priority (Next Quarter)
+
 1. ✅ SEO optimization
 2. ✅ User analytics
 3. ✅ Search enhancements
@@ -763,6 +837,7 @@ const securityHeaders = [
 5. ✅ Code documentation
 
 ### Phase 4: Low Priority (Future)
+
 1. ✅ Virtual scrolling
 2. ✅ Offline support
 3. ✅ Feature additions
@@ -773,18 +848,22 @@ const securityHeaders = [
 ## Success Metrics
 
 ### Testing
+
 - **Target**: 80%+ coverage for critical paths, 60%+ overall
 - **Measure**: Jest coverage reports, CI/CD test results
 
 ### Performance
+
 - **Target**: LCP < 2.5s, FID < 100ms, CLS < 0.1
 - **Measure**: Vercel Analytics, Lighthouse scores
 
 ### Error Rate
+
 - **Target**: < 0.1% error rate
 - **Measure**: Sentry error tracking
 
 ### User Satisfaction
+
 - **Target**: Track user feedback, feature usage
 - **Measure**: Analytics, feedback forms
 
@@ -793,20 +872,24 @@ const securityHeaders = [
 ## Resources & References
 
 ### Testing
+
 - [Next.js Testing Guide](https://nextjs.org/docs/app/building-your-application/testing)
 - [React Testing Library](https://testing-library.com/react)
 - [Playwright Documentation](https://playwright.dev)
 
 ### Performance
+
 - [Next.js Image Optimization](https://nextjs.org/docs/app/building-your-application/optimizing/images)
 - [Web Vitals](https://web.dev/vitals/)
 - [Vercel Analytics](https://vercel.com/analytics)
 
 ### Monitoring
+
 - [Sentry Next.js](https://docs.sentry.io/platforms/javascript/guides/nextjs/)
 - [Vercel Analytics](https://vercel.com/analytics)
 
 ### Security
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [Next.js Security Headers](https://nextjs.org/docs/app/api-reference/next-config-js/headers)
 
@@ -817,10 +900,10 @@ const securityHeaders = [
 This document provides a comprehensive roadmap for improving the AI Chatbox application. The recommendations are prioritized by impact and implementation effort. Focus on Phase 1 (Critical) items first, as they address the most significant gaps (testing, monitoring, security).
 
 **Next Steps**:
+
 1. Review and prioritize recommendations based on business needs
 2. Create implementation tickets for Phase 1 items
 3. Setup project tracking (GitHub Projects, Linear, etc.)
 4. Begin implementation with testing infrastructure
 
 **Questions or Feedback**: Please update this document as recommendations are implemented or new insights are discovered.
-

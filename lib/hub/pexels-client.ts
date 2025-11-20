@@ -1,17 +1,17 @@
-import axios from 'axios';
-import { ImageData, PexelsSearchResponse, PexelsPhoto } from './types';
+import axios from "axios";
+import { ImageData, PexelsSearchResponse, PexelsPhoto } from "./types";
 
 /**
  * Pexels API client
  */
 export class PexelsClient {
   private apiKey: string;
-  private baseUrl = 'https://api.pexels.com/v1';
+  private baseUrl = "https://api.pexels.com/v1";
 
   constructor() {
     this.apiKey = process.env.PEXELS_API_KEY!;
     if (!this.apiKey) {
-      throw new Error('PEXELS_API_KEY is required');
+      throw new Error("PEXELS_API_KEY is required");
     }
   }
 
@@ -43,7 +43,7 @@ export class PexelsClient {
       );
 
       if (!response.data.photos || !Array.isArray(response.data.photos)) {
-        console.error('Invalid Pexels API response:', response.data);
+        console.error("Invalid Pexels API response:", response.data);
         return { photos: [], total: 0, totalPages: 0 };
       }
 
@@ -56,16 +56,18 @@ export class PexelsClient {
         total: response.data.total_results,
         totalPages,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle rate limiting (429) and other errors
-      if (error.response?.status === 429) {
-        throw new Error('Pexels rate limit exceeded');
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 429) {
+        throw new Error("Pexels rate limit exceeded");
       }
-      if (error.response?.status === 401) {
-        throw new Error('Pexels API key invalid');
+      if (axiosError.response?.status === 401) {
+        throw new Error("Pexels API key invalid");
       }
-      console.error('Pexels API error:', error);
-      throw new Error(`Failed to fetch images from Pexels: ${error.message}`);
+      console.error("Pexels API error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to fetch images from Pexels: ${errorMessage}`);
     }
   }
 
@@ -75,15 +77,15 @@ export class PexelsClient {
    */
   async searchImages(count: number = 8): Promise<ImageData[]> {
     try {
-      const query = 'software AI technology programming computer';
+      const query = "software AI technology programming computer";
       const response = await axios.get<PexelsSearchResponse>(
         `${this.baseUrl}/search`,
         {
           params: {
             query,
             per_page: count,
-            orientation: 'landscape',
-            size: 'large',
+            orientation: "landscape",
+            size: "large",
           },
           headers: {
             Authorization: this.apiKey,
@@ -92,7 +94,7 @@ export class PexelsClient {
       );
 
       if (!response.data.photos || !Array.isArray(response.data.photos)) {
-        console.error('Invalid Pexels API response:', response.data);
+        console.error("Invalid Pexels API response:", response.data);
         return [];
       }
 
@@ -101,13 +103,14 @@ export class PexelsClient {
         url: photo.src.large,
         width: photo.width,
         height: photo.height,
-        source: 'pexels' as const,
+        source: "pexels" as const,
         author: photo.photographer,
         tags: photo.alt ? [photo.alt] : [],
       }));
-    } catch (error: any) {
-      console.error('Pexels API error:', error);
-      console.error('Response data:', error.response?.data);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: unknown } };
+      console.error("Pexels API error:", error);
+      console.error("Response data:", axiosError.response?.data);
       throw new Error(`Failed to fetch images from Pexels: ${error}`);
     }
   }

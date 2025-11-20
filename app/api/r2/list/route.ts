@@ -1,8 +1,8 @@
 /**
  * API Route: List R2 Objects
- * 
+ *
  * GET /api/r2/list?bucket={name}&prefix={path}&token={cursor}&maxKeys={limit}
- * 
+ *
  * Lists objects (images and folders) in a specified R2 bucket with optional folder path.
  * Supports pagination via continuation token for infinite scroll.
  */
@@ -51,7 +51,8 @@ export async function GET(request: NextRequest) {
       {
         error: {
           type: "configuration",
-          message: "R2 configuration is missing. Please check your environment variables.",
+          message:
+            "R2 configuration is missing. Please check your environment variables.",
           retryable: false,
         },
       },
@@ -134,4 +135,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

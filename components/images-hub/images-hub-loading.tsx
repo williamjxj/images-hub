@@ -1,6 +1,6 @@
 /**
  * Loading Component for Images Hub
- * 
+ *
  * Displays loading skeletons for image grid
  */
 
@@ -29,4 +29,3 @@ export function ImagesHubLoading({ count = 12 }: ImagesHubLoadingProps) {
     </div>
   );
 }
-

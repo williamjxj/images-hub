@@ -1,6 +1,6 @@
 /**
  * R2 Images Display Page
- * 
+ *
  * Server component that handles authentication and renders the R2 image gallery.
  * Requires authentication - redirects to sign-in if not authenticated.
  */
@@ -25,4 +25,3 @@ export default async function R2ImagesPage() {
 
   return <R2ImageGallery />;
 }
-

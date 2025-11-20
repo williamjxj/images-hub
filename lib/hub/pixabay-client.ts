@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { ImageData, PixabaySearchResponse, PixabayHit } from './types';
+import axios from "axios";
+import { ImageData, PixabaySearchResponse, PixabayHit } from "./types";
 
 /**
  * Pixabay API client
@@ -10,10 +10,10 @@ export class PixabayClient {
 
   constructor() {
     this.apiKey = process.env.PIXABAY_API_KEY!;
-    this.baseUrl = process.env.PIXABAY_URL || 'https://pixabay.com/api/';
-    
+    this.baseUrl = process.env.PIXABAY_URL || "https://pixabay.com/api/";
+
     if (!this.apiKey) {
-      throw new Error('PIXABAY_API_KEY is required');
+      throw new Error("PIXABAY_API_KEY is required");
     }
   }
 
@@ -36,12 +36,12 @@ export class PixabayClient {
           q: query.trim(),
           per_page: Math.min(perPage, 200), // Pixabay max is 200
           page,
-          image_type: 'photo',
+          image_type: "photo",
         },
       });
 
       if (!response.data.hits || !Array.isArray(response.data.hits)) {
-        console.error('Invalid Pixabay API response:', response.data);
+        console.error("Invalid Pixabay API response:", response.data);
         return { hits: [], total: 0, totalPages: 0 };
       }
 
@@ -52,16 +52,18 @@ export class PixabayClient {
         total: response.data.totalHits,
         totalPages,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle rate limiting (429) and other errors
-      if (error.response?.status === 429) {
-        throw new Error('Pixabay rate limit exceeded');
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 429) {
+        throw new Error("Pixabay rate limit exceeded");
       }
-      if (error.response?.status === 400) {
-        throw new Error('Pixabay API key invalid or query error');
+      if (axiosError.response?.status === 400) {
+        throw new Error("Pixabay API key invalid or query error");
       }
-      console.error('Pixabay API error:', error);
-      throw new Error(`Failed to fetch images from Pixabay: ${error.message}`);
+      console.error("Pixabay API error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to fetch images from Pixabay: ${errorMessage}`);
     }
   }
 
@@ -71,22 +73,22 @@ export class PixabayClient {
    */
   async searchImages(count: number = 8): Promise<ImageData[]> {
     try {
-      const query = 'software AI technology programming computer';
+      const query = "software AI technology programming computer";
       const response = await axios.get<PixabaySearchResponse>(this.baseUrl, {
         params: {
           key: this.apiKey,
           q: query,
           per_page: count,
-          order: 'popular',
-          orientation: 'horizontal',
-          image_type: 'photo',
+          order: "popular",
+          orientation: "horizontal",
+          image_type: "photo",
           min_width: 1280,
           min_height: 720,
         },
       });
 
       if (!response.data.hits || !Array.isArray(response.data.hits)) {
-        console.error('Invalid Pixabay API response:', response.data);
+        console.error("Invalid Pixabay API response:", response.data);
         return [];
       }
 
@@ -95,13 +97,14 @@ export class PixabayClient {
         url: hit.largeImageURL || hit.webformatURL,
         width: hit.imageWidth,
         height: hit.imageHeight,
-        source: 'pixabay' as const,
+        source: "pixabay" as const,
         author: hit.user,
-        tags: hit.tags.split(', '),
+        tags: hit.tags.split(", "),
       }));
-    } catch (error: any) {
-      console.error('Pixabay API error:', error);
-      console.error('Response data:', error.response?.data);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: unknown } };
+      console.error("Pixabay API error:", error);
+      console.error("Response data:", axiosError.response?.data);
       throw new Error(`Failed to fetch images from Pixabay: ${error}`);
     }
   }

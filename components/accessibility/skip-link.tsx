@@ -1,16 +1,16 @@
 /**
  * Skip Link Component
- * 
+ *
  * Provides a "Skip to main content" link for keyboard navigation
  */
 
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
 /**
  * Skip Link Component
- * 
+ *
  * Appears when user presses Tab on page load, allowing them to bypass
  * navigation and header elements to jump directly to main content.
  */
@@ -25,4 +25,3 @@ export function SkipLink() {
     </Link>
   );
 }
-

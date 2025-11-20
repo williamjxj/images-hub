@@ -1,22 +1,22 @@
 /**
  * Best IT Consultants Logo Component
- * 
+ *
  * Logo for Best IT Consultants (bestitconsultants.ca)
  */
 
-'use client';
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import Link from "next/link";
+import Image from "next/image";
+import { ExternalLink } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * Props for BestITConsultantsLogo component
  */
 interface BestITConsultantsLogoProps {
   /** Logo size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: "sm" | "md" | "lg";
   /** Additional CSS classes */
   className?: string;
   /** Whether to show as link */
@@ -25,30 +25,27 @@ interface BestITConsultantsLogoProps {
 
 /**
  * Best IT Consultants Logo Component
- * 
+ *
  * Displays Best IT Consultants logo
  */
 export function BestITConsultantsLogo({
-  size = 'md',
   className,
   asLink = true,
 }: BestITConsultantsLogoProps) {
   const logoContent = (
-    <div className={cn('flex items-center gap-2', className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <Image
         src="/b22-logo.png"
         alt="Best IT Consultants"
         width={120}
         height={32}
         className="object-contain w-auto"
-        style={{ height: '32px' }}
+        style={{ height: "32px" }}
       />
-      {asLink && (
-        <ExternalLink className="h-3 w-3 text-muted-foreground" />
-      )}
+      {asLink && <ExternalLink className="h-3 w-3 text-muted-foreground" />}
     </div>
   );
-  
+
   if (asLink) {
     return (
       <Link
@@ -62,7 +59,6 @@ export function BestITConsultantsLogo({
       </Link>
     );
   }
-  
+
   return logoContent;
 }
-

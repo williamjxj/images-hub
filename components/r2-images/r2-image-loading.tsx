@@ -1,6 +1,6 @@
 /**
  * R2 Image Loading Skeleton Component
- * 
+ *
  * Displays skeleton loaders for images while they're loading.
  */
 
@@ -50,7 +50,12 @@ export function R2ImageLoading({
             transition={{ delay: i * 0.05, duration: 0.2 }}
             className="break-inside-avoid mb-4 w-full"
           >
-            <div className="w-full rounded-lg bg-muted animate-pulse" style={{ height: `${[150, 200, 180, 220, 160, 190, 170, 210, 185, 195, 175, 205][i % 12]}px` }} />
+            <div
+              className="w-full rounded-lg bg-muted animate-pulse"
+              style={{
+                height: `${[150, 200, 180, 220, 160, 190, 170, 210, 185, 195, 175, 205][i % 12]}px`,
+              }}
+            />
           </motion.div>
         ))}
       </div>
@@ -72,4 +77,3 @@ export function R2ImageLoading({
     </div>
   );
 }
-

@@ -1,30 +1,26 @@
-'use client';
+"use client";
 
 /**
  * Hook for managing chat message history persistence
  */
 
-import { useCallback } from 'react';
-import type { Message } from '@/types/chat-widget';
-import { useChatWidget } from './use-chat-widget';
+import { useCallback } from "react";
+import type { Message } from "@/types/chat-widget";
+import { useChatWidget } from "./use-chat-widget";
 
 /**
  * Hook for chat history management
  * Wraps useChatWidget to provide history-specific operations
  */
 export function useChatHistory(userId?: string) {
-  const {
-    messages,
-    addMessage,
-    clearMessages,
-    clearAll,
-  } = useChatWidget(userId);
+  const { messages, addMessage, clearMessages, clearAll } =
+    useChatWidget(userId);
 
   const addUserMessage = useCallback(
     (content: string) => {
       const message: Message = {
         id: `user-${Date.now()}-${Math.random()}`,
-        role: 'user',
+        role: "user",
         content,
         timestamp: Date.now(),
       };
@@ -35,10 +31,10 @@ export function useChatHistory(userId?: string) {
   );
 
   const addAssistantMessage = useCallback(
-    (content: string, parts?: Message['parts']) => {
+    (content: string, parts?: Message["parts"]) => {
       const message: Message = {
         id: `assistant-${Date.now()}-${Math.random()}`,
-        role: 'assistant',
+        role: "assistant",
         content,
         timestamp: Date.now(),
         parts,
@@ -67,4 +63,3 @@ export function useChatHistory(userId?: string) {
     hasMessages,
   };
 }
-

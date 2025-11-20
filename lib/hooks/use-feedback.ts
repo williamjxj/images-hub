@@ -2,37 +2,46 @@
  * Hook for submitting user feedback
  */
 
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { captureBrowserInfo, captureUserActions, formatFeedbackEmail } from '@/lib/utils/email';
-import type { UserFeedback } from '@/types/ui-ux';
+import { useState, useCallback } from "react";
+import {
+  captureBrowserInfo,
+  captureUserActions,
+} from "@/lib/utils/email";
+import type { UserFeedback } from "@/types/ui-ux";
 
 /**
  * Hook for feedback submission
- * 
+ *
  * @returns Feedback submission state and functions
  */
 export function useFeedback() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  
+
   /**
    * Submit feedback
    */
   const submitFeedback = useCallback(
-    async (feedback: Omit<UserFeedback, 'pageUrl' | 'timestamp' | 'browserInfo' | 'userActions'>) => {
+    async (
+      feedback: Omit<
+        UserFeedback,
+        "pageUrl" | "timestamp" | "browserInfo" | "userActions"
+      >
+    ) => {
       setIsLoading(true);
       setError(null);
       setSuccess(false);
-      
+
       try {
         // Capture context
-        const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
+        const pageUrl =
+          typeof window !== "undefined" ? window.location.href : "";
         const browserInfo = captureBrowserInfo();
         const userActions = captureUserActions();
-        
+
         // Prepare feedback data
         const feedbackData: UserFeedback = {
           ...feedback,
@@ -41,38 +50,80 @@ export function useFeedback() {
           browserInfo,
           userActions,
         };
-        
+
         // Submit to API
-        const response = await fetch('/api/feedback', {
-          method: 'POST',
+        const response = await fetch("/api/feedback", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(feedbackData),
         });
-        
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || 'Failed to submit feedback');
+
+        // Try to parse JSON response, handle empty or non-JSON responses
+        let responseData: { success?: boolean; message?: string; error?: string } = {};
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const text = await response.text();
+            responseData = text ? JSON.parse(text) : {};
+          } catch (parseError) {
+            console.error("Failed to parse JSON response:", parseError);
+            responseData = {};
+          }
+        } else {
+          // Non-JSON response, try to get text
+          try {
+            const text = await response.text();
+            console.warn("Non-JSON response received:", text);
+          } catch (textError) {
+            console.error("Failed to read response text:", textError);
+          }
         }
-        
-        setSuccess(true);
-        
+
+        if (!response.ok) {
+          // Log the full error for debugging
+          console.error("Feedback API error:", {
+            status: response.status,
+            statusText: response.statusText,
+            contentType,
+            responseData,
+            feedbackData,
+          });
+          const errorMessage =
+            responseData?.message ||
+            responseData?.error ||
+            `Failed to submit feedback (${response.status} ${response.statusText})`;
+          throw new Error(errorMessage);
+        }
+
+        // Check if response indicates success
+        if (responseData.success !== false) {
+          setSuccess(true);
+        } else {
+          throw new Error(
+            responseData.message ||
+              responseData.error ||
+              "Failed to submit feedback"
+          );
+        }
+
         // Reset success state after 3 seconds
         setTimeout(() => {
           setSuccess(false);
         }, 3000);
       } catch (err) {
-        const message = err instanceof Error ? err.message : 'An unexpected error occurred';
+        const message =
+          err instanceof Error ? err.message : "An unexpected error occurred";
         setError(message);
-        console.error('Feedback submission error:', err);
+        console.error("Feedback submission error:", err);
       } finally {
         setIsLoading(false);
       }
     },
     []
   );
-  
+
   /**
    * Reset feedback state
    */
@@ -80,7 +131,7 @@ export function useFeedback() {
     setError(null);
     setSuccess(false);
   }, []);
-  
+
   return {
     submitFeedback,
     isLoading,
@@ -89,4 +140,3 @@ export function useFeedback() {
     reset,
   };
 }
-

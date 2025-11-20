@@ -1,6 +1,6 @@
 /**
  * Image Grid Component for Images Hub
- * 
+ *
  * Displays images in a masonry/waterfall layout grouped by provider
  */
 
@@ -15,9 +15,9 @@ interface ImagesHubGridProps {
 }
 
 const PROVIDER_LABELS = {
-  unsplash: 'Unsplash Results',
-  pexels: 'Pexels Results',
-  pixabay: 'Pixabay Results',
+  unsplash: "Unsplash Results",
+  pexels: "Pexels Results",
+  pixabay: "Pixabay Results",
 };
 
 export function ImagesHubGrid({ providers, onImageClick }: ImagesHubGridProps) {
@@ -76,4 +76,3 @@ export function ImagesHubGrid({ providers, onImageClick }: ImagesHubGridProps) {
     </div>
   );
 }
-

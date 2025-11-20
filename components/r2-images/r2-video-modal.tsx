@@ -1,6 +1,6 @@
 /**
  * R2 Video Modal Component
- * 
+ *
  * Displays a video player in a modal/lightbox with navigation controls.
  */
 
@@ -33,8 +33,7 @@ export function R2VideoModal({
     ? videoFiles.findIndex((v) => v.key === video.key)
     : -1;
   const canLoop = videoFiles.length > 1;
-  const hasPrev = currentIndex > 0;
-  const hasNext = currentIndex >= 0 && currentIndex < videoFiles.length - 1;
+  // Navigation state (hasPrev/hasNext computed inline where needed)
 
   // Keyboard navigation with looping support
   useEffect(() => {
@@ -141,7 +140,9 @@ export function R2VideoModal({
             className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-6"
           >
             <div className="max-w-4xl mx-auto">
-              <p className="text-white font-medium text-lg mb-2">{video.name}</p>
+              <p className="text-white font-medium text-lg mb-2">
+                {video.name}
+              </p>
               <div className="flex items-center gap-4 text-white/80 text-sm">
                 <span>{formatFileSize(video.size)}</span>
                 <span>•</span>
@@ -162,4 +163,3 @@ export function R2VideoModal({
     </Dialog>
   );
 }
-

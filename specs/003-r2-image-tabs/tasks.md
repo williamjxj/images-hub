@@ -114,6 +114,7 @@ Phase 1: Setup
 **Independent Test**: Navigate to /r2-images, verify three tabs appear with bucket names, click tabs to switch buckets, verify images display from each bucket
 
 **Acceptance Criteria**:
+
 - Three tabs labeled with R2 bucket names
 - First tab active by default
 - Images display from active bucket
@@ -197,6 +198,7 @@ Phase 1: Setup
 **Independent Test**: Scroll through images, verify infinite scroll loads more, hover over images to see details, click images to open modal
 
 **Acceptance Criteria**:
+
 - Infinite scroll loads additional images
 - Image details visible on hover
 - Click image opens larger view/modal
@@ -276,6 +278,7 @@ Phase 1: Setup
 **Independent Test**: Simulate network failures, bucket access issues, missing images, verify appropriate error messages display
 
 **Acceptance Criteria**:
+
 - Clear error message when bucket access fails
 - Placeholder for individual image load failures
 - Error message for unavailable bucket (other tabs remain functional)
@@ -363,6 +366,7 @@ Phase 1: Setup
 ### User Story 1 (Phase 3) - Parallel Opportunities
 
 **Can work in parallel**:
+
 - T009-T015 (Type definitions) - All independent type interfaces
 - T045-T046 (Utility functions) - Independent helper functions
 - T059-T066 (Tab component) - Can be built independently
@@ -370,11 +374,13 @@ Phase 1: Setup
 - T073-T078 (Grid component) - Can be built independently
 
 **Must be sequential**:
+
 - T047-T058 (Hooks) → T079-T089 (Gallery component) → T090-T094 (Page route)
 
 ### User Story 2 (Phase 4) - Parallel Opportunities
 
 **Can work in parallel**:
+
 - T096-T098 (Infinite scroll hook) - Independent feature
 - T101-T104 (Image details) - Independent enhancement
 - T105-T115 (Modal component) - Independent feature
@@ -385,6 +391,7 @@ Phase 1: Setup
 ### User Story 3 (Phase 5) - Parallel Opportunities
 
 **Can work in parallel**:
+
 - T143-T147 (Error handling in hooks) - Independent enhancement
 - T148-T155 (Error UI components) - Independent feature
 - T156-T158 (Tab error handling) - Independent enhancement
@@ -406,12 +413,14 @@ Phase 1: Setup
 ## MVP Scope
 
 **Minimum Viable Product**: Phase 1 + Phase 2 + Phase 3 (User Story 1)
+
 - **Total MVP Tasks**: 95 tasks
 - **Delivers**: Core tabbed gallery with three buckets, basic image display, authentication
 
 ## Independent Test Criteria
 
 ### User Story 1
+
 - Navigate to /r2-images (authenticated)
 - Verify three tabs appear with bucket names
 - Click each tab, verify images switch
@@ -420,6 +429,7 @@ Phase 1: Setup
 - Test unauthenticated redirect
 
 ### User Story 2
+
 - Scroll to bottom, verify more images load
 - Hover over image, verify details appear
 - Click image, verify modal opens
@@ -428,6 +438,7 @@ Phase 1: Setup
 - Click breadcrumb, verify navigation up
 
 ### User Story 3
+
 - Simulate network failure, verify error message
 - Load invalid image, verify placeholder
 - Switch tabs during load, verify cancellation

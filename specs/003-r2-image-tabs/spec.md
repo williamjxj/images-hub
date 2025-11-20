@@ -160,4 +160,3 @@ When errors occur while loading or displaying images, users receive clear feedba
 - Video or other non-image file type display
 - User-defined bucket selection or configuration
 - Image caching or offline access strategies beyond basic browser caching
-

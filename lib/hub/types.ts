@@ -3,7 +3,7 @@
  */
 export interface ImageResult {
   id: string; // Prefixed: "u-{id}", "px-{id}", "pb-{id}"
-  source: 'unsplash' | 'pexels' | 'pixabay';
+  source: "unsplash" | "pexels" | "pixabay";
   urlThumb: string; // Thumbnail URL (400-640px width)
   urlRegular: string; // Regular size URL (1080-1280px width)
   urlFull: string; // Full-size URL (original)
@@ -26,7 +26,7 @@ export interface ImageData {
   url: string;
   width: number;
   height: number;
-  source: 'unsplash' | 'pixabay' | 'pexels';
+  source: "unsplash" | "pixabay" | "pexels";
   author?: string;
   tags?: string[];
 }
@@ -120,7 +120,7 @@ export interface PexelsSearchResponse {
  * Provider result from search
  */
 export interface ProviderResult {
-  provider: 'unsplash' | 'pexels' | 'pixabay';
+  provider: "unsplash" | "pexels" | "pixabay";
   images: ImageResult[];
   total: number;
   totalPages: number;

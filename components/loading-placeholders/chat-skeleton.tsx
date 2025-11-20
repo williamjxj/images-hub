@@ -1,12 +1,12 @@
 /**
  * Chat Skeleton Component
- * 
+ *
  * Loading placeholder for chat messages
  */
 
-'use client';
+"use client";
 
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
 
 /**
  * Props for ChatSkeleton component
@@ -18,7 +18,7 @@ interface ChatSkeletonProps {
 
 /**
  * Chat Skeleton Component
- * 
+ *
  * Displays skeleton loading placeholders for chat messages
  */
 export function ChatSkeleton({ count = 3 }: ChatSkeletonProps) {
@@ -28,16 +28,14 @@ export function ChatSkeleton({ count = 3 }: ChatSkeletonProps) {
         <div
           key={index}
           className={cn(
-            'flex gap-3',
-            index % 2 === 0 ? 'justify-start' : 'justify-end'
+            "flex gap-3",
+            index % 2 === 0 ? "justify-start" : "justify-end"
           )}
         >
           <div
             className={cn(
-              'max-w-[80%] rounded-lg px-4 py-3 space-y-2',
-              index % 2 === 0
-                ? 'bg-muted'
-                : 'bg-primary/10'
+              "max-w-[80%] rounded-lg px-4 py-3 space-y-2",
+              index % 2 === 0 ? "bg-muted" : "bg-primary/10"
             )}
           >
             <div className="h-4 bg-muted-foreground/20 rounded w-3/4 animate-pulse" />
@@ -48,4 +46,3 @@ export function ChatSkeleton({ count = 3 }: ChatSkeletonProps) {
     </div>
   );
 }
-

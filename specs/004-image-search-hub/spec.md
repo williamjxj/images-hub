@@ -15,7 +15,7 @@
 - Q: How should pagination work when results are grouped by provider? → A: Infinite scroll pagination - paginate each provider independently, load next page for all selected providers together
 - Q: How should provider groups be visually distinguished in the results display? → A: Section headers/labels for each provider group (e.g., "Unsplash Results", "Pixabay Results")
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Search and Browse Stock Images (Priority: P1)
 
@@ -77,7 +77,7 @@ Users can view detailed information about images and access download links or at
 - How does the system handle different image formats and sizes from different providers?
 - What happens when provider APIs return malformed or incomplete data?
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -97,14 +97,14 @@ Users can view detailed information about images and access download links or at
 - **FR-013**: System MUST provide download links or attribution text for images when available from provider APIs
 - **FR-014**: System MUST require user authentication before allowing access to the image search hub
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Search Query**: Represents the user's search input, including text query and selected providers
 - **Image Result**: Represents a single image from a provider, including thumbnail URL, full-size URL, metadata (photographer, title, description), source provider, and attribution information
 - **Provider**: Represents one of the three image sources (Unsplash, Pixabay, Pexels), each with their own API characteristics and response formats
 - **Search Results**: Represents a collection of image results from one or more providers, grouped by provider (Unsplash, Pixabay, Pexels in that order), with infinite scroll pagination loading next pages from each provider independently
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

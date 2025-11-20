@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
 /**
  * Hook for managing chat widget state with localStorage persistence
  */
 
-import { useState, useEffect, useCallback } from 'react';
-import type { WidgetState, Message } from '@/types/chat-widget';
+import { useState, useEffect, useCallback } from "react";
+import type { WidgetState, Message } from "@/types/chat-widget";
 import {
   saveWidgetState,
   loadWidgetState,
   clearWidgetState,
   isStorageAvailable,
-} from '@/lib/utils/storage';
+} from "@/lib/utils/storage";
 
 const DEBOUNCE_MS = 100;
 const MAX_MESSAGES = 100;
@@ -22,7 +22,6 @@ const MAX_MESSAGES = 100;
 export function useChatWidget(userId?: string) {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   // Load state from localStorage on mount
   useEffect(() => {
@@ -33,11 +32,13 @@ export function useChatWidget(userId?: string) {
     try {
       const stored = loadWidgetState(userId);
       if (stored) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsOpen(stored.isOpen ?? false);
+         
         setMessages(stored.messages ?? []);
       }
     } catch (error) {
-      console.error('Failed to load widget state:', error);
+      console.error("Failed to load widget state:", error);
     }
   }, [userId]);
 
@@ -56,7 +57,7 @@ export function useChatWidget(userId?: string) {
         };
         saveWidgetState(state, userId);
       } catch (error) {
-        console.error('Failed to save widget state:', error);
+        console.error("Failed to save widget state:", error);
       }
     }, DEBOUNCE_MS);
 
@@ -104,7 +105,5 @@ export function useChatWidget(userId?: string) {
     addMessage,
     clearMessages,
     clearAll,
-    isLoading,
   };
 }
-

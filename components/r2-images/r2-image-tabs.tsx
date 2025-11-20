@@ -1,6 +1,6 @@
 /**
  * R2 Image Tabs Component
- * 
+ *
  * Displays three tabs for the three R2 buckets, allowing users to switch between buckets.
  * Uses shadcn/ui Tabs component with Framer Motion animations.
  */
@@ -55,4 +55,3 @@ export function R2ImageTabs({
     </Tabs>
   );
 }
-

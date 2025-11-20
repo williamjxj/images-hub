@@ -16,25 +16,28 @@ This document defines the data structures and entities used in the R2 Images Dis
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `name` | string | Bucket name (e.g., "bestitconsulting-assets") | Configuration |
-| `displayName` | string | Human-readable name for UI (defaults to bucket name) | Configuration |
-| `accessKeyId` | string | R2 API access key ID | Environment (.env.local) |
-| `secretAccessKey` | string | R2 API secret access key | Environment (.env.local) |
-| `accountId` | string | Cloudflare account ID | Environment (.env.local) |
-| `endpoint` | string | R2 endpoint URL | Computed from accountId |
+| Attribute         | Type   | Description                                          | Source                   |
+| ----------------- | ------ | ---------------------------------------------------- | ------------------------ |
+| `name`            | string | Bucket name (e.g., "bestitconsulting-assets")        | Configuration            |
+| `displayName`     | string | Human-readable name for UI (defaults to bucket name) | Configuration            |
+| `accessKeyId`     | string | R2 API access key ID                                 | Environment (.env.local) |
+| `secretAccessKey` | string | R2 API secret access key                             | Environment (.env.local) |
+| `accountId`       | string | Cloudflare account ID                                | Environment (.env.local) |
+| `endpoint`        | string | R2 endpoint URL                                      | Computed from accountId  |
 
 **Relationships**:
+
 - Contains many `R2Object` instances
 - Has one `FolderPath` (current navigation path)
 
 **Validation Rules**:
+
 - `name` must be one of: "bestitconsulting-assets", "juewei-assets", "static-assets"
 - `accessKeyId` and `secretAccessKey` must be present in environment variables
 - `endpoint` format: `https://{accountId}.r2.cloudflarestorage.com`
 
 **Example**:
+
 ```typescript
 {
   name: "bestitconsulting-assets",
@@ -54,22 +57,24 @@ This document defines the data structures and entities used in the R2 Images Dis
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `key` | string | Full object key/path (e.g., "images/2024/photo.jpg") | R2 API |
-| `name` | string | Display name (filename or folder name) | Computed from key |
-| `size` | number | File size in bytes (0 for folders) | R2 API |
-| `lastModified` | Date | Last modification timestamp | R2 API |
-| `isFolder` | boolean | Whether this is a folder (key ends with "/") | Computed |
-| `url` | string | Presigned URL for image access (null for folders) | Generated server-side |
-| `urlExpiresAt` | Date | Expiration time for presigned URL | Generated server-side |
-| `mimeType` | string | MIME type if available (e.g., "image/jpeg") | R2 API (optional) |
+| Attribute      | Type    | Description                                          | Source                |
+| -------------- | ------- | ---------------------------------------------------- | --------------------- |
+| `key`          | string  | Full object key/path (e.g., "images/2024/photo.jpg") | R2 API                |
+| `name`         | string  | Display name (filename or folder name)               | Computed from key     |
+| `size`         | number  | File size in bytes (0 for folders)                   | R2 API                |
+| `lastModified` | Date    | Last modification timestamp                          | R2 API                |
+| `isFolder`     | boolean | Whether this is a folder (key ends with "/")         | Computed              |
+| `url`          | string  | Presigned URL for image access (null for folders)    | Generated server-side |
+| `urlExpiresAt` | Date    | Expiration time for presigned URL                    | Generated server-side |
+| `mimeType`     | string  | MIME type if available (e.g., "image/jpeg")          | R2 API (optional)     |
 
 **Relationships**:
+
 - Belongs to one `R2Bucket`
 - May be inside a `FolderPath`
 
 **Validation Rules**:
+
 - `key` must not be empty
 - `isFolder` is true if `key.endsWith("/")`
 - `url` is only present for image files (not folders)
@@ -77,18 +82,20 @@ This document defines the data structures and entities used in the R2 Images Dis
 - Image files must have supported extension: .jpg, .jpeg, .png, .webp, .gif
 
 **Computed Properties**:
+
 ```typescript
 // Extract filename from key
-name: key.split("/").pop() || key
+name: key.split("/").pop() || key;
 
 // Check if folder
-isFolder: key.endsWith("/")
+isFolder: key.endsWith("/");
 
 // Extract folder path
-folderPath: key.substring(0, key.lastIndexOf("/"))
+folderPath: key.substring(0, key.lastIndexOf("/"));
 ```
 
 **Example**:
+
 ```typescript
 // Image file
 {
@@ -123,42 +130,44 @@ folderPath: key.substring(0, key.lastIndexOf("/"))
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `bucket` | string | Bucket name | URL query parameter |
-| `path` | string | Folder path (e.g., "images/2024/") | URL query parameter |
-| `parts` | string[] | Array of folder names in path | Computed from path |
+| Attribute | Type     | Description                        | Source              |
+| --------- | -------- | ---------------------------------- | ------------------- |
+| `bucket`  | string   | Bucket name                        | URL query parameter |
+| `path`    | string   | Folder path (e.g., "images/2024/") | URL query parameter |
+| `parts`   | string[] | Array of folder names in path      | Computed from path  |
 
 **Relationships**:
+
 - Belongs to one `R2Bucket`
 - Contains many `R2Object` instances
 
 **Validation Rules**:
+
 - `path` must start and end with "/" if not empty
 - `path` is empty string "" for root folder
 - `parts` is computed by splitting `path` and filtering empty strings
 
 **Computed Properties**:
+
 ```typescript
 // Split path into parts
-parts: path.split("/").filter(Boolean)
+parts: path.split("/").filter(Boolean);
 
 // Breadcrumb items
 breadcrumbs: [
   { name: bucket, path: "" },
   ...parts.map((part, index) => ({
     name: part,
-    path: parts.slice(0, index + 1).join("/") + "/"
-  }))
-]
+    path: parts.slice(0, index + 1).join("/") + "/",
+  })),
+];
 
 // Parent path
-parentPath: parts.length > 0 
-  ? parts.slice(0, -1).join("/") + "/"
-  : ""
+parentPath: parts.length > 0 ? parts.slice(0, -1).join("/") + "/" : "";
 ```
 
 **Example**:
+
 ```typescript
 {
   bucket: "bestitconsulting-assets",
@@ -175,22 +184,25 @@ parentPath: parts.length > 0
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `format` | string | Image format (JPEG, PNG, WebP, GIF) | Computed from extension |
-| `width` | number | Image width in pixels (if available) | Image EXIF/metadata |
-| `height` | number | Image height in pixels (if available) | Image EXIF/metadata |
-| `aspectRatio` | number | Width/height ratio | Computed |
+| Attribute     | Type   | Description                           | Source                  |
+| ------------- | ------ | ------------------------------------- | ----------------------- |
+| `format`      | string | Image format (JPEG, PNG, WebP, GIF)   | Computed from extension |
+| `width`       | number | Image width in pixels (if available)  | Image EXIF/metadata     |
+| `height`      | number | Image height in pixels (if available) | Image EXIF/metadata     |
+| `aspectRatio` | number | Width/height ratio                    | Computed                |
 
 **Relationships**:
+
 - Extends `R2Object` (for image files only)
 
 **Validation Rules**:
+
 - Only present for image files (`isFolder === false`)
 - `format` must be one of: "JPEG", "PNG", "WebP", "GIF"
 - `aspectRatio` computed as `width / height` if both available
 
 **Example**:
+
 ```typescript
 {
   format: "JPEG",
@@ -208,30 +220,33 @@ parentPath: parts.length > 0
 
 **Attributes**:
 
-| Attribute | Type | Description | Source |
-|-----------|------|-------------|--------|
-| `activeBucket` | string | Currently selected bucket name | User selection |
-| `activeTab` | number | Index of active tab (0-2) | User selection |
-| `displayMode` | "grid" \| "masonry" \| "list" | Current display mode | User selection |
-| `currentFolder` | FolderPath | Current folder navigation path | URL/User navigation |
-| `images` | R2Object[] | Loaded images for current folder | API fetch |
-| `folders` | R2Object[] | Folders in current path | API fetch |
-| `isLoading` | boolean | Whether images are loading | API state |
-| `hasMore` | boolean | Whether more images available | API pagination |
-| `continuationToken` | string \| undefined | Token for next page | API response |
-| `searchQuery` | string | Current search/filter query | User input |
-| `selectedImage` | R2Object \| null | Currently selected image (for modal) | User selection |
+| Attribute           | Type                          | Description                          | Source              |
+| ------------------- | ----------------------------- | ------------------------------------ | ------------------- |
+| `activeBucket`      | string                        | Currently selected bucket name       | User selection      |
+| `activeTab`         | number                        | Index of active tab (0-2)            | User selection      |
+| `displayMode`       | "grid" \| "masonry" \| "list" | Current display mode                 | User selection      |
+| `currentFolder`     | FolderPath                    | Current folder navigation path       | URL/User navigation |
+| `images`            | R2Object[]                    | Loaded images for current folder     | API fetch           |
+| `folders`           | R2Object[]                    | Folders in current path              | API fetch           |
+| `isLoading`         | boolean                       | Whether images are loading           | API state           |
+| `hasMore`           | boolean                       | Whether more images available        | API pagination      |
+| `continuationToken` | string \| undefined           | Token for next page                  | API response        |
+| `searchQuery`       | string                        | Current search/filter query          | User input          |
+| `selectedImage`     | R2Object \| null              | Currently selected image (for modal) | User selection      |
 
 **Relationships**:
+
 - References one `R2Bucket` (activeBucket)
 - Contains many `R2Object` instances (images, folders)
 
 **Validation Rules**:
+
 - `activeTab` must be 0, 1, or 2 (three buckets)
 - `displayMode` must be one of the three supported modes
 - `images` and `folders` are filtered by `searchQuery` when present
 
 **Example**:
+
 ```typescript
 {
   activeBucket: "bestitconsulting-assets",
@@ -329,4 +344,3 @@ parentPath: parts.length > 0
 - Presigned URLs cached client-side to reduce API calls
 - Folder structure inferred from object keys (R2 doesn't have true folders)
 - Image metadata (dimensions) may be fetched on-demand if needed for layout optimization
-

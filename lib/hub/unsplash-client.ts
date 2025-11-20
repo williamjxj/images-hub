@@ -1,17 +1,17 @@
-import axios from 'axios';
-import { ImageData, UnsplashSearchResponse, UnsplashPhoto } from './types';
+import axios from "axios";
+import { ImageData, UnsplashSearchResponse, UnsplashPhoto } from "./types";
 
 /**
  * Unsplash API client
  */
 export class UnsplashClient {
   private accessKey: string;
-  private baseUrl = 'https://api.unsplash.com';
+  private baseUrl = "https://api.unsplash.com";
 
   constructor() {
     this.accessKey = process.env.UNSPLASH_ACCESS_KEY!;
     if (!this.accessKey) {
-      throw new Error('UNSPLASH_ACCESS_KEY is required');
+      throw new Error("UNSPLASH_ACCESS_KEY is required");
     }
   }
 
@@ -35,7 +35,7 @@ export class UnsplashClient {
             query: query.trim(),
             per_page: Math.min(perPage, 30), // Unsplash max is 30
             page,
-            order_by: 'relevant',
+            order_by: "relevant",
           },
           headers: {
             Authorization: `Client-ID ${this.accessKey}`,
@@ -44,7 +44,7 @@ export class UnsplashClient {
       );
 
       if (!response.data.results || !Array.isArray(response.data.results)) {
-        console.error('Invalid Unsplash API response:', response.data);
+        console.error("Invalid Unsplash API response:", response.data);
         return { photos: [], total: 0, totalPages: 0 };
       }
 
@@ -53,16 +53,18 @@ export class UnsplashClient {
         total: response.data.total,
         totalPages: response.data.total_pages,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Handle rate limiting (403) and other errors
-      if (error.response?.status === 403) {
-        throw new Error('Unsplash rate limit exceeded');
+      const axiosError = error as { response?: { status?: number } };
+      if (axiosError.response?.status === 403) {
+        throw new Error("Unsplash rate limit exceeded");
       }
-      if (error.response?.status === 401) {
-        throw new Error('Unsplash API key invalid');
+      if (axiosError.response?.status === 401) {
+        throw new Error("Unsplash API key invalid");
       }
-      console.error('Unsplash API error:', error);
-      throw new Error(`Failed to fetch images from Unsplash: ${error.message}`);
+      console.error("Unsplash API error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      throw new Error(`Failed to fetch images from Unsplash: ${errorMessage}`);
     }
   }
 
@@ -72,15 +74,15 @@ export class UnsplashClient {
    */
   async searchImages(count: number = 8): Promise<ImageData[]> {
     try {
-      const query = 'software AI technology programming computer';
+      const query = "software AI technology programming computer";
       const response = await axios.get<UnsplashSearchResponse>(
         `${this.baseUrl}/search/photos`,
         {
           params: {
             query,
             per_page: count,
-            order_by: 'popular',
-            orientation: 'landscape',
+            order_by: "popular",
+            orientation: "landscape",
           },
           headers: {
             Authorization: `Client-ID ${this.accessKey}`,
@@ -89,7 +91,7 @@ export class UnsplashClient {
       );
 
       if (!response.data.results || !Array.isArray(response.data.results)) {
-        console.error('Invalid Unsplash API response:', response.data);
+        console.error("Invalid Unsplash API response:", response.data);
         return [];
       }
 
@@ -98,13 +100,14 @@ export class UnsplashClient {
         url: photo.urls.regular,
         width: photo.width,
         height: photo.height,
-        source: 'unsplash' as const,
+        source: "unsplash" as const,
         author: photo.user.name,
         tags: photo.tags ? photo.tags.map((tag) => tag.title) : [],
       }));
-    } catch (error: any) {
-      console.error('Unsplash API error:', error);
-      console.error('Response data:', error.response?.data);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { data?: unknown } };
+      console.error("Unsplash API error:", error);
+      console.error("Response data:", axiosError.response?.data);
       throw new Error(`Failed to fetch images from Unsplash: ${error}`);
     }
   }

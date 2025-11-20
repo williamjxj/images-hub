@@ -1,5 +1,5 @@
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { UploadResult } from './types';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { UploadResult } from "./types";
 
 /**
  * R2 upload client using AWS SDK
@@ -9,10 +9,10 @@ export class R2Client {
   private bucketName: string;
 
   constructor() {
-    this.bucketName = process.env.R2_BUCKET_NAME || 'static-assets';
-    
+    this.bucketName = process.env.R2_BUCKET_NAME || "static-assets";
+
     this.client = new S3Client({
-      region: 'auto',
+      region: "auto",
       endpoint: process.env.R2_ENDPOINT_URL,
       credentials: {
         accessKeyId: process.env.R2_ACCESS_KEY!,
@@ -35,7 +35,7 @@ export class R2Client {
         Key: key,
         Body: buffer,
         ContentType: contentType,
-        ACL: 'public-read',
+        ACL: "public-read",
       });
 
       await this.client.send(command);
@@ -53,7 +53,7 @@ export class R2Client {
       return {
         success: false,
         key,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -62,17 +62,17 @@ export class R2Client {
    * Get content type from file extension
    */
   private getContentType(filename: string): string {
-    const ext = filename.toLowerCase().split('.').pop();
+    const ext = filename.toLowerCase().split(".").pop();
     switch (ext) {
-      case 'jpg':
-      case 'jpeg':
-        return 'image/jpeg';
-      case 'png':
-        return 'image/png';
-      case 'webp':
-        return 'image/webp';
+      case "jpg":
+      case "jpeg":
+        return "image/jpeg";
+      case "png":
+        return "image/png";
+      case "webp":
+        return "image/webp";
       default:
-        return 'image/jpeg';
+        return "image/jpeg";
     }
   }
 

@@ -1,6 +1,6 @@
 /**
  * R2 Image Item Component
- * 
+ *
  * Displays a single image with lazy loading and error handling.
  * Shows image metadata on hover.
  */
@@ -80,7 +80,10 @@ export function R2ImageItem({ image, onClick }: R2ImageItemProps) {
       )}
       {/* Persistent metadata overlay */}
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <p className="text-white text-xs font-medium truncate" title={image.name}>
+        <p
+          className="text-white text-xs font-medium truncate"
+          title={image.name}
+        >
           {image.name}
         </p>
         <div className="flex items-center gap-2 mt-1 text-white/80 text-[10px]">
@@ -92,4 +95,3 @@ export function R2ImageItem({ image, onClick }: R2ImageItemProps) {
     </motion.div>
   );
 }
-

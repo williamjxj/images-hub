@@ -8,6 +8,7 @@
 This plan implements comprehensive UI/UX improvements including keyboard navigation, enhanced search experience, accessibility enhancements, user feedback mechanisms, and visual design improvements. The implementation expands on the core specification with additional enhancements for loading states, animations, theme switching, and component polish using modern libraries like GSAP, Magic UI, and next-themes.
 
 **Primary Requirements**:
+
 - Keyboard shortcuts and navigation improvements (P1)
 - Enhanced search with suggestions, history, and advanced filters (P2)
 - Accessibility enhancements (skip links, ARIA, focus indicators) (P2)
@@ -22,7 +23,8 @@ This plan implements comprehensive UI/UX improvements including keyboard navigat
 ## Technical Context
 
 **Language/Version**: TypeScript 5.x (strict mode), React 19.2.0, Next.js 16.0.3  
-**Primary Dependencies**: 
+**Primary Dependencies**:
+
 - Next.js 16 (App Router)
 - React 19.2.0
 - TypeScript 5.x (strict mode)
@@ -34,12 +36,14 @@ This plan implements comprehensive UI/UX improvements including keyboard navigat
 - shadcn/ui components (existing)
 - Clerk authentication (existing)
 
-**Storage**: 
+**Storage**:
+
 - localStorage for search history (authenticated users)
 - localStorage for theme preferences
 - Email service for feedback submissions (service@bestitconsulting.ca)
 
-**Testing**: 
+**Testing**:
+
 - Jest + React Testing Library (unit tests for hooks, utilities, components)
 - Integration tests for API routes (feedback submission)
 - Accessibility testing (axe-core, manual screen reader testing)
@@ -47,21 +51,24 @@ This plan implements comprehensive UI/UX improvements including keyboard navigat
 
 **Target Platform**: Web (Next.js App Router), modern browsers (Chrome, Firefox, Safari, Edge)  
 **Project Type**: Web application (Next.js App Router structure)  
-**Performance Goals**: 
+**Performance Goals**:
+
 - Page load: < 2 seconds (LCP < 2.5s)
 - API routes: < 500ms p95 latency
 - Keyboard shortcut response: < 100ms
 - Search suggestions: < 200ms display time
 - Theme switching: < 50ms transition
 
-**Constraints**: 
+**Constraints**:
+
 - Must maintain WCAG AA accessibility compliance
 - Must not degrade existing performance metrics
 - Must be compatible with existing Clerk authentication
 - Must work with existing shadcn/ui components
 - Must support responsive design (mobile/tablet/desktop)
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - ~15-20 new components
 - ~10-15 new hooks/utilities
 - ~5 API routes (feedback submission)
@@ -70,21 +77,24 @@ This plan implements comprehensive UI/UX improvements including keyboard navigat
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 **Code Quality**:
+
 - [x] Feature uses TypeScript with strict mode (no `any` types)
 - [x] Components follow functional React + TypeScript conventions
 - [x] File/folder naming uses kebab-case
 - [x] All exports include JSDoc/TypeScript doc comments
 
 **Testing Standards**:
+
 - [x] API routes have integration test coverage planned (feedback submission API)
 - [x] Custom hooks have unit test coverage planned (keyboard shortcuts, search history, theme)
 - [x] Utility functions have unit test coverage planned (animation utilities, search utilities)
 - [x] Component accessibility testing planned (keyboard navigation, ARIA, focus indicators)
 
 **User Experience Consistency**:
+
 - [x] Feature includes loading states for async operations (search suggestions, feedback submission)
 - [x] Feature includes error states with user-friendly messages (search errors, feedback errors)
 - [x] Feature includes empty states where applicable (empty search history, no suggestions)
@@ -93,6 +103,7 @@ This plan implements comprehensive UI/UX improvements including keyboard navigat
 - [x] Accessibility requirements met (ARIA labels, keyboard navigation, skip links)
 
 **Performance Requirements**:
+
 - [x] API route performance targets defined (< 500ms p95 for feedback submission)
 - [x] Image optimization strategy defined (Next.js Image component, existing)
 - [x] Code splitting strategy identified (route-based automatic, component lazy loading)

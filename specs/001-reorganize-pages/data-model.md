@@ -15,6 +15,7 @@ This feature primarily involves client-side state management for the chat widget
 Represents the open/closed state and chat history of the AI chat widget.
 
 **Attributes**:
+
 - `isOpen: boolean` - Whether the widget panel is currently open
 - `messages: Message[]` - Array of chat messages
 - `lastUpdated: number` - Timestamp of last state update (for cleanup)
@@ -23,11 +24,13 @@ Represents the open/closed state and chat history of the AI chat widget.
 **Key Format**: `chat-widget-state-${userId}` or `chat-widget-state` (if userId unavailable)
 
 **Validation Rules**:
+
 - `isOpen` must be boolean
 - `messages` must be array of valid Message objects
 - `lastUpdated` must be valid timestamp
 
 **State Transitions**:
+
 - Closed → Open: User clicks widget icon
 - Open → Closed: User clicks close button or outside widget
 - Messages added: User sends message or receives response
@@ -37,6 +40,7 @@ Represents the open/closed state and chat history of the AI chat widget.
 Represents a single chat message in the conversation history.
 
 **Attributes**:
+
 - `id: string` - Unique message identifier
 - `role: 'user' | 'assistant'` - Message sender role
 - `content: string` - Message text content
@@ -46,6 +50,7 @@ Represents a single chat message in the conversation history.
 **Storage**: Part of WidgetState.messages array
 
 **Validation Rules**:
+
 - `id` must be non-empty string
 - `role` must be 'user' or 'assistant'
 - `content` must be non-empty string
@@ -56,6 +61,7 @@ Represents a single chat message in the conversation history.
 Represents a navigation menu item in the application header.
 
 **Attributes**:
+
 - `label: string` - Display text for navigation item
 - `href: string` - Target route path
 - `visible: boolean` - Whether item is visible (based on auth state)
@@ -64,6 +70,7 @@ Represents a navigation menu item in the application header.
 **Storage**: In-memory (defined in layout component)
 
 **Validation Rules**:
+
 - `label` must be non-empty string
 - `href` must be valid URL path or external URL
 - `visible` must be boolean
@@ -73,6 +80,7 @@ Represents a navigation menu item in the application header.
 Represents a page route configuration.
 
 **Attributes**:
+
 - `path: string` - URL path
 - `component: string` - Component file path
 - `requiresAuth: boolean` - Whether authentication is required
@@ -81,6 +89,7 @@ Represents a page route configuration.
 **Storage**: File system (Next.js routing)
 
 **Validation Rules**:
+
 - `path` must be valid route path
 - `component` must exist in file system
 - `requiresAuth` must be boolean
@@ -137,11 +146,11 @@ NavigationItem
 ```typescript
 function validateWidgetState(state: unknown): state is WidgetState {
   return (
-    typeof state === 'object' &&
+    typeof state === "object" &&
     state !== null &&
-    typeof (state as WidgetState).isOpen === 'boolean' &&
+    typeof (state as WidgetState).isOpen === "boolean" &&
     Array.isArray((state as WidgetState).messages) &&
-    typeof (state as WidgetState).lastUpdated === 'number'
+    typeof (state as WidgetState).lastUpdated === "number"
   );
 }
 ```
@@ -151,12 +160,12 @@ function validateWidgetState(state: unknown): state is WidgetState {
 ```typescript
 function validateMessage(message: unknown): message is Message {
   return (
-    typeof message === 'object' &&
+    typeof message === "object" &&
     message !== null &&
-    typeof (message as Message).id === 'string' &&
-    ['user', 'assistant'].includes((message as Message).role) &&
-    typeof (message as Message).content === 'string' &&
-    typeof (message as Message).timestamp === 'number'
+    typeof (message as Message).id === "string" &&
+    ["user", "assistant"].includes((message as Message).role) &&
+    typeof (message as Message).content === "string" &&
+    typeof (message as Message).timestamp === "number"
   );
 }
 ```
@@ -224,14 +233,14 @@ export interface WidgetState {
 
 export interface Message {
   id: string;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
   timestamp: number;
   parts?: MessagePart[];
 }
 
 export interface MessagePart {
-  type: 'text' | 'image' | 'tool';
+  type: "text" | "image" | "tool";
   text?: string;
   // ... other part types
 }
@@ -272,4 +281,3 @@ export interface PageRoute {
    - localStorage reads/writes must be debounced
    - State updates must not block UI
    - Large message arrays must be handled efficiently
-

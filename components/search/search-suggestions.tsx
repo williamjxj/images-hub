@@ -1,15 +1,15 @@
 /**
  * Search Suggestions Component
- * 
+ *
  * Displays search suggestions dropdown based on user's recent searches and popular searches
  */
 
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { Search, Clock } from 'lucide-react';
-import { useSearchSuggestions } from '@/lib/hooks/use-search-suggestions';
-import { useAuth } from '@clerk/nextjs';
+import { useEffect, useRef } from "react";
+import { Search } from "lucide-react";
+import { useSearchSuggestions } from "@/lib/hooks/use-search-suggestions";
+import { useAuth } from "@clerk/nextjs";
 
 /**
  * Props for SearchSuggestions component
@@ -29,7 +29,7 @@ interface SearchSuggestionsProps {
 
 /**
  * Search Suggestions Component
- * 
+ *
  * Shows a dropdown of search suggestions based on:
  * 1. User's recent searches (if authenticated)
  * 2. Popular searches (fallback)
@@ -47,13 +47,13 @@ export function SearchSuggestions({
     minQueryLength,
     maxSuggestions: 10,
   });
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
-  
+
   // Close suggestions when clicking outside
   useEffect(() => {
     if (!isVisible) return;
-    
+
     const handleClickOutside = (event: MouseEvent) => {
       if (
         containerRef.current &&
@@ -62,15 +62,20 @@ export function SearchSuggestions({
         onClose();
       }
     };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isVisible, onClose]);
-  
-  if (!isVisible || !query || query.length < minQueryLength || suggestions.length === 0) {
+
+  if (
+    !isVisible ||
+    !query ||
+    query.length < minQueryLength ||
+    suggestions.length === 0
+  ) {
     return null;
   }
-  
+
   return (
     <div
       ref={containerRef}
@@ -97,4 +102,3 @@ export function SearchSuggestions({
     </div>
   );
 }
-

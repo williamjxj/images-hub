@@ -1,6 +1,6 @@
 /**
  * R2 Display Mode Selector Component
- * 
+ *
  * Allows users to switch between grid, masonry, and list display modes.
  */
 
@@ -54,4 +54,3 @@ export function R2DisplayModeSelector({
     </div>
   );
 }
-

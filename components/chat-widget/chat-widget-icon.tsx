@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
 /**
  * Chat widget icon/trigger button component
  */
 
-import Image from 'next/image';
-import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 interface ChatWidgetIconProps {
   onClick: () => void;
@@ -26,14 +26,14 @@ export function ChatWidgetIcon({ onClick, isOpen }: ChatWidgetIconProps) {
       <Button
         onClick={onClick}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             onClick();
           }
         }}
         variant="ghost"
         className="fixed bottom-6 right-6 z-[9999] h-auto rounded-full shadow-lg hover:shadow-xl transition-shadow p-0 bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90"
-        aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
+        aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}
       >
         <Image
           src="/angel.webp"
@@ -46,4 +46,3 @@ export function ChatWidgetIcon({ onClick, isOpen }: ChatWidgetIconProps) {
     </motion.div>
   );
 }
-

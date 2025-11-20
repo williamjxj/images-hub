@@ -26,6 +26,7 @@ The UI/UX improvements feature extends the existing Next.js application with:
 **Location**: `components/keyboard-shortcuts/`, `lib/hooks/use-keyboard-shortcuts.ts`
 
 **Usage**:
+
 ```typescript
 // In app/layout.tsx or root component
 import { KeyboardShortcutsProvider } from '@/components/keyboard-shortcuts/keyboard-shortcuts-provider';
@@ -45,6 +46,7 @@ useKeyboardShortcuts(shortcuts);
 ```
 
 **Key Features**:
+
 - Global shortcuts accessible from any page
 - Conditional activation (e.g., only on specific pages)
 - Prevents conflicts with text input (except Esc)
@@ -55,13 +57,14 @@ useKeyboardShortcuts(shortcuts);
 **Location**: `components/search/`, `lib/hooks/use-search-history.ts`, `lib/hooks/use-search-suggestions.ts`
 
 **Search Suggestions**:
+
 ```typescript
 import { useSearchSuggestions } from '@/lib/hooks/use-search-suggestions';
 
 function SearchInput() {
   const [query, setQuery] = useState('');
   const suggestions = useSearchSuggestions(query);
-  
+
   return (
     <div>
       <input value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -72,22 +75,24 @@ function SearchInput() {
 ```
 
 **Search History**:
+
 ```typescript
 import { useSearchHistory } from '@/lib/hooks/use-search-history';
 
 function SearchComponent({ userId }: { userId: string }) {
   const { history, addToHistory } = useSearchHistory(userId);
-  
+
   const handleSearch = (query: string) => {
     addToHistory(query);
     // perform search...
   };
-  
+
   return <SearchHistory history={history} onSelect={handleSearch} />;
 }
 ```
 
 **Advanced Filters**:
+
 ```typescript
 import { AdvancedFilters } from '@/components/search/advanced-filters';
 
@@ -97,7 +102,7 @@ function ImageSearch() {
     color: null,
     size: 'all',
   });
-  
+
   return (
     <AdvancedFilters
       filters={filters}
@@ -110,6 +115,7 @@ function ImageSearch() {
 ### 3. Accessibility Features
 
 **Skip Link**:
+
 ```typescript
 // In app/layout.tsx
 import { SkipLink } from '@/components/accessibility/skip-link';
@@ -121,16 +127,17 @@ import { SkipLink } from '@/components/accessibility/skip-link';
 ```
 
 **ARIA Live Regions**:
+
 ```typescript
 import { AriaLiveRegion } from '@/components/accessibility/aria-live-region';
 
 function SearchResults() {
   const [results, setResults] = useState([]);
-  
+
   return (
     <>
       <AriaLiveRegion priority="polite">
-        {results.length > 0 
+        {results.length > 0
           ? `Found ${results.length} results`
           : 'No results found'
         }
@@ -144,13 +151,14 @@ function SearchResults() {
 ### 4. Feedback System
 
 **Feedback Form**:
+
 ```typescript
 import { FeedbackForm } from '@/components/feedback/feedback-form';
 import { useFeedback } from '@/lib/hooks/use-feedback';
 
 function FeedbackButton() {
   const { submitFeedback, isLoading } = useFeedback();
-  
+
   return (
     <FeedbackForm
       onSubmit={submitFeedback}
@@ -161,6 +169,7 @@ function FeedbackButton() {
 ```
 
 **Contextual Prompt**:
+
 ```typescript
 import { FeedbackPrompt } from '@/components/feedback/feedback-prompt';
 
@@ -186,6 +195,7 @@ function SearchResults() {
 ### 5. Theme System
 
 **Theme Provider**:
+
 ```typescript
 // In app/layout.tsx
 import { ThemeProvider } from '@/components/theme/theme-provider';
@@ -196,6 +206,7 @@ import { ThemeProvider } from '@/components/theme/theme-provider';
 ```
 
 **Theme Toggle**:
+
 ```typescript
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 
@@ -210,6 +221,7 @@ function Header() {
 ```
 
 **Using Theme in Components**:
+
 ```typescript
 // Tailwind automatically handles dark mode via class
 <div className="bg-background text-foreground dark:bg-background dark:text-foreground">
@@ -220,23 +232,25 @@ function Header() {
 ### 6. Animation Utilities
 
 **GSAP Text Animations**:
+
 ```typescript
 import { animateTextReveal } from '@/lib/utils/animations';
 
 function AnimatedHeading({ text }: { text: string }) {
   const ref = useRef<HTMLHeadingElement>(null);
-  
+
   useEffect(() => {
     if (ref.current) {
       animateTextReveal(ref.current);
     }
   }, []);
-  
+
   return <h1 ref={ref}>{text}</h1>;
 }
 ```
 
 **Framer Motion Transitions**:
+
 ```typescript
 import { motion } from 'framer-motion';
 
@@ -256,6 +270,7 @@ function AnimatedCard({ children }: { children: React.ReactNode }) {
 ## Implementation Order
 
 ### Phase 1: Foundation
+
 1. Install dependencies (`gsap`, `next-themes`, `resend`)
 2. Set up theme provider in `app/layout.tsx`
 3. Implement keyboard shortcuts system
@@ -263,6 +278,7 @@ function AnimatedCard({ children }: { children: React.ReactNode }) {
 5. Create feedback API route
 
 ### Phase 2: Search Enhancements
+
 1. Implement search history hook and storage
 2. Create search suggestions component
 3. Add advanced filters component
@@ -270,6 +286,7 @@ function AnimatedCard({ children }: { children: React.ReactNode }) {
 5. Integrate with existing search components
 
 ### Phase 3: Visual Polish
+
 1. Enhance loading placeholders
 2. Add logo components
 3. Update branding in header
@@ -277,6 +294,7 @@ function AnimatedCard({ children }: { children: React.ReactNode }) {
 5. Customize Clerk components
 
 ### Phase 4: Animations & Advanced Features
+
 1. Integrate GSAP for text animations
 2. Enhance Framer Motion usage
 3. Add Magic UI components
@@ -301,22 +319,25 @@ function AnimatedCard({ children }: { children: React.ReactNode }) {
 ## Common Patterns
 
 ### Conditional Keyboard Shortcuts
+
 ```typescript
 useKeyboardShortcuts({
-  '/': {
+  "/": {
     action: () => focusSearchInput(),
-    condition: () => window.location.pathname === '/',
+    condition: () => window.location.pathname === "/",
   },
 });
 ```
 
 ### Debounced Search Suggestions
+
 ```typescript
 const debouncedQuery = useDebounce(query, 300);
 const suggestions = useSearchSuggestions(debouncedQuery);
 ```
 
 ### Theme-Aware Styling
+
 ```typescript
 // Use Tailwind dark: variant
 <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
@@ -325,6 +346,7 @@ const suggestions = useSearchSuggestions(debouncedQuery);
 ```
 
 ### Error Boundary for Feedback
+
 ```typescript
 try {
   await submitFeedback(data);
@@ -354,4 +376,3 @@ try {
 - [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 - [shadcn/ui](https://ui.shadcn.com/)
-

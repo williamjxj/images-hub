@@ -55,36 +55,36 @@ paths:
             maximum: 1000
           description: Maximum number of objects to return per request
       responses:
-        '200':
+        "200":
           description: Successfully retrieved objects
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListObjectsResponse'
-        '400':
+                $ref: "#/components/schemas/ListObjectsResponse"
+        "400":
           description: Invalid request parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Unauthorized - authentication required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '403':
+                $ref: "#/components/schemas/ErrorResponse"
+        "403":
           description: Forbidden - insufficient permissions
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/r2/image:
     get:
@@ -115,36 +115,36 @@ paths:
             type: string
           description: Object key/path (e.g., "images/2024/photo.jpg")
       responses:
-        '200':
+        "200":
           description: Successfully generated presigned URL
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ImageUrlResponse'
-        '400':
+                $ref: "#/components/schemas/ImageUrlResponse"
+        "400":
           description: Invalid request parameters
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
           description: Unauthorized - authentication required
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Image not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   securitySchemes:
@@ -213,12 +213,12 @@ components:
         objects:
           type: array
           items:
-            $ref: '#/components/schemas/R2Object'
+            $ref: "#/components/schemas/R2Object"
           description: List of image files (filtered to supported formats)
         folders:
           type: array
           items:
-            $ref: '#/components/schemas/R2Object'
+            $ref: "#/components/schemas/R2Object"
           description: List of folders in the current path
         hasMore:
           type: boolean
@@ -277,4 +277,3 @@ components:
               type: boolean
               default: false
               description: Whether the request can be retried
-

@@ -1,16 +1,16 @@
 /**
  * Feedback Prompt Component
- * 
+ *
  * Contextual "Was this helpful?" prompt that appears after key user actions
  */
 
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { ThumbsUp, ThumbsDown, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useFeedback } from '@/lib/hooks/use-feedback';
+import { useState } from "react";
+import { ThumbsUp, ThumbsDown, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { useFeedback } from "@/lib/hooks/use-feedback";
 
 /**
  * Props for FeedbackPrompt component
@@ -26,7 +26,7 @@ interface FeedbackPromptProps {
 
 /**
  * Feedback Prompt Component
- * 
+ *
  * Shows a "Was this helpful?" prompt after key user actions
  */
 export function FeedbackPrompt({
@@ -36,24 +36,26 @@ export function FeedbackPrompt({
 }: FeedbackPromptProps) {
   const [showForm, setShowForm] = useState(false);
   const { submitFeedback, isLoading } = useFeedback();
-  
-  const handleRating = async (rating: 'positive' | 'negative') => {
+
+  const handleRating = async (rating: "positive" | "negative") => {
     await submitFeedback({
-      type: 'helpful-prompt',
+      type: "helpful-prompt",
       description: `User rated "${context}" as ${rating}`,
       rating,
     });
-    
+
     setShowForm(true);
     onSubmitted?.();
   };
-  
+
   if (showForm) {
     return (
       <Card className="p-4 border-primary/20 bg-primary/5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <p className="text-sm font-medium mb-1">Thank you for your feedback!</p>
+            <p className="text-sm font-medium mb-1">
+              Thank you for your feedback!
+            </p>
             <p className="text-xs text-muted-foreground">
               Your response helps us improve the experience.
             </p>
@@ -73,7 +75,7 @@ export function FeedbackPrompt({
       </Card>
     );
   }
-  
+
   return (
     <Card className="p-4">
       <div className="flex items-center justify-between gap-4">
@@ -85,7 +87,7 @@ export function FeedbackPrompt({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleRating('positive')}
+            onClick={() => handleRating("positive")}
             disabled={isLoading}
             aria-label="Yes, this was helpful"
           >
@@ -95,7 +97,7 @@ export function FeedbackPrompt({
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handleRating('negative')}
+            onClick={() => handleRating("negative")}
             disabled={isLoading}
             aria-label="No, this was not helpful"
           >
@@ -118,4 +120,3 @@ export function FeedbackPrompt({
     </Card>
   );
 }
-

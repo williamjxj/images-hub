@@ -35,4 +35,3 @@
 - Specification is ready for `/speckit.clarify` or `/speckit.plan`
 - No clarifications needed - all requirements are clear and testable
 - The specification covers three main reorganization tasks: making Stock Images the home page, converting AI Chat to a widget, and making Cloudflare Images accessible via link
-

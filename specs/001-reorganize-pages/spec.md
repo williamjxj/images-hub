@@ -14,7 +14,7 @@
 - Q: Where should the Cloudflare Images link be placed on the Stock Images page? → A: In the page header/navigation area.
 - Q: What should happen when users access the old AI chat route (the root URL that previously showed the chat page)? → A: Redirect to home page (Stock Images).
 
-## User Scenarios & Testing *(mandatory)*
+## User Scenarios & Testing _(mandatory)_
 
 ### User Story 1 - Stock Images as Home Page (Priority: P1)
 
@@ -80,7 +80,7 @@ The Cloudflare Images functionality is accessible through a link or button on th
 - What happens when the Cloudflare Images link is clicked but the user is not authenticated? They should be redirected to sign-in.
 - How does the widget appear when users are on pages with different layouts or content heights? It should remain consistently positioned.
 
-## Requirements *(mandatory)*
+## Requirements _(mandatory)_
 
 ### Functional Requirements
 
@@ -100,14 +100,14 @@ The Cloudflare Images functionality is accessible through a link or button on th
 - **FR-015**: System MUST redirect any attempts to access the old AI chat route to the home page (Stock Images)
 - **FR-012**: System MUST ensure the AI widget is responsive and appropriately sized on mobile devices
 
-### Key Entities *(include if feature involves data)*
+### Key Entities _(include if feature involves data)_
 
 - **Page Route**: Represents the URL path and associated page component. Key attributes: route path, page component, authentication requirement.
 - **Navigation Item**: Represents a menu or link item in the application navigation. Key attributes: label, target route, visibility condition.
 - **Widget State**: Represents the open/closed state of the AI chat widget. Key attributes: isOpen, persists across navigation.
 - **Chat History**: Represents the conversation messages within the AI chat widget. Key attributes: messages array, persists across navigation and widget close/reopen within browser session.
 
-## Success Criteria *(mandatory)*
+## Success Criteria _(mandatory)_
 
 ### Measurable Outcomes
 

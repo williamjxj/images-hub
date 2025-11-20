@@ -1,6 +1,6 @@
 /**
  * R2 Folder Navigation Component
- * 
+ *
  * Displays breadcrumb navigation and folder list for navigating through bucket folders.
  */
 
@@ -55,23 +55,23 @@ export function R2FolderNavigation({
   // but we add this as a safety check
   const currentLevelFolders = folders.filter((folder) => {
     const folderPath = folder.key;
-    
+
     // If we're at root, folders should not contain "/" except trailing
     if (!currentFolder) {
       const parts = folderPath.split("/").filter(Boolean);
       return parts.length === 1; // e.g., "images/" -> ["images"]
     }
-    
+
     // If we're in a folder, check that the folder path starts with current folder
     // and is exactly one level deeper
     if (!folderPath.startsWith(currentFolder)) {
       return false;
     }
-    
+
     // Get the part after current folder
     const relativePath = folderPath.slice(currentFolder.length);
     const parts = relativePath.split("/").filter(Boolean);
-    
+
     // Should be exactly one folder name (e.g., "images/2024/" -> ["2024"])
     return parts.length === 1;
   });
@@ -123,7 +123,7 @@ export function R2FolderNavigation({
             <div className="flex-1" /> // Spacer when no breadcrumb
           )}
         </AnimatePresence>
-        
+
         {/* Filter Component - Right side */}
         {filter && onFilterChange && (
           <div className="flex-shrink-0">
@@ -150,7 +150,11 @@ export function R2FolderNavigation({
             <p className="text-sm font-medium text-muted-foreground">
               {currentFolder ? "Subfolders" : "Folders"}
             </p>
-            <div className="flex flex-wrap gap-2" role="list" aria-label="Folder list">
+            <div
+              className="flex flex-wrap gap-2"
+              role="list"
+              aria-label="Folder list"
+            >
               {currentLevelFolders.map((folder, index) => (
                 <motion.div
                   key={folder.key}
@@ -177,4 +181,3 @@ export function R2FolderNavigation({
     </div>
   );
 }
-

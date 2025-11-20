@@ -29,21 +29,24 @@
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 **Code Quality**:
+
 - [ ] Feature uses TypeScript with strict mode (no `any` types)
 - [ ] Components follow functional React + TypeScript conventions
 - [ ] File/folder naming uses kebab-case
 - [ ] All exports include JSDoc/TypeScript doc comments
 
 **Testing Standards**:
+
 - [ ] API routes have integration test coverage planned
 - [ ] Custom hooks have unit test coverage planned
 - [ ] Utility functions have unit test coverage planned
 - [ ] Component accessibility testing planned
 
 **User Experience Consistency**:
+
 - [ ] Feature includes loading states for async operations
 - [ ] Feature includes error states with user-friendly messages
 - [ ] Feature includes empty states where applicable
@@ -52,6 +55,7 @@
 - [ ] Accessibility requirements met (ARIA labels, keyboard navigation)
 
 **Performance Requirements**:
+
 - [ ] API route performance targets defined (< 500ms p95)
 - [ ] Image optimization strategy defined (Next.js Image component)
 - [ ] Code splitting strategy identified
@@ -72,6 +76,7 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
+
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
   for this feature. Delete unused options and expand the chosen structure with
@@ -122,7 +127,7 @@ directories captured above]
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
+| -------------------------- | ------------------ | ------------------------------------ |
+| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |

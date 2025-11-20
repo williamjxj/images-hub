@@ -1,6 +1,6 @@
 /**
  * Type definitions for R2 Images Display feature
- * 
+ *
  * These types represent data structures used for displaying images
  * from Cloudflare R2 buckets in a tabbed gallery interface.
  */
@@ -121,4 +121,3 @@ export interface BreadcrumbItem {
   /** Folder path (empty string for root) */
   path: string;
 }
-

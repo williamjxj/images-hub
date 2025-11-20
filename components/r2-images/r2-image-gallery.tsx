@@ -1,6 +1,6 @@
 /**
  * R2 Image Gallery Component
- * 
+ *
  * Main gallery component that integrates tabs, folder navigation, and image display.
  * Manages state for bucket selection, folder navigation, and image loading.
  */
@@ -45,13 +45,16 @@ export function R2ImageGallery() {
 
   const { displayMode, setDisplayMode } = useDisplayMode();
   const [selectedMedia, setSelectedMedia] = useState<R2Object | null>(null);
-  
+
   // Announce image loading updates to screen readers
   useEffect(() => {
     if (loading && images.length === 0) {
-      announceToScreenReader('Loading images...', 'polite');
+      announceToScreenReader("Loading images...", "polite");
     } else if (!loading && images.length > 0) {
-      announceToScreenReader(`Loaded ${images.length} image${images.length > 1 ? 's' : ''}`, 'polite');
+      announceToScreenReader(
+        `Loaded ${images.length} image${images.length > 1 ? "s" : ""}`,
+        "polite"
+      );
     }
   }, [loading, images.length]);
   const [filter, setFilter] = useState<ImageGalleryFilter>({
@@ -98,21 +101,26 @@ export function R2ImageGallery() {
 
   const handleImageModalNavigate = useCallback(
     (direction: "prev" | "next") => {
-      const imageFiles = filteredImages.filter((img) => !img.isFolder && img.mediaType === "image");
+      const imageFiles = filteredImages.filter(
+        (img) => !img.isFolder && img.mediaType === "image"
+      );
       if (imageFiles.length === 0) return;
 
-      const currentIndex = selectedMedia && selectedMedia.mediaType === "image"
-        ? imageFiles.findIndex((img) => img.key === selectedMedia.key)
-        : -1;
+      const currentIndex =
+        selectedMedia && selectedMedia.mediaType === "image"
+          ? imageFiles.findIndex((img) => img.key === selectedMedia.key)
+          : -1;
 
       if (currentIndex === -1) return;
 
       // Looping navigation: wrap around at boundaries
       if (direction === "prev") {
-        const prevIndex = currentIndex === 0 ? imageFiles.length - 1 : currentIndex - 1;
+        const prevIndex =
+          currentIndex === 0 ? imageFiles.length - 1 : currentIndex - 1;
         setSelectedMedia(imageFiles[prevIndex]);
       } else if (direction === "next") {
-        const nextIndex = currentIndex === imageFiles.length - 1 ? 0 : currentIndex + 1;
+        const nextIndex =
+          currentIndex === imageFiles.length - 1 ? 0 : currentIndex + 1;
         setSelectedMedia(imageFiles[nextIndex]);
       }
     },
@@ -121,21 +129,26 @@ export function R2ImageGallery() {
 
   const handleVideoModalNavigate = useCallback(
     (direction: "prev" | "next") => {
-      const videoFiles = filteredImages.filter((img) => !img.isFolder && img.mediaType === "video");
+      const videoFiles = filteredImages.filter(
+        (img) => !img.isFolder && img.mediaType === "video"
+      );
       if (videoFiles.length === 0) return;
 
-      const currentIndex = selectedMedia && selectedMedia.mediaType === "video"
-        ? videoFiles.findIndex((v) => v.key === selectedMedia.key)
-        : -1;
+      const currentIndex =
+        selectedMedia && selectedMedia.mediaType === "video"
+          ? videoFiles.findIndex((v) => v.key === selectedMedia.key)
+          : -1;
 
       if (currentIndex === -1) return;
 
       // Looping navigation: wrap around at boundaries
       if (direction === "prev") {
-        const prevIndex = currentIndex === 0 ? videoFiles.length - 1 : currentIndex - 1;
+        const prevIndex =
+          currentIndex === 0 ? videoFiles.length - 1 : currentIndex - 1;
         setSelectedMedia(videoFiles[prevIndex]);
       } else if (direction === "next") {
-        const nextIndex = currentIndex === videoFiles.length - 1 ? 0 : currentIndex + 1;
+        const nextIndex =
+          currentIndex === videoFiles.length - 1 ? 0 : currentIndex + 1;
         setSelectedMedia(videoFiles[nextIndex]);
       }
     },
@@ -153,19 +166,27 @@ export function R2ImageGallery() {
         );
       case "list":
         return (
-          <R2ImageList images={filteredImages} onImageClick={handleMediaClick} />
+          <R2ImageList
+            images={filteredImages}
+            onImageClick={handleMediaClick}
+          />
         );
       case "grid":
       default:
         return (
-          <R2ImageGrid images={filteredImages} onImageClick={handleMediaClick} />
+          <R2ImageGrid
+            images={filteredImages}
+            onImageClick={handleMediaClick}
+          />
         );
     }
   };
 
   return (
     <TooltipProvider>
-      <AriaLiveRegion priority="polite" />
+      <AriaLiveRegion priority="polite">
+        {loading ? "Loading images..." : images.length > 0 ? `Loaded ${images.length} images` : ""}
+      </AriaLiveRegion>
       <div className="flex flex-col min-h-screen">
         <div className="container mx-auto flex flex-col flex-1">
           {/* Tab Navigation */}
@@ -200,34 +221,37 @@ export function R2ImageGallery() {
 
           {/* Main Content Area */}
           <div className="flex-1 overflow-auto p-4">
-          {loading && images.length === 0 ? (
-            <R2ImageLoading count={12} mode={displayMode} />
-          ) : error ? (
-            <Card className="p-6">
-              <div className="flex items-center gap-2 text-destructive">
-                <AlertCircle className="h-5 w-5" aria-hidden="true" />
-                <p role="alert">{error}</p>
-              </div>
-            </Card>
-          ) : images.length === 0 ? (
-            <Card className="p-6">
-              <div className="text-center">
-                <p className="text-muted-foreground">
-                  No images currently, click Sub-Folder to view more images.
-                </p>
-              </div>
-            </Card>
-          ) : (
-            <>
-              {renderImages()}
-              {/* Infinite scroll trigger */}
-              {hasMore && (
-                <div ref={infiniteScrollRef} className="h-20 flex items-center justify-center mt-8">
-                  {loading && <R2ImageLoading count={8} mode={displayMode} />}
+            {loading && images.length === 0 ? (
+              <R2ImageLoading count={12} mode={displayMode} />
+            ) : error ? (
+              <Card className="p-6">
+                <div className="flex items-center gap-2 text-destructive">
+                  <AlertCircle className="h-5 w-5" aria-hidden="true" />
+                  <p role="alert">{error}</p>
                 </div>
-              )}
-            </>
-          )}
+              </Card>
+            ) : images.length === 0 ? (
+              <Card className="p-6">
+                <div className="text-center">
+                  <p className="text-muted-foreground">
+                    No images currently, click Sub-Folder to view more images.
+                  </p>
+                </div>
+              </Card>
+            ) : (
+              <>
+                {renderImages()}
+                {/* Infinite scroll trigger */}
+                {hasMore && (
+                  <div
+                    ref={infiniteScrollRef}
+                    className="h-20 flex items-center justify-center mt-8"
+                  >
+                    {loading && <R2ImageLoading count={8} mode={displayMode} />}
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
           {/* Image Modal */}
@@ -254,4 +278,3 @@ export function R2ImageGallery() {
     </TooltipProvider>
   );
 }
-

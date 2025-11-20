@@ -8,6 +8,7 @@
 ## Summary
 
 Build a tabbed image gallery interface that displays images from three Cloudflare R2 buckets (bestitconsulting-assets, juewei-assets, static-assets). The feature includes:
+
 - Three tabs for three R2 buckets with sub-folder navigation
 - Infinite scroll with lazy loading for performance
 - Three display modes: grid, masonry, list
@@ -22,20 +23,23 @@ Build a tabbed image gallery interface that displays images from three Cloudflar
 **Testing**: Jest + React Testing Library (to be added)  
 **Target Platform**: Web (Next.js App Router), modern browsers  
 **Project Type**: Web application (Next.js App Router)  
-**Performance Goals**: 
+**Performance Goals**:
+
 - Tab switching < 100ms (SC-008)
 - Image load within 3 seconds for 100 images (SC-002)
 - Support 500+ images without performance degradation (SC-005)
 - 95% success rate for image loads (SC-003)
 
-**Constraints**: 
+**Constraints**:
+
 - Must use R2 API keys from `.env.local`
 - Authentication required (Clerk integration)
 - Infinite scroll instead of pagination
 - Lazy loading for images
 - Support sub-folder navigation
 
-**Scale/Scope**: 
+**Scale/Scope**:
+
 - 3 R2 buckets (fixed)
 - Unlimited images per bucket
 - All authenticated users have access
@@ -91,6 +95,7 @@ lib/
 ```
 
 **Structure Decision**: Using Next.js App Router structure with:
+
 - Server components for data fetching (API routes)
 - Client components for interactive UI (gallery, tabs, filters)
 - Separation of concerns: R2 client logic in `/lib/r2`, UI components in `/components/r2-images`
@@ -133,6 +138,7 @@ lib/
    - Loading states
 
 **Key Differences from pim-gallery**:
+
 - Support for **three buckets** (not single bucket)
 - **Tab navigation** between buckets
 - **Sub-folder navigation** with breadcrumbs
@@ -178,6 +184,7 @@ See [research.md](./research.md) for detailed research findings.
 See [data-model.md](./data-model.md) for detailed entity definitions.
 
 **Key Entities**:
+
 - `R2Bucket`: Configuration for each bucket (name, credentials)
 - `R2Object`: Represents a file/folder in R2 (key, size, lastModified, isFolder)
 - `ImageMetadata`: Extended metadata for image files (format, dimensions if available)
@@ -188,6 +195,7 @@ See [data-model.md](./data-model.md) for detailed entity definitions.
 See [contracts/api-r2.yaml](./contracts/api-r2.yaml) for OpenAPI specification.
 
 **Endpoints**:
+
 - `GET /api/r2/list?bucket={name}&prefix={path}` - List objects in bucket/folder
 - `GET /api/r2/image?bucket={name}&key={path}` - Get image presigned URL
 

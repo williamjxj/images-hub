@@ -1,7 +1,7 @@
 {
-    "mcpServers": {
-      "PIM Docs": {
-        "url": "https://gitmcp.io/williamjxj/PIM"
-      }
+  "mcpServers": {
+    "PIM Docs": {
+      "url": "https://gitmcp.io/williamjxj/PIM"
     }
   }
+}

@@ -37,4 +37,3 @@
 - The spec focuses on user-facing functionality for searching and displaying images from Unsplash, Pixabay, and Pexels APIs
 - Assumptions documented for API access, authentication, and provider characteristics
 - Out of scope clearly defined to prevent scope creep
-

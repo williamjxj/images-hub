@@ -12,7 +12,6 @@ This proposal expands the core UI/UX improvements specification with additional 
 
 Based on `spec.md`, the plan will implement:
 
-
 1. **Enhanced Search Experience** (P2)
    - Search suggestions/autocomplete (recent → popular fallback)
    - Search history (authenticated users, 10 most recent)
@@ -31,6 +30,7 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Basic skeleton components exist (`image-skeleton.tsx`, `shimmer-effect.tsx`)
 
 **Proposed Enhancements**:
+
 - **Placeholder SVG Loading**: Create branded SVG placeholders for different content types (images, cards, lists)
 - **Skeleton Screen Patterns**: Expand skeleton components for:
   - Search results grid
@@ -40,6 +40,7 @@ Based on `spec.md`, the plan will implement:
 - **Download Effects**: Add visual feedback for download actions (progress indicators, success animations)
 
 **Implementation Approach**:
+
 - Extend existing `components/loading-placeholders/` directory
 - Use Framer Motion for smooth transitions
 - Create reusable skeleton variants matching content layouts
@@ -49,12 +50,14 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Basic favicon exists (`app/favicon.ico`)
 
 **Proposed Enhancements**:
+
 - Design/improve application logo
 - Create favicon variants (multiple sizes, dark/light mode)
 - Add logo to header navigation
 - Consider animated logo for loading states
 
 **Implementation Approach**:
+
 - Create logo SVG components
 - Generate favicon set (16x16, 32x32, 192x192, 512x512)
 - Add to `public/` directory
@@ -65,6 +68,7 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Text links in header footer
 
 **Proposed Enhancement**:
+
 - Replace text links with company logos
 - Use logos from:
   - https://www.bestitconsulting.ca
@@ -72,6 +76,7 @@ Based on `spec.md`, the plan will implement:
 - Maintain accessibility (alt text, proper link structure)
 
 **Implementation Approach**:
+
 - Fetch/extract logos from company websites
 - Create logo components with proper sizing
 - Update header in `app/layout.tsx`
@@ -82,6 +87,7 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Basic shadcn/ui components
 
 **Proposed Enhancements**:
+
 - Integrate [Magic UI](https://magicui.design/) components for:
   - **Navigation**: Enhanced navbar with animations
   - **Buttons**: Animated button variants (shimmer, ripple, etc.)
@@ -89,6 +95,7 @@ Based on `spec.md`, the plan will implement:
   - **Other**: Additional components as needed
 
 **Implementation Approach**:
+
 - Install Magic UI components via MCP or manual integration
 - Replace/upgrade existing components:
   - `components/ui/breadcrumb.tsx` → Magic UI animated breadcrumb
@@ -101,6 +108,7 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Framer Motion used in some components
 
 **Proposed Enhancements**:
+
 - **GSAP Integration**: Use GSAP for:
   - Dynamic text animations (typing effects, text reveals)
   - Decorative icon/image animations
@@ -115,6 +123,7 @@ Based on `spec.md`, the plan will implement:
   - Loading spinners
 
 **Implementation Approach**:
+
 - Install GSAP: `npm install gsap`
 - Create animation utilities in `lib/utils/animations.ts`
 - Add animation variants to components
@@ -125,6 +134,7 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Basic chat widget with icon and panel
 
 **Proposed Enhancements**:
+
 - **Visual Improvements**:
   - Enhanced chat bubble animations
   - Better message layout and typography
@@ -137,6 +147,7 @@ Based on `spec.md`, the plan will implement:
   - Keyboard shortcuts within chat (e.g., Enter to send, Esc to close)
 
 **Implementation Approach**:
+
 - Enhance `components/chat-widget/chat-widget-panel.tsx`
 - Add animation variants
 - Improve message rendering
@@ -147,6 +158,7 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Basic responsive design exists
 
 **Proposed Enhancements**:
+
 - **Mobile-First Improvements**:
   - Touch-friendly button sizes (min 44x44px)
   - Improved mobile navigation
@@ -161,6 +173,7 @@ Based on `spec.md`, the plan will implement:
   - Keyboard navigation improvements
 
 **Implementation Approach**:
+
 - Audit all components for responsive behavior
 - Update Tailwind breakpoints if needed
 - Test on multiple device sizes
@@ -171,11 +184,13 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Default Clerk components (SignInButton, SignUpButton, UserButton)
 
 **Proposed Enhancement**:
+
 - Customize Clerk component styling to match app theme
 - Align with app's CSS variables and design system
 - Ensure consistent look with rest of application
 
 **Implementation Approach**:
+
 - Use Clerk's theming API/CSS variables
 - Override default styles via `globals.css`
 - Create wrapper components if needed
@@ -186,12 +201,14 @@ Based on `spec.md`, the plan will implement:
 **Current State**: Single theme (tweakcn.com style)
 
 **Proposed Enhancement**:
+
 - Implement theme switching (light/dark mode)
 - Use tweakcn.com theme system
 - Persist theme preference (localStorage)
 - Smooth theme transitions
 
 **Implementation Approach**:
+
 - Integrate theme provider (next-themes or similar)
 - Define theme tokens matching tweakcn.com style
 - Update `tailwind.config.ts` with theme variables
@@ -199,6 +216,7 @@ Based on `spec.md`, the plan will implement:
 - Reference: https://tweakcn.com/editor/theme
 
 **Theme System**:
+
 - Use CSS variables for colors
 - Support light/dark variants
 - Maintain accessibility (contrast ratios)
@@ -207,6 +225,7 @@ Based on `spec.md`, the plan will implement:
 ### 10. Design Inspiration & References
 
 **References to Consider**:
+
 - **Civitai** (https://civitai.com/): Image gallery layouts, search UI patterns
 - **Liblib.art** (https://www.liblib.art/): Creative UI patterns, visual design
 - **Magic UI Design** (via MCP): Component library patterns
@@ -220,9 +239,9 @@ Based on `spec.md`, the plan will implement:
 
 ```json
 {
-  "gsap": "^3.12.5",           // Animation library
-  "next-themes": "^0.2.1",     // Theme switching
-  "@magicui/react": "^latest"  // Magic UI components (if available)
+  "gsap": "^3.12.5", // Animation library
+  "next-themes": "^0.2.1", // Theme switching
+  "@magicui/react": "^latest" // Magic UI components (if available)
 }
 ```
 
@@ -235,24 +254,28 @@ Based on `spec.md`, the plan will implement:
 ## Implementation Phases
 
 ### Phase 1: Foundation (Core Spec Requirements)
+
 - Keyboard shortcuts implementation
 - Search enhancements (suggestions, history, filters)
 - Accessibility improvements (skip links, ARIA, focus indicators)
 - Basic feedback forms
 
 ### Phase 2: Visual Polish
+
 - Loading component improvements
 - Logo/favicon updates
 - "Powered by" branding with logos
 - Responsive design audit and improvements
 
 ### Phase 3: Animation & Interactivity
+
 - GSAP integration for dynamic animations
 - Enhanced Framer Motion usage
 - CSS animation utilities
 - Chat widget improvements
 
 ### Phase 4: Advanced Features
+
 - Magic UI component integration
 - Clerk component customization
 - Dynamic theme switching
@@ -285,4 +308,3 @@ Based on `spec.md`, the plan will implement:
 ---
 
 **Ready for Review**: Please review and provide feedback before proceeding with full plan generation.
-
