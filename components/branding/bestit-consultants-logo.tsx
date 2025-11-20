@@ -35,12 +35,13 @@ export function BestITConsultantsLogo({
   const logoContent = (
     <div className={cn("flex items-center gap-2", className)}>
       <Image
-        src="/b22-logo.png"
+        src="/b22.1-logo.png"
         alt="Best IT Consultants"
-        width={120}
-        height={32}
+        title="Best IT Consultants"
+        width={150}
+        height={40}
         className="object-contain w-auto"
-        style={{ height: "32px" }}
+        style={{ height: "40px" }}
       />
       {asLink && <ExternalLink className="h-3 w-3 text-muted-foreground" />}
     </div>

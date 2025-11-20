@@ -37,10 +37,11 @@ export function BestITLogo({
       <Image
         src="/b11-logo.png"
         alt="Best IT Consulting"
-        width={120}
-        height={32}
+        title="Best IT Consulting"
+        width={90}
+        height={24}
         className="object-contain w-auto"
-        style={{ height: "32px" }}
+        style={{ height: "24px" }}
       />
       {asLink && <ExternalLink className="h-3 w-3 text-muted-foreground" />}
     </div>

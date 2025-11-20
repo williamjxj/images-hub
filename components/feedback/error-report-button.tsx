@@ -17,14 +17,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { FeedbackForm } from "./feedback-form";
-import type { UserFeedback } from "@/types/ui-ux";
 
 /**
  * Props for ErrorReportButton component
  */
 interface ErrorReportButtonProps {
-  /** Error details to include in report */
-  errorDetails?: UserFeedback["errorDetails"];
   /** Custom error message */
   errorMessage?: string;
 }
@@ -34,10 +31,7 @@ interface ErrorReportButtonProps {
  *
  * Opens a dialog with feedback form pre-filled for error reporting
  */
-export function ErrorReportButton({
-  errorDetails,
-  errorMessage,
-}: ErrorReportButtonProps) {
+export function ErrorReportButton({ errorMessage }: ErrorReportButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -55,7 +49,6 @@ export function ErrorReportButton({
         <FeedbackForm
           initialType="error"
           initialDescription={errorMessage || ""}
-          errorDetails={errorDetails}
           onSuccess={() => setIsOpen(false)}
           onClose={() => setIsOpen(false)}
         />

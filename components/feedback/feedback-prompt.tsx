@@ -41,7 +41,6 @@ export function FeedbackPrompt({
     await submitFeedback({
       type: "helpful-prompt",
       description: `User rated "${context}" as ${rating}`,
-      rating,
     });
 
     setShowForm(true);

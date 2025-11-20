@@ -29,8 +29,6 @@ interface FeedbackFormProps {
   initialType?: UserFeedback["type"];
   /** Initial description (for error reports) */
   initialDescription?: string;
-  /** Optional error details */
-  errorDetails?: UserFeedback["errorDetails"];
   /** Callback when feedback is submitted successfully */
   onSuccess?: () => void;
   /** Callback to close form */
@@ -43,7 +41,6 @@ interface FeedbackFormProps {
 export function FeedbackForm({
   initialType = "general",
   initialDescription = "",
-  errorDetails,
   onSuccess,
   onClose,
 }: FeedbackFormProps) {
@@ -64,7 +61,6 @@ export function FeedbackForm({
       type,
       description: description.trim(),
       userEmail: userEmail.trim() || undefined,
-      errorDetails,
     });
 
     if (success) {

@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
@@ -14,6 +15,26 @@ const isPublicRoute = createRouteMatcher([
 // Keep using middleware.ts until Clerk updates to support proxy.ts
 // The deprecation warning can be safely ignored for now
 export default clerkMiddleware(async (auth, request) => {
+  const pathname = request.nextUrl.pathname;
+
+  // CRITICAL: Skip static files FIRST - before any auth() calls
+  // Check for common static file extensions (case-insensitive)
+  const staticFilePattern = /\.(png|jpg|jpeg|gif|svg|webp|ico|css|js|json|woff|woff2|ttf|eot|webmanifest|xml|txt)$/i;
+  if (staticFilePattern.test(pathname)) {
+    // Return immediately without any Clerk processing
+    return NextResponse.next();
+  }
+
+  // Skip Next.js internals
+  if (pathname.startsWith("/_next")) {
+    return NextResponse.next();
+  }
+
+  // Skip favicon and other common static assets
+  if (pathname.includes("favicon") || pathname.includes("android-chrome")) {
+    return NextResponse.next();
+  }
+
   // Protect all routes except public auth routes
   if (!isPublicRoute(request)) {
     await auth.protect();
@@ -22,9 +43,10 @@ export default clerkMiddleware(async (auth, request) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
+    /*
+     * Only match page routes and API routes
+     * Explicitly exclude static files by not matching paths with file extensions
+     */
+    "/((?!_next/|.*\\.[a-zA-Z0-9]+$).*)",
   ],
 };

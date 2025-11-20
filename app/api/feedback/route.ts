@@ -39,16 +39,15 @@ export async function POST(request: NextRequest) {
 
     // Validate feedback data
     const feedback: UserFeedback = {
-      type: body.type || "general",
+      type: ["error", "feature-request", "helpful-prompt", "general"].includes(
+        body.type
+      )
+        ? body.type
+        : "general",
       description: body.description || "",
       userId: userId || undefined,
       userEmail: body.userEmail || undefined,
-      pageUrl: body.pageUrl || "",
-      userActions: body.userActions || [],
-      errorDetails: body.errorDetails || undefined,
-      browserInfo: body.browserInfo || undefined,
       timestamp: body.timestamp || Date.now(),
-      rating: body.rating || undefined,
     };
 
     // Validate required fields
@@ -59,16 +58,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!feedback.pageUrl) {
-      return NextResponse.json(
-        { error: "Bad Request", message: "Page URL is required" },
-        { status: 400 }
-      );
-    }
-
     // Format email content
     const emailHtml = formatFeedbackEmail(feedback);
-    const emailSubject = `Feedback: ${feedback.type} - ${new Date(feedback.timestamp).toLocaleString()}`;
+    const identifier = feedback.userEmail || feedback.userId || "Anonymous user";
+    const emailSubject = `Feedback: ${feedback.type} from ${identifier}`;
 
     // Send email via Resend
     // In development or when RESEND_API_KEY is not configured, log feedback and return success
@@ -76,10 +69,13 @@ export async function POST(request: NextRequest) {
       process.env.NODE_ENV === "development" || !process.env.RESEND_API_KEY;
 
     if (!process.env.RESEND_API_KEY) {
-      console.log(
-        "RESEND_API_KEY is not configured - logging feedback instead"
-      );
-      console.log("Feedback received:", JSON.stringify(feedback, null, 2));
+      // In development, log feedback when email service is not configured
+      if (isDevelopment) {
+        console.error(
+          "RESEND_API_KEY is not configured - feedback not sent:",
+          JSON.stringify(feedback, null, 2)
+        );
+      }
       return NextResponse.json(
         {
           success: true,
@@ -96,7 +92,7 @@ export async function POST(request: NextRequest) {
       }
 
       const emailResult = await resend.emails.send({
-        from: "AI Chatbox <noreply@bestitconsulting.ca>",
+        from: "Images Hub <onboarding@resend.dev>",
         to: "service@bestitconsulting.ca",
         subject: emailSubject,
         html: emailHtml,
@@ -105,10 +101,6 @@ export async function POST(request: NextRequest) {
 
       if (emailResult.error) {
         console.error("Failed to send feedback email:", emailResult.error);
-        console.log(
-          "Feedback data (email failed):",
-          JSON.stringify(feedback, null, 2)
-        );
         // Always return success in development, log error in production
         if (isDevelopment) {
           return NextResponse.json(
@@ -129,10 +121,6 @@ export async function POST(request: NextRequest) {
       }
     } catch (emailError) {
       console.error("Email sending exception:", emailError);
-      console.log(
-        "Feedback data (email exception):",
-        JSON.stringify(feedback, null, 2)
-      );
       // Always return success in development, throw in production
       if (isDevelopment) {
         return NextResponse.json(
@@ -151,15 +139,13 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Feedback API error:", error);
     const errorMessage =
       error instanceof Error ? error.message : "Failed to submit feedback";
     const errorStack = error instanceof Error ? error.stack : undefined;
 
-    console.error("Error details:", {
+    console.error("Feedback API error:", {
       message: errorMessage,
       stack: errorStack,
-      error,
     });
 
     return NextResponse.json(

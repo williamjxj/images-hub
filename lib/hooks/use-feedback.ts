@@ -5,10 +5,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import {
-  captureBrowserInfo,
-  captureUserActions,
-} from "@/lib/utils/email";
 import type { UserFeedback } from "@/types/ui-ux";
 
 /**
@@ -25,30 +21,16 @@ export function useFeedback() {
    * Submit feedback
    */
   const submitFeedback = useCallback(
-    async (
-      feedback: Omit<
-        UserFeedback,
-        "pageUrl" | "timestamp" | "browserInfo" | "userActions"
-      >
-    ) => {
+    async (feedback: Pick<UserFeedback, "type" | "description" | "userEmail">) => {
       setIsLoading(true);
       setError(null);
       setSuccess(false);
 
       try {
-        // Capture context
-        const pageUrl =
-          typeof window !== "undefined" ? window.location.href : "";
-        const browserInfo = captureBrowserInfo();
-        const userActions = captureUserActions();
-
         // Prepare feedback data
         const feedbackData: UserFeedback = {
           ...feedback,
-          pageUrl,
           timestamp: Date.now(),
-          browserInfo,
-          userActions,
         };
 
         // Submit to API

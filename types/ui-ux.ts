@@ -44,26 +44,8 @@ export interface UserFeedback {
   userId?: string;
   /** User's email (optional) */
   userEmail?: string;
-  /** URL where feedback was submitted */
-  pageUrl: string;
-  /** Array of recent user actions (for context) */
-  userActions?: string[];
-  /** Error details if type is "error" */
-  errorDetails?: {
-    message: string;
-    stack?: string;
-    componentStack?: string;
-  };
-  /** Browser and device information */
-  browserInfo?: {
-    userAgent: string;
-    viewportWidth: number;
-    viewportHeight: number;
-  };
   /** Unix timestamp of submission (milliseconds since epoch) */
   timestamp: number;
-  /** Rating for helpful-prompt type feedback */
-  rating?: "positive" | "negative";
 }
 
 /**

@@ -9,6 +9,7 @@ import {
   UserButton,
 } from "@clerk/nextjs";
 import Link from "next/link";
+import { Image as ImageIcon } from "lucide-react";
 import { ChatWidget } from "@/components/chat-widget/chat-widget";
 import { KeyboardShortcutsProvider } from "@/components/keyboard-shortcuts/keyboard-shortcuts-provider";
 import { KeyboardShortcutsDialog } from "@/components/keyboard-shortcuts/keyboard-shortcuts-dialog";
@@ -72,14 +73,15 @@ export default function RootLayout({
           <ThemeProvider>
             <KeyboardShortcutsProvider>
               <SkipLink />
-              <header className="flex justify-between items-center p-4 gap-4 h-16 border-b">
+              <header className="flex justify-between items-center px-8 py-4 gap-4 h-16 border-b">
                 <nav className="flex items-center gap-4 h-full">
                   <Link
                     href="/"
                     className="flex items-center gap-2 hover:opacity-80 transition-opacity h-full"
                   >
                     <AppLogo size="sm" showText={false} />
-                    <span className="text-sm font-medium hidden sm:inline">
+                    <span className="text-sm font-medium hidden sm:inline-flex items-center gap-1.5 whitespace-nowrap">
+                      <ImageIcon className="h-4 w-4" />
                       Stock Images
                     </span>
                   </Link>
