@@ -7,6 +7,7 @@ import {
   useId,
   useRef,
   useState,
+  useMemo,
 } from "react"
 import { motion } from "motion/react"
 
@@ -37,10 +38,16 @@ export function AnimatedGridPattern({
   duration = 4,
   ...props
 }: AnimatedGridPatternProps) {
-  const id = useId()
   const containerRef = useRef(null)
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 })
   const [squares, setSquares] = useState<Array<{ id: number; pos: [number, number] }>>([])
+  
+  // Generate a stable, deterministic ID to avoid hydration mismatch
+  // Use props to create a consistent ID that matches on server and client
+  const id = useMemo(() => {
+    // Create a deterministic ID from props - this will be the same on server and client
+    return `grid-pattern-${width}-${height}-${x}-${y}-${numSquares}-${strokeDasharray}`
+  }, [width, height, x, y, numSquares, strokeDasharray])
 
   // Adjust the generateSquares function to return objects with an id, x, and y
   const generateSquares = useCallback((count: number, dims: { width: number; height: number }) => {

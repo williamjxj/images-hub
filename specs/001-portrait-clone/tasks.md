@@ -98,17 +98,17 @@
 
 ### Implementation for User Story 3
 
-- [ ] T034 [US3] Add hover effects to CTA buttons using Tailwind utilities and Framer Motion `whileHover` in `app/portrait/components/portrait-hero.tsx`
-- [ ] T035 [US3] Add hover effects to feature cards using Tailwind utilities and Framer Motion `whileHover` in `app/portrait/components/portrait-features.tsx`
-- [ ] T036 [US3] Integrate Magic UI text animation component (e.g., `animated-gradient-text`) for hero headline in `app/portrait/components/portrait-hero.tsx`
-- [ ] T037 [US3] Integrate Magic UI button component (e.g., `shimmer-button` or `ripple-button`) for CTA buttons in `app/portrait/components/portrait-hero.tsx`
-- [ ] T038 [US3] Integrate Magic UI background pattern component (e.g., `grid-pattern` or `dot-pattern`) for section backgrounds in relevant components
-- [ ] T039 [US3] Add Framer Motion page load animations (stagger effects) for feature cards in `app/portrait/components/portrait-features.tsx`
-- [ ] T040 [US3] Add Framer Motion page load animations for benefit items in `app/portrait/components/portrait-benefits.tsx`
-- [ ] T041 [US3] Add transition animations to FAQ accordion expand/collapse using Framer Motion in `app/portrait/components/portrait-faq.tsx`
-- [ ] T042 [US3] Integrate additional Magic UI effects as needed (e.g., `border-beam`, `animated-beam`, `meteors`) for visual interest
-- [ ] T043 [US3] Optimize animation performance (use CSS transforms, avoid layout properties) across all animated components
-- [ ] T044 [US3] Add `prefers-reduced-motion` media query support to respect user accessibility preferences
+- [x] T034 [US3] Add hover effects to CTA buttons using Tailwind utilities and Framer Motion `whileHover` in `components/portrait/portrait-hero.tsx`
+- [x] T035 [US3] Add hover effects to feature cards using Tailwind utilities and Framer Motion `whileHover` in `components/portrait/portrait-features.tsx`
+- [x] T036 [US3] Integrate Magic UI text animation component (e.g., `animated-gradient-text`) for hero headline in `components/portrait/portrait-hero.tsx`
+- [x] T037 [US3] Integrate Magic UI button component (e.g., `shimmer-button` or `ripple-button`) for CTA buttons in `components/portrait/portrait-hero.tsx` (using gradient button with hover effects)
+- [x] T038 [US3] Integrate Magic UI background pattern component (e.g., `grid-pattern` or `dot-pattern`) for section backgrounds in relevant components
+- [x] T039 [US3] Add Framer Motion page load animations (stagger effects) for feature cards in `components/portrait/portrait-features.tsx`
+- [x] T040 [US3] Add Framer Motion page load animations for benefit items in `components/portrait/portrait-benefits.tsx`
+- [x] T041 [US3] Add transition animations to FAQ accordion expand/collapse using Framer Motion in `components/portrait/portrait-faq.tsx`
+- [x] T042 [US3] Integrate additional Magic UI effects as needed (e.g., `border-beam`, `animated-beam`, `meteors`) for visual interest
+- [x] T043 [US3] Optimize animation performance (use CSS transforms, avoid layout properties) across all animated components
+- [x] T044 [US3] Add `prefers-reduced-motion` media query support to respect user accessibility preferences
 
 **Checkpoint**: All user stories should now be independently functional. The page should have polished animations, hover effects, and interactive elements matching portrait.so's aesthetic.
 

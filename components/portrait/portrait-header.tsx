@@ -40,9 +40,9 @@ export function PortraitHeader() {
   }, []);
 
   const navItems = [
-    { label: "Home", href: "/portrait" },
-    { label: "stock images", href: "/images-hub" },
-    { label: "Cloudflare Images", href: "/r2-images" },
+    { label: "Home", href: "/" },
+    { label: "stock images", href: "/stock-images" },
+    { label: "Cloudflare Images", href: "/cloudflare-images" },
   ];
 
   return (
@@ -56,7 +56,7 @@ export function PortraitHeader() {
       <nav className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
           <Link
-            href="/portrait"
+            href="/"
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
             {/* Gradient logo like portrait.so */}
@@ -69,7 +69,7 @@ export function PortraitHeader() {
           </Link>
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => {
-              const isActive = item.href === "/portrait" && activeSection === "hero";
+              const isActive = item.href === "/" && activeSection === "hero";
               return (
                 <Link
                   key={item.href}

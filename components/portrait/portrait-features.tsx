@@ -3,12 +3,14 @@
 import { motion } from "framer-motion";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
 import { BorderBeam } from "@/components/ui/border-beam";
+import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 /**
  * Features section component with feature cards
  * Explaining key benefits and value propositions
  */
 export function PortraitFeatures() {
+  const prefersReducedMotion = useReducedMotion();
   const features = [
     {
       title: "Add Image",
@@ -44,7 +46,7 @@ export function PortraitFeatures() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Animated grid pattern background */}
       <AnimatedGridPattern
@@ -73,12 +75,12 @@ export function PortraitFeatures() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ 
+              transition={prefersReducedMotion ? { duration: 0 } : { 
                 delay: index * 0.1, 
                 duration: 0.6,
                 ease: [0.16, 1, 0.3, 1]
               }}
-              whileHover={{ scale: 1.02, y: -8 }}
+              whileHover={prefersReducedMotion ? {} : { scale: 1.02, y: -8 }}
             >
               {/* Border beam effect */}
               <BorderBeam
@@ -96,8 +98,8 @@ export function PortraitFeatures() {
               <div className="relative z-10">
                 <motion.div
                   className="mb-6 text-5xl"
-                  whileHover={{ scale: 1.15, rotate: -5 }}
-                  transition={{ 
+                  whileHover={prefersReducedMotion ? {} : { scale: 1.15, rotate: -5 }}
+                  transition={prefersReducedMotion ? {} : { 
                     type: "spring", 
                     stiffness: 400,
                     damping: 15

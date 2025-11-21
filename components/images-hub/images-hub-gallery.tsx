@@ -117,7 +117,7 @@ export function ImagesHubGallery() {
             </div>
           </div>
           <Link
-            href="/r2-images"
+            href="/cloudflare-images"
             className="text-sm font-medium hover:underline text-primary"
           >
             Cloudflare Images →

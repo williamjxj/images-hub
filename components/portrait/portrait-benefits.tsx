@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatedGridPattern } from "@/components/ui/animated-grid-pattern";
+import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 // Register ScrollTrigger plugin
 if (typeof window !== "undefined") {
@@ -17,6 +18,7 @@ if (typeof window !== "undefined") {
  * Clean, professional design matching portrait.so aesthetic
  */
 export function PortraitBenefits() {
+  const prefersReducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const titleRefs = useRef<(HTMLHeadingElement | null)[]>([]);
 
@@ -49,7 +51,7 @@ export function PortraitBenefits() {
 
   // GSAP staggered reveal animation for titles
   useEffect(() => {
-    if (!sectionRef.current || titleRefs.current.length === 0) return;
+    if (prefersReducedMotion || !sectionRef.current || titleRefs.current.length === 0) return;
 
     const titles = titleRefs.current.filter(Boolean) as HTMLHeadingElement[];
     
@@ -102,7 +104,7 @@ export function PortraitBenefits() {
         }
       });
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <motion.section
@@ -113,7 +115,7 @@ export function PortraitBenefits() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
       {/* Animated grid pattern background */}
       <AnimatedGridPattern
@@ -145,7 +147,7 @@ export function PortraitBenefits() {
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
-                transition={{ 
+                transition={prefersReducedMotion ? { duration: 0 } : { 
                   delay: index * 0.1,
                   duration: 0.8,
                   ease: [0.16, 1, 0.3, 1]
@@ -157,8 +159,8 @@ export function PortraitBenefits() {
                     {/* Icon */}
                     <motion.div
                       className={`flex-shrink-0 inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-xl md:rounded-2xl ${benefit.iconBg} ${benefit.iconColor} transition-all duration-300`}
-                      whileHover={{ scale: 1.08, rotate: -3 }}
-                      transition={{ 
+                      whileHover={prefersReducedMotion ? {} : { scale: 1.08, rotate: -3 }}
+                      transition={prefersReducedMotion ? {} : { 
                         type: "spring",
                         stiffness: 400,
                         damping: 25

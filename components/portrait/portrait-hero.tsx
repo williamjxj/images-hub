@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 /**
  * Hero section component matching portrait.so design
  * Features: Gradient text animation, floating image cards, input field
  */
 export function PortraitHero() {
+  const prefersReducedMotion = useReducedMotion();
   const [images, setImages] = useState<Array<{ url: string; id: string }>>([]);
   const [currentUsernameIndex, setCurrentUsernameIndex] = useState(0);
   const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
@@ -110,8 +112,10 @@ export function PortraitHero() {
     return () => clearInterval(interval);
   }, [usernames.length]);
 
-  // Mouse movement parallax effect
+  // Mouse movement parallax effect (disabled for reduced motion)
   useEffect(() => {
+    if (prefersReducedMotion) return;
+    
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
@@ -123,7 +127,7 @@ export function PortraitHero() {
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+  }, [mouseX, mouseY, prefersReducedMotion]);
 
   const handleCTAClick = () => {
     setIsEmailDialogOpen(true);
@@ -161,7 +165,7 @@ export function PortraitHero() {
       className="relative flex min-h-[90vh] flex-col items-center justify-center px-4 py-20 overflow-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
+      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8 }}
     >
       {/* Soft gradient background with subtle animation */}
       <div className="absolute inset-0 bg-gradient-to-br from-pink-50/40 via-purple-50/20 to-blue-50/40 dark:from-pink-950/15 dark:via-purple-950/15 dark:to-blue-950/15" />
@@ -191,8 +195,8 @@ export function PortraitHero() {
             }}
             initial={{ opacity: 0, scale: 0.8, x: -100, y: -50 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.05, z: 20 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05, z: 20 }}
           >
             <Image
               src={images[0]?.url || "/placeholder.jpg"}
@@ -214,8 +218,8 @@ export function PortraitHero() {
             }}
             initial={{ opacity: 0, scale: 0.8, x: 100, y: -50 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.7, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.05, z: 20 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.7, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05, z: 20 }}
           >
             <Image
               src={images[1]?.url || "/placeholder.jpg"}
@@ -237,8 +241,8 @@ export function PortraitHero() {
             }}
             initial={{ opacity: 0, scale: 0.8, x: -80, y: 50 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ scale: 1.05, z: 20 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05, z: 20 }}
           >
             <Image
               src={images[2]?.url || "/placeholder.jpg"}
@@ -262,7 +266,7 @@ export function PortraitHero() {
               className="inline-block"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{
+              transition={prefersReducedMotion ? { duration: 0 } : {
                 delay: index * 0.12,
                 duration: 0.8,
                 ease: [0.16, 1, 0.3, 1],
@@ -291,7 +295,7 @@ export function PortraitHero() {
           className="mb-16 text-lg text-muted-foreground sm:text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: 0.9, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           More than a gallery—a visual canvas for your work. Share your images,
           organize your portfolio, and showcase your creative journey—in minutes.
@@ -302,7 +306,7 @@ export function PortraitHero() {
           className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-lg mx-auto mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <div className="relative flex-1 w-full group">
             <div className="relative">
@@ -324,7 +328,7 @@ export function PortraitHero() {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -20, opacity: 0 }}
-                    transition={{
+                    transition={prefersReducedMotion ? { duration: 0 } : {
                       duration: 0.5,
                       ease: [0.16, 1, 0.3, 1],
                     }}
@@ -400,7 +404,7 @@ export function PortraitHero() {
           className="text-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={prefersReducedMotion ? { duration: 0 } : { delay: 1.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
           <button
             onClick={handleCTAClick}

@@ -29,15 +29,15 @@ export function MainNavbar() {
   }, []);
 
   const navItems = [
-    { label: "Home", href: "/portrait", icon: null },
-    { label: "stock images", href: "/images-hub", icon: ImageIcon },
-    { label: "Cloudflare Images", href: "/r2-images", icon: Cloud },
+    { label: "Home", href: "/", icon: null },
+    { label: "stock images", href: "/stock-images", icon: ImageIcon },
+    { label: "Cloudflare Images", href: "/cloudflare-images", icon: Cloud },
   ];
 
   const isActive = (href: string) => {
-    // Home link is active when on /portrait page
-    if (href === "/portrait") {
-      return pathname === "/portrait" || pathname === "/";
+    // Home link is active when on root page
+    if (href === "/") {
+      return pathname === "/";
     }
     return pathname === href || pathname?.startsWith(href + "/");
   };
@@ -54,7 +54,7 @@ export function MainNavbar() {
         {/* Left: Logo and Navigation */}
         <div className="flex items-center gap-8">
           <Link
-            href="/portrait"
+            href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <div className="h-8 flex items-center">

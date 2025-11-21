@@ -8,12 +8,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 /**
  * FAQ section component matching portrait.so design
  * Compact, clean layout with improved typography and colors
  */
 export function PortraitFAQ() {
+  const prefersReducedMotion = useReducedMotion();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export function PortraitFAQ() {
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
     >
       <div className="mx-auto max-w-4xl">
         <motion.h2
@@ -102,7 +104,7 @@ export function PortraitFAQ() {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-20px" }}
-                transition={{ delay: index * 0.03, duration: 0.4 }}
+                transition={prefersReducedMotion ? { duration: 0 } : { delay: index * 0.03, duration: 0.4 }}
               >
                 <AccordionItem 
                   value={`item-${index}`} 
