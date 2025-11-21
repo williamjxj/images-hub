@@ -12,6 +12,8 @@ import type { UserFeedback } from "@/types/ui-ux";
  */
 export function formatFeedbackEmail(feedback: UserFeedback): string {
   const timestamp = new Date(feedback.timestamp).toLocaleString();
+  const userName = feedback.userName || "Not provided";
+  const subject = feedback.subject || "No subject";
   const userIdentifier = feedback.userId || "Anonymous user";
   const contactEmail = feedback.userEmail || "Not provided";
   const descriptionHtml = feedback.description
@@ -34,22 +36,32 @@ export function formatFeedbackEmail(feedback: UserFeedback): string {
       </head>
       <body>
         <div class="header">
-          <h2>Feedback Submission: ${feedback.type}</h2>
+          <h2>Contact Form Submission: ${feedback.type}</h2>
           <p><strong>Timestamp:</strong> ${timestamp}</p>
         </div>
         <div class="content">
+          <div class="section">
+            <span class="label">Name:</span>
+            <span class="value">${userName}</span>
+          </div>
+
+          <div class="section">
+            <span class="label">Subject:</span>
+            <span class="value">${subject}</span>
+          </div>
+          
           <div class="section">
             <span class="label">Feedback Type:</span>
             <span class="value">${feedback.type}</span>
           </div>
           
           <div class="section">
-            <span class="label">Description:</span>
+            <span class="label">Message:</span>
             <div class="value">${descriptionHtml}</div>
           </div>
           
           <div class="section">
-            <span class="label">Login User:</span>
+            <span class="label">Login User ID:</span>
             <span class="value">${userIdentifier}</span>
           </div>
 

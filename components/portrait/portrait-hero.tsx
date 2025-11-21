@@ -9,12 +9,10 @@ import { Particles } from "@/components/ui/particles";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { FeedbackForm } from "@/components/feedback/feedback-form";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 /**
@@ -24,32 +22,18 @@ import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 export function PortraitHero() {
   const prefersReducedMotion = useReducedMotion();
   const [images, setImages] = useState<Array<{ url: string; id: string }>>([]);
-  const [currentUsernameIndex, setCurrentUsernameIndex] = useState(0);
-  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentProviderIndex, setCurrentProviderIndex] = useState(0);
+  const [isContactDialogOpen, setIsContactDialogOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Usernames to rotate through (matching portrait.so style)
-  const usernames = [
-    "david",
-    "peter",
-    "mehmet",
-    "michael",
-    "thomas",
-    "chris",
-    "murat",
-    "sarah",
-    "carlos",
-    "antonio",
-    "martin",
-    "alex",
-    "daniel",
-    "robert",
-    "mustafa",
+  // Image providers to rotate through in the carousel
+  const providers = [
+    "unsplash",
+    "pexels",
+    "pixabay",
+    "cloudflare",
   ];
 
   // Smooth spring animation for mouse movement
@@ -73,7 +57,7 @@ export function PortraitHero() {
         const queries = [
           "woman portrait professional photography",
           "nature landscape beautiful scenery",
-          "science technology laboratory"
+          "hi-tech technology"
         ];
         
         const imagePromises = queries.map(query =>
@@ -103,14 +87,14 @@ export function PortraitHero() {
     fetchImages();
   }, []);
 
-  // Rotate usernames carousel
+  // Rotate providers carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentUsernameIndex((prev) => (prev + 1) % usernames.length);
+      setCurrentProviderIndex((prev) => (prev + 1) % providers.length);
     }, 2000); // Change every 2 seconds
 
     return () => clearInterval(interval);
-  }, [usernames.length]);
+  }, [providers.length]);
 
   // Mouse movement parallax effect (disabled for reduced motion)
   useEffect(() => {
@@ -130,25 +114,7 @@ export function PortraitHero() {
   }, [mouseX, mouseY, prefersReducedMotion]);
 
   const handleCTAClick = () => {
-    setIsEmailDialogOpen(true);
-  };
-
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate email submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Here you would typically send the email via an API route
-    console.log("Email:", email);
-    console.log("Message:", message);
-    
-    setIsSubmitting(false);
-    setIsEmailDialogOpen(false);
-    setEmail("");
-    setMessage("");
-    alert("Thank you! We'll be in touch soon.");
+    setIsContactDialogOpen(true);
   };
 
   // Headline with gradient on "forever"
@@ -320,11 +286,11 @@ export function PortraitHero() {
               <span className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium pointer-events-none z-10">
                 images-hub/
               </span>
-              {/* Rotating username carousel */}
+              {/* Rotating provider carousel */}
               <div className="absolute left-36 top-1/2 -translate-y-1/2 h-7 overflow-hidden flex items-center pointer-events-none">
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.span
-                    key={currentUsernameIndex}
+                    key={currentProviderIndex}
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     exit={{ y: -20, opacity: 0 }}
@@ -334,7 +300,7 @@ export function PortraitHero() {
                     }}
                     className="text-base text-foreground font-medium whitespace-nowrap"
                   >
-                    {usernames[currentUsernameIndex]}
+                    {providers[currentProviderIndex]}
                   </motion.span>
                 </AnimatePresence>
               </div>
@@ -343,59 +309,26 @@ export function PortraitHero() {
           <Button
             size="lg"
             onClick={handleCTAClick}
-            className="rounded-full px-8 py-7 text-base font-semibold bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
+            className="rounded-full px-8 py-7 text-base font-semibold bg-gradient-to-r from-blue-600 via-cyan-500 via-emerald-400 via-yellow-400 via-orange-500 to-pink-500 hover:from-blue-700 hover:via-cyan-600 hover:via-emerald-500 hover:via-yellow-500 hover:via-orange-600 hover:to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              backgroundSize: "200% 200%",
+            }}
           >
             Create your Gallery
           </Button>
         </motion.div>
 
-        {/* Email Form Dialog */}
-        <Dialog open={isEmailDialogOpen} onOpenChange={setIsEmailDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
+        {/* Contact Form Dialog */}
+        <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
+          <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Create your Gallery</DialogTitle>
-              <DialogDescription>
-                Get started by sharing your email. We'll help you set up your gallery.
-              </DialogDescription>
+              <DialogTitle>Contact Us</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleEmailSubmit} className="space-y-4 mt-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="message">Message (Optional)</Label>
-                <Textarea
-                  id="message"
-                  placeholder="Tell us about your gallery needs..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={4}
-                  disabled={isSubmitting}
-                />
-              </div>
-              <div className="flex justify-end gap-2 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEmailDialogOpen(false)}
-                  disabled={isSubmitting}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Submit"}
-                </Button>
-              </div>
-            </form>
+            <FeedbackForm
+              initialType="general"
+              onSuccess={() => setIsContactDialogOpen(false)}
+              onClose={() => setIsContactDialogOpen(false)}
+            />
           </DialogContent>
         </Dialog>
 
@@ -410,7 +343,7 @@ export function PortraitHero() {
             onClick={handleCTAClick}
             className="text-sm text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 decoration-1 hover:decoration-2"
           >
-            Already have a Gallery? Login
+            Want to Speak with Us? Click Here
           </button>
         </motion.div>
       </div>

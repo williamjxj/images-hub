@@ -8,7 +8,7 @@ import { UnsplashClient } from "@/lib/hub/unsplash-client";
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const query = searchParams.get("query") || "beautiful photography portrait nature science";
+    const query = searchParams.get("query") || "beautiful photography portrait beautiful buildings";
     const count = parseInt(searchParams.get("count") || "9", 10);
 
     const unsplashClient = new UnsplashClient();

@@ -57,8 +57,8 @@ export function MainNavbar() {
             href="/"
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <div className="h-8 flex items-center">
-              <AppLogo size="sm" showText={false} />
+            <div className="h-10 flex items-center">
+              <AppLogo size="md" showText={false} />
             </div>
           </Link>
 

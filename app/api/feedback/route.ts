@@ -44,6 +44,8 @@ export async function POST(request: NextRequest) {
       )
         ? body.type
         : "general",
+      userName: body.userName || undefined,
+      subject: body.subject || undefined,
       description: body.description || "",
       userId: userId || undefined,
       userEmail: body.userEmail || undefined,
@@ -60,8 +62,10 @@ export async function POST(request: NextRequest) {
 
     // Format email content
     const emailHtml = formatFeedbackEmail(feedback);
-    const identifier = feedback.userEmail || feedback.userId || "Anonymous user";
-    const emailSubject = `Feedback: ${feedback.type} from ${identifier}`;
+    const identifier = feedback.userName || feedback.userEmail || feedback.userId || "Anonymous user";
+    const emailSubject = feedback.subject 
+      ? `Contact: ${feedback.subject}`
+      : `Contact: ${feedback.type} from ${identifier}`;
 
     // Send email via Resend
     // In development or when RESEND_API_KEY is not configured, log feedback and return success

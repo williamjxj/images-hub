@@ -38,6 +38,10 @@ export interface SearchHistoryEntry {
 export interface UserFeedback {
   /** Feedback type */
   type: "error" | "feature-request" | "general" | "helpful-prompt";
+  /** User's name (optional) */
+  userName?: string;
+  /** Subject line (optional) */
+  subject?: string;
   /** User's feedback description */
   description: string;
   /** Clerk user ID (if authenticated) */

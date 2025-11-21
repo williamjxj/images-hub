@@ -41,6 +41,7 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
   const [isInitialized, setIsInitialized] = useState(false);
   const [showFeedbackPrompt, setShowFeedbackPrompt] = useState(false);
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [isFeedbackDialogOpen, setIsFeedbackDialogOpen] = useState(false);
 
   const { messages, sendMessage, status, error, setMessages } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
@@ -232,7 +233,7 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
                   height={24}
                   className="object-cover rounded-full"
                 />
-                <Dialog>
+                <Dialog open={isFeedbackDialogOpen} onOpenChange={setIsFeedbackDialogOpen}>
                   <DialogTrigger asChild>
                     <Button
                       variant="ghost"
@@ -249,8 +250,8 @@ export function ChatWidgetPanel({ isOpen, onClose }: ChatWidgetPanelProps) {
                     </DialogHeader>
                     <FeedbackForm
                       initialType="general"
-                      onSuccess={() => {}}
-                      onClose={() => {}}
+                      onSuccess={() => setIsFeedbackDialogOpen(false)}
+                      onClose={() => setIsFeedbackDialogOpen(false)}
                     />
                   </DialogContent>
                 </Dialog>

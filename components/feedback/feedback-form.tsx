@@ -1,30 +1,25 @@
 /**
- * Feedback Form Component
+ * Contact Form Component
  *
- * Form for submitting user feedback (error reports, feature requests, general feedback)
+ * Unified contact form for submitting user inquiries and feedback
  */
 
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { useFeedback } from "@/lib/hooks/use-feedback";
 import type { UserFeedback } from "@/types/ui-ux";
 
 /**
- * Props for FeedbackForm component
+ * Props for ContactForm component
  */
-interface FeedbackFormProps {
+interface ContactFormProps {
   /** Initial feedback type */
   initialType?: UserFeedback["type"];
   /** Initial description (for error reports) */
@@ -36,30 +31,83 @@ interface FeedbackFormProps {
 }
 
 /**
- * Feedback Form Component
+ * Contact Form Component
  */
 export function FeedbackForm({
   initialType = "general",
   initialDescription = "",
   onSuccess,
   onClose,
-}: FeedbackFormProps) {
-  const [type, setType] = useState<UserFeedback["type"]>(initialType);
-  const [description, setDescription] = useState(initialDescription);
-  const [userEmail, setUserEmail] = useState("");
+}: ContactFormProps) {
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState(initialDescription);
+  const { user } = useUser();
+
+  // Get default name from user's username or full name
+  const defaultName = useMemo(() => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+    if (user?.firstName) {
+      return user.firstName;
+    }
+    if (user?.username) {
+      return user.username;
+    }
+    return "";
+  }, [user]);
+
+  // Get default email from user's login email
+  const defaultEmail = useMemo(
+    () =>
+      user?.primaryEmailAddress?.emailAddress ||
+      user?.emailAddresses?.[0]?.emailAddress ||
+      "",
+    [user]
+  );
+
+  // Initialize form state with defaults
+  const [userName, setUserName] = useState(() => defaultName);
+  const [userEmail, setUserEmail] = useState(() => defaultEmail);
+  const nameInitializedRef = useRef(!!defaultName);
+  const emailInitializedRef = useRef(!!defaultEmail);
 
   const { submitFeedback, isLoading, error, success } = useFeedback();
+
+  // Update name when user object loads
+  useEffect(() => {
+    if (!nameInitializedRef.current && defaultName) {
+      nameInitializedRef.current = true;
+      const timeoutId = setTimeout(() => {
+        setUserName(defaultName);
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [defaultName]);
+
+  // Update email when user object loads
+  useEffect(() => {
+    if (!emailInitializedRef.current && defaultEmail) {
+      emailInitializedRef.current = true;
+      const timeoutId = setTimeout(() => {
+        setUserEmail(defaultEmail);
+      }, 0);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [defaultEmail]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!description.trim()) {
+    if (!message.trim()) {
       return;
     }
 
     await submitFeedback({
-      type,
-      description: description.trim(),
+      type: initialType,
+      userName: userName.trim() || undefined,
+      subject: subject.trim() || undefined,
+      description: message.trim(),
       userEmail: userEmail.trim() || undefined,
     });
 
@@ -67,6 +115,9 @@ export function FeedbackForm({
       setTimeout(() => {
         onSuccess?.();
         onClose?.();
+        // Reset form
+        setSubject("");
+        setMessage("");
       }, 2000);
     }
   };
@@ -74,62 +125,58 @@ export function FeedbackForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="feedback-type">Feedback Type</Label>
-        <Select
-          value={type}
-          onValueChange={(value) => setType(value as UserFeedback["type"])}
-        >
-          <SelectTrigger id="feedback-type">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="general">General Feedback</SelectItem>
-            <SelectItem value="feature-request">Feature Request</SelectItem>
-            <SelectItem value="error">Error Report</SelectItem>
-            <SelectItem value="helpful-prompt">
-              Helpful Prompt Response
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        <Label htmlFor="contact-name">Name</Label>
+        <Input
+          id="contact-name"
+          type="text"
+          value={userName}
+          onChange={(e) => setUserName(e.target.value)}
+          placeholder={defaultName ? undefined : "Your name"}
+          disabled={isLoading}
+        />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="feedback-description">
-          {type === "error" ? "Error Description" : "Description"}
+        <Label htmlFor="contact-subject">Subject</Label>
+        <Input
+          id="contact-subject"
+          type="text"
+          value={subject}
+          onChange={(e) => setSubject(e.target.value)}
+          placeholder="What is this regarding?"
+          disabled={isLoading}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="contact-email">Email</Label>
+        <Input
+          id="contact-email"
+          type="email"
+          value={userEmail}
+          onChange={(e) => setUserEmail(e.target.value)}
+          placeholder={
+            defaultEmail ? undefined : "your.email@example.com"
+          }
+          disabled={isLoading}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="contact-message">
+          Message
           <span className="text-destructive"> *</span>
         </Label>
         <Textarea
-          id="feedback-description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder={
-            type === "error"
-              ? "Describe what went wrong..."
-              : type === "feature-request"
-                ? "Describe the feature you would like to see..."
-                : "Share your feedback..."
-          }
+          id="contact-message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Tell us how we can help you..."
           rows={6}
           required
           disabled={isLoading}
           className="resize-none"
         />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="feedback-email">Email (Optional)</Label>
-        <input
-          id="feedback-email"
-          type="email"
-          value={userEmail}
-          onChange={(e) => setUserEmail(e.target.value)}
-          placeholder="your.email@example.com"
-          disabled={isLoading}
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        />
-        <p className="text-xs text-muted-foreground">
-          We&apos;ll only use this to follow up if needed
-        </p>
       </div>
 
       {error && (
@@ -142,7 +189,7 @@ export function FeedbackForm({
       {success && (
         <div className="flex items-center gap-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md text-sm text-green-800 dark:text-green-200">
           <CheckCircle2 className="h-4 w-4" />
-          <span>Thank you! Your feedback has been submitted.</span>
+          <span>Thank you! Your message has been sent. We&apos;ll get back to you soon.</span>
         </div>
       )}
 
@@ -157,16 +204,16 @@ export function FeedbackForm({
             Cancel
           </Button>
         )}
-        <Button type="submit" disabled={isLoading || !description.trim()}>
+        <Button type="submit" disabled={isLoading || !message.trim()}>
           {isLoading ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Submitting...
+              Sending...
             </>
           ) : (
             <>
               <Send className="h-4 w-4 mr-2" />
-              Submit Feedback
+              Send Message
             </>
           )}
         </Button>

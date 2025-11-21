@@ -21,7 +21,7 @@ export function useFeedback() {
    * Submit feedback
    */
   const submitFeedback = useCallback(
-    async (feedback: Pick<UserFeedback, "type" | "description" | "userEmail">) => {
+    async (feedback: Pick<UserFeedback, "type" | "userName" | "subject" | "description" | "userEmail">) => {
       setIsLoading(true);
       setError(null);
       setSuccess(false);
