@@ -25,7 +25,8 @@ export class UnsplashClient {
   async search(
     query: string,
     page: number = 1,
-    perPage: number = 20
+    perPage: number = 20,
+    orderBy: "latest" | "oldest" | "popular" | "relevant" = "popular"
   ): Promise<{ photos: UnsplashPhoto[]; total: number; totalPages: number }> {
     try {
       const response = await axios.get<UnsplashSearchResponse>(
@@ -35,7 +36,7 @@ export class UnsplashClient {
             query: query.trim(),
             per_page: Math.min(perPage, 30), // Unsplash max is 30
             page,
-            order_by: "relevant",
+            order_by: orderBy,
           },
           headers: {
             Authorization: `Client-ID ${this.accessKey}`,

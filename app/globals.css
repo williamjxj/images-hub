@@ -178,6 +178,9 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
   }
@@ -262,5 +265,92 @@
 
   .cl-footerActionLink {
     @apply text-primary hover:text-primary/80;
+  }
+
+  /* Shimmer button animations */
+  @keyframes shimmer-slide {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(-45deg);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(-45deg);
+    }
+  }
+
+  @keyframes spin-around {
+    0% {
+      transform: translateX(-100%) translateY(-100%) rotate(0deg);
+    }
+    100% {
+      transform: translateX(100%) translateY(100%) rotate(360deg);
+    }
+  }
+
+  .animate-shimmer-slide {
+    animation: shimmer-slide var(--speed, 3s) linear infinite;
+  }
+
+  .animate-spin-around {
+    animation: spin-around var(--speed, 3s) linear infinite;
+  }
+
+  /* Gradient text animation - enhanced */
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  .animate-gradient {
+    animation: gradient 4s ease infinite;
+    background-size: 300% 300%;
+  }
+
+  /* Smooth scroll behavior */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Enhanced backdrop blur support */
+  @supports (backdrop-filter: blur(10px)) {
+    .backdrop-blur-sm {
+      backdrop-filter: blur(4px);
+    }
+    .backdrop-blur {
+      backdrop-filter: blur(8px);
+    }
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button,
+  a,
+  [role="button"] {
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Better focus styles */
+  *:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: calc(var(--radius) - 2px);
   }
 }

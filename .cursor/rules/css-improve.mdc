@@ -1,7 +1,6 @@
 ---
-alwaysApply: true
+alwaysApply: false
 ---
-
 1.	Use shadcn/ui integrated with the hot Magic UI library to enhance UI components like navbar buttons and breadcrumb buttons. Magic UI supplies animated, visually appealing React components built with Tailwind CSS and Framer Motion, which can effortlessly replace or extend shadcn/ui elements, adding motion and interactivity without external dependencies. For breadcrumbs, use shadcn/ui’s accessible Breadcrumb component combined with Magic UI’s animation effects for a modern look .
 	
 2.	For dynamic text and decorative icons or images animation, employ GSAP (GreenSock Animation Platform). GSAP excels at animating text by splitting it into characters or words and animating them with timelines for sophisticated effects. Complement this with Framer Motion and CSS `@keyframes` or fade animations for UI transitions or component fades. Framer Motion works well in React apps to create smooth keyframe animations, including opacity fades with precise timing control .

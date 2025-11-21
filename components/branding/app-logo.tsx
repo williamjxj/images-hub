@@ -31,15 +31,16 @@ export function AppLogo({
   className,
   showText = false,
 }: AppLogoProps) {
+  const heightClass = size === "sm" ? "h-6" : size === "md" ? "h-8" : "h-10";
+  
   return (
-    <div className={cn("flex items-center gap-2 h-full", className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <Image
         src="/logo.png"
         alt="Stock Image Search Hub"
         width={200}
         height={64}
-        className="object-contain h-full w-auto"
-        style={{ height: "100%" }}
+        className={cn("object-contain w-auto", heightClass)}
         priority
       />
       {showText && (

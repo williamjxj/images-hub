@@ -4,6 +4,7 @@ Auto-generated from all feature plans. Last updated: 2025-11-18
 
 ## Active Technologies
 - TypeScript 5.x (strict mode), React 19.2.0, Next.js 16.0.3 (005-ui-ux-improvements)
+- N/A (static content, client-side state only) (001-portrait-clone)
 
 - TypeScript 5.x, Node.js 20+ (001-reorganize-pages)
 
@@ -23,6 +24,7 @@ npm test && npm run lint
 TypeScript 5.x, Node.js 20+: Follow standard conventions
 
 ## Recent Changes
+- 001-portrait-clone: Added TypeScript 5.x (strict mode), React 19.2.0, Next.js 16.0.3
 - 005-ui-ux-improvements: Added TypeScript 5.x (strict mode), React 19.2.0, Next.js 16.0.3
 
 - 001-reorganize-pages: Added TypeScript 5.x, Node.js 20+

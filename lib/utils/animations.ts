@@ -153,3 +153,70 @@ export function animateNumberCount(
     },
   });
 }
+
+/**
+ * Create horizontal parallax scroll animation
+ * 
+ * Animates elements moving horizontally based on scroll position.
+ * Perfect for portrait.so-style effects where images move from sides to center.
+ *
+ * @param element Element to animate
+ * @param options Animation configuration
+ * @returns GSAP ScrollTrigger instance
+ */
+export function createHorizontalParallax(
+  element: HTMLElement,
+  options: {
+    fromX: number; // Starting X position (negative = left, positive = right)
+    toX?: number; // Ending X position (default: 0)
+    trigger?: HTMLElement | string; // ScrollTrigger trigger element
+    start?: string; // ScrollTrigger start position
+    end?: string; // ScrollTrigger end position
+    scrub?: number; // Scroll scrubbing smoothness (default: 1)
+    opacity?: boolean; // Fade in/out (default: true)
+    scale?: boolean; // Scale animation (default: false)
+    stagger?: number; // Stagger delay for multiple elements (default: 0)
+  }
+) {
+  const {
+    fromX,
+    toX = 0,
+    trigger = element,
+    start = "top 80%",
+    end = "bottom 20%",
+    scrub = 1,
+    opacity = true,
+    scale = false,
+    stagger = 0,
+  } = options;
+
+  return gsap.fromTo(
+    element,
+    {
+      x: fromX,
+      opacity: opacity ? 0 : 1,
+      scale: scale ? 0.8 : 1,
+    },
+    {
+      x: toX,
+      opacity: opacity ? 1 : 1,
+      scale: scale ? 1 : 1,
+      scrollTrigger: {
+        trigger: typeof trigger === "string" ? trigger : trigger,
+        start,
+        end,
+        scrub,
+        onUpdate: (self) => {
+          const progress = self.progress;
+          const adjustedProgress = Math.max(0, Math.min(1, progress - stagger));
+          
+          gsap.set(element, {
+            x: fromX + (toX - fromX) * adjustedProgress,
+            opacity: opacity ? adjustedProgress : 1,
+            scale: scale ? 0.8 + adjustedProgress * 0.2 : 1,
+          });
+        },
+      },
+    }
+  );
+}
