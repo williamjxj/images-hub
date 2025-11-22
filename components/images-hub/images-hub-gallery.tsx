@@ -103,38 +103,31 @@ export function ImagesHubGallery() {
     <div className="container mx-auto p-4 space-y-6">
       {/* Header */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">
-              <AnimatedText animation="reveal" delay={0}>
-                Stock Image Search Hub
-              </AnimatedText>
-            </h1>
-            <div className="text-muted-foreground">
-              <AnimatedText animation="fade" delay={0.2}>
-                Search for images across Unsplash, Pixabay, and Pexels
-              </AnimatedText>
-            </div>
+        <div>
+          <h1 className="text-3xl font-bold">
+            <AnimatedText animation="reveal" delay={0}>
+              Stock Image Search Hub
+            </AnimatedText>
+          </h1>
+          <div className="text-muted-foreground">
+            <AnimatedText animation="fade" delay={0.2}>
+              Search for images across Unsplash, Pixabay, and Pexels
+            </AnimatedText>
           </div>
-          <Link
-            href="/cloudflare-images"
-            className="text-sm font-medium hover:underline text-primary"
-          >
-            Cloudflare Images →
-          </Link>
         </div>
       </div>
 
       {/* Search and Filters */}
-      <div className="space-y-4">
-        <ImagesHubSearch onSearch={search} disabled={loading} />
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center">
+        <div className="flex-1 w-full">
+          <ImagesHubSearch onSearch={search} disabled={loading} />
+        </div>
+        <div className="w-full lg:w-auto">
           <ImagesHubProviderFilter
             providers={providers}
             onChange={handleProviderChange}
             disabled={loading}
           />
-          {/* Advanced filters will be added here in future phase */}
         </div>
       </div>
 

@@ -48,6 +48,8 @@ export function PortraitHero() {
   const topRightY = useTransform(y, (v) => v * -15);
   const bottomLeftX = useTransform(x, (v) => v * -15);
   const bottomLeftY = useTransform(y, (v) => v * 20);
+  const bottomRightX = useTransform(x, (v) => v * 18);
+  const bottomRightY = useTransform(y, (v) => v * 18);
 
   // Fetch images for floating cards - beautiful, high-quality images
   useEffect(() => {
@@ -55,9 +57,10 @@ export function PortraitHero() {
       try {
         // Use specific curated queries that return high-quality images
         const queries = [
-          "woman portrait professional photography",
-          "nature landscape beautiful scenery",
-          "hi-tech technology"
+          "woman portrait professional",
+          "nature landscape beautiful",
+          "motor cycle racing",
+          "NHL fans"
         ];
         
         const imagePromises = queries.map(query =>
@@ -70,15 +73,15 @@ export function PortraitHero() {
         const fetchedImages = await Promise.all(imagePromises);
         const validImages = fetchedImages.filter(img => img !== null);
         
-        if (validImages.length >= 3) {
+        if (validImages.length >= 4) {
           setImages(validImages);
         } else if (validImages.length > 0) {
-          // If we don't have 3, try a fallback query
-          const fallback = await fetch("/api/portrait/images?query=portrait photography&count=3")
+          // If we don't have 4, try a fallback query
+          const fallback = await fetch("/api/portrait/images?query=portrait photography&count=4")
             .then(res => res.json())
-            .then(data => data.images?.slice(0, 3 - validImages.length) || [])
+            .then(data => data.images?.slice(0, 4 - validImages.length) || [])
             .catch(() => []);
-          setImages([...validImages, ...fallback].slice(0, 3));
+          setImages([...validImages, ...fallback].slice(0, 4));
         }
       } catch (error) {
         console.error("Failed to fetch images:", error);
@@ -216,6 +219,29 @@ export function PortraitHero() {
               fill
               className="object-cover"
               sizes="(max-width: 768px) 208px, 272px"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+          </motion.div>
+
+          {/* Bottom-right image */}
+          <motion.div
+            className="absolute bottom-24 right-8 md:right-28 w-44 h-52 md:w-56 md:h-64 rounded-2xl overflow-hidden shadow-2xl z-10 border border-white/10 dark:border-white/5"
+            style={{
+              x: bottomRightX,
+              y: bottomRightY,
+              rotate: 6,
+            }}
+            initial={{ opacity: 0, scale: 0.8, x: 80, y: 50 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={prefersReducedMotion ? {} : { scale: 1.05, z: 20 }}
+          >
+            <Image
+              src={images[3]?.url || "/placeholder.jpg"}
+              alt="Floating image 4"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 176px, 224px"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
           </motion.div>

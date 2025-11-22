@@ -82,7 +82,7 @@ export function R2FolderNavigation({
 
   return (
     <div className="space-y-4" role="navigation" aria-label="Folder navigation">
-      {/* Breadcrumb Navigation with Filter */}
+      {/* Folders Label/Breadcrumb and Search Filter - Same Row */}
       <div className="flex items-center justify-between gap-4">
         <AnimatePresence mode="wait">
           {currentFolder ? (
@@ -92,7 +92,7 @@ export function R2FolderNavigation({
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.2 }}
-              className="flex-1"
+              className="flex-1 min-w-0"
             >
               <Breadcrumb aria-label="Breadcrumb navigation">
                 <BreadcrumbList>
@@ -120,11 +120,11 @@ export function R2FolderNavigation({
               </Breadcrumb>
             </motion.div>
           ) : (
-            <div className="flex-1" /> // Spacer when no breadcrumb
+            <div className="text-sm font-medium text-muted-foreground">Folders</div>
           )}
         </AnimatePresence>
 
-        {/* Filter Component - Right side */}
+        {/* Search Filter - Right side */}
         {filter && onFilterChange && (
           <div className="flex-shrink-0">
             <R2ImageFilter
@@ -145,11 +145,7 @@ export function R2FolderNavigation({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="space-y-2"
           >
-            <p className="text-sm font-medium text-muted-foreground">
-              {currentFolder ? "Subfolders" : "Folders"}
-            </p>
             <div
               className="flex flex-wrap gap-2"
               role="list"

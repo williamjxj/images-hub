@@ -25,6 +25,7 @@ import { Card } from "@/components/ui/card";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AlertCircle } from "lucide-react";
 import { AriaLiveRegion } from "@/components/accessibility/aria-live-region";
+import { AnimatedText } from "@/components/animations/text-animations";
 import { announceToScreenReader } from "@/lib/utils/accessibility";
 import { useEffect } from "react";
 import type { R2Object, ImageGalleryFilter } from "@/types/r2";
@@ -189,6 +190,20 @@ export function R2ImageGallery() {
       </AriaLiveRegion>
       <div className="flex flex-col min-h-screen">
         <div className="container mx-auto flex flex-col flex-1">
+          {/* Header */}
+          <div className="p-4 space-y-2">
+            <h1 className="text-3xl font-bold">
+              <AnimatedText animation="reveal" delay={0}>
+                Cloudflare Images
+              </AnimatedText>
+            </h1>
+            <div className="text-muted-foreground">
+              <AnimatedText animation="fade" delay={0.2}>
+                Browse and manage your images from Cloudflare R2 storage buckets
+              </AnimatedText>
+            </div>
+          </div>
+
           {/* Tab Navigation */}
           <div className="border-b p-4">
             <div className="flex items-center justify-between">

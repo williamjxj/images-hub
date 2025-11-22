@@ -2,13 +2,13 @@
  * R2 Image Tabs Component
  *
  * Displays three tabs for the three R2 buckets, allowing users to switch between buckets.
- * Uses shadcn/ui Tabs component with Framer Motion animations.
+ * Uses modern animated tabs with smooth transitions and glassmorphism design.
  */
 
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AnimatedTabs } from "@/components/ui/animated-tabs";
+import { Building2, Folder, Database } from "lucide-react";
 import type { R2BucketName } from "@/types/r2";
 
 interface R2ImageTabsProps {
@@ -17,41 +17,30 @@ interface R2ImageTabsProps {
   onTabChange: (bucket: R2BucketName) => void;
 }
 
+const BUCKET_ICONS = {
+  "bestitconsulting-assets": Building2,
+  "juewei-assets": Folder,
+  "static-assets": Database,
+} as const;
+
 export function R2ImageTabs({
   buckets,
   activeBucket,
   onTabChange,
 }: R2ImageTabsProps) {
+  const tabs = buckets.map((bucket) => ({
+    id: bucket,
+    label: bucket,
+    icon: BUCKET_ICONS[bucket as keyof typeof BUCKET_ICONS],
+  }));
+
   return (
-    <Tabs
-      value={activeBucket}
-      onValueChange={(value) => onTabChange(value as R2BucketName)}
-      className="w-full"
-      aria-label="R2 bucket selection"
-    >
-      <TabsList className="w-full justify-start" role="tablist">
-        <AnimatePresence mode="wait">
-          {buckets.map((bucket) => (
-            <motion.div
-              key={bucket}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-            >
-              <TabsTrigger
-                value={bucket}
-                role="tab"
-                aria-selected={activeBucket === bucket}
-                aria-controls={`panel-${bucket}`}
-                id={`tab-${bucket}`}
-              >
-                {bucket}
-              </TabsTrigger>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </TabsList>
-    </Tabs>
+    <AnimatedTabs
+      tabs={tabs}
+      activeTab={activeBucket}
+      onTabChange={(tabId) => onTabChange(tabId as R2BucketName)}
+      className="w-auto"
+      whiteText
+    />
   );
 }

@@ -2,6 +2,26 @@
 
 A modern Next.js application featuring AI-powered chat, unified stock image search, and cloud media gallery management.
 
+## 📸 Screenshots
+
+<div align="center">
+  <a href="https://images-hub-pim.vercel.app/" target="_blank">
+    <img src="./public/placeholders/s1.webp" alt="Homepage Hero Section" width="45%" />
+  </a>
+  <a href="https://images-hub-pim.vercel.app/" target="_blank">
+    <img src="./public/placeholders/s2.webp" alt="Stock Image Search" width="45%" />
+  </a>
+</div>
+
+<div align="center">
+  <a href="https://images-hub-pim.vercel.app/" target="_blank">
+    <img src="./public/placeholders/s3.webp" alt="Cloudflare R2 Gallery" width="45%" />
+  </a>
+  <a href="https://images-hub-pim.vercel.app/" target="_blank">
+    <img src="./public/placeholders/s4.webp" alt="AI Chat Interface" width="45%" />
+  </a>
+</div>
+
 ## 🚀 Features
 
 ### AI Chat Widget

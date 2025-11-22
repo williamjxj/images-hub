@@ -43,9 +43,9 @@ export function ImagesHubProviderFilter({
   };
 
   return (
-    <Card className="p-4">
-      <div className="space-y-3">
-        <Label className="text-sm font-medium">Search Providers</Label>
+    <Card className="p-3">
+      <div className="flex items-center gap-4">
+        <Label className="text-sm font-medium whitespace-nowrap">Providers:</Label>
         <div className="flex flex-wrap gap-4">
           {(["unsplash", "pexels", "pixabay"] as const).map((provider) => (
             <div key={provider} className="flex items-center space-x-2">

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, Image as ImageIcon, Cloud } from "lucide-react";
+import { Menu, X, Image as ImageIcon, Cloud, Home } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AppLogo } from "@/components/branding/app-logo";
 import { BestITLogo } from "@/components/branding/bestit-logo";
@@ -29,7 +29,7 @@ export function MainNavbar() {
   }, []);
 
   const navItems = [
-    { label: "Home", href: "/", icon: null },
+    { label: "Home", href: "/", icon: Home },
     { label: "stock images", href: "/stock-images", icon: ImageIcon },
     { label: "Cloudflare Images", href: "/cloudflare-images", icon: Cloud },
   ];
