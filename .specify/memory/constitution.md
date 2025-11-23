@@ -22,7 +22,7 @@
   Follow-up TODOs: None
 -->
 
-# AI Chatbox Constitution
+# AI Chatbot Constitution
 
 ## Core Principles
 

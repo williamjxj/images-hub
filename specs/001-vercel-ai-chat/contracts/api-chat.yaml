@@ -4,7 +4,7 @@ info:
   description: API endpoint for chat functionality using Vercel AI Gateway routing to DeepSeek LLM
   version: 1.0.0
   contact:
-    name: AI Chatbox Team
+    name: AI Chatbot Team
 
 servers:
   - url: http://localhost:3000/api

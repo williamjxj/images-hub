@@ -1,8 +1,8 @@
-# AI Chatbox Implementation Details
+# AI Chatbot Implementation Details
 
 ## Overview
 
-This document describes the implementation of an AI-powered chatbox application built with Next.js, Clerk authentication, and the Vercel AI SDK. The application provides a real-time chat interface powered by DeepSeek AI models.
+This document describes the implementation of an AI-powered chatbot application built with Next.js, Clerk authentication, and the Vercel AI SDK. The application provides a real-time chat interface powered by DeepSeek AI models.
 
 ## Tech Stack
 
@@ -45,7 +45,7 @@ This document describes the implementation of an AI-powered chatbox application 
 ## Project Structure
 
 ```
-ai-chatbox/
+ai-chatbot/
 ├── app/
 │   ├── api/
 │   │   └── chat/

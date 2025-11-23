@@ -1,4 +1,4 @@
-# AI Chatbox
+# AI Chatbot
 
 A modern Next.js application featuring AI-powered chat, unified stock image search, and cloud media gallery management.
 
@@ -85,7 +85,7 @@ A modern Next.js application featuring AI-powered chat, unified stock image sear
 
 ```bash
 git clone <repository-url>
-cd ai-chatbox
+cd ai-chatbot
 ```
 
 ### 2. Install Dependencies
@@ -146,7 +146,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## 📁 Project Structure
 
 ```
-ai-chatbox/
+ai-chatbot/
 ├── app/                      # Next.js App Router pages
 │   ├── api/                  # API routes
 │   │   ├── chat/             # AI chat API endpoint

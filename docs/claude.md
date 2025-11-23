@@ -1,4 +1,4 @@
-Perfect! I'll create a simple MVP chatbox. Let me build this step-by-step.
+Perfect! I'll create a simple MVP chatbot. Let me build this step-by-step.
 
 **⚠️ Security Note**: You've shared your API key publicly. I'll use it for this example, but you should **regenerate it** after this conversation to keep it secure.
 
@@ -8,10 +8,10 @@ Perfect! I'll create a simple MVP chatbox. Let me build this step-by-step.
 
 ```bash
 # Create new Next.js project
-npx create-next-app@latest deepseek-chatbox
+npx create-next-app@latest deepseek-chatbot
 # Choose: TypeScript: Yes, Tailwind: Yes, App Router: Yes
 
-cd deepseek-chatbox
+cd deepseek-chatbot
 
 # Install Vercel AI SDK
 npm install ai @ai-sdk/openai
@@ -196,10 +196,10 @@ Visit `http://localhost:3000` and start chatting! 🎉
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
-deepseek-chatbox/
+deeypeek-chatbot/
 ├── app/
 │   ├── api/
 │   │   └── chat/

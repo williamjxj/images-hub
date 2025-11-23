@@ -8,7 +8,7 @@ AI-powered chat application with multi-provider image search and cloud media gal
 
 ## Full Description (for README or About section)
 
-**AI Chatbox** - A modern Next.js application featuring AI-powered chat, unified stock image search, and cloud media gallery management.
+**AI Chatbot** - A modern Next.js application featuring AI-powered chat, unified stock image search, and cloud media gallery management.
 
 ### 🚀 Features
 

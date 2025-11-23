@@ -1,6 +1,6 @@
 ### Key Setup Assumptions and Overview
 
-- **Basic Features**: This implementation provides a simple AI chatbox with message history (session-based), streaming responses for real-time typing effect, user authentication via Clerk to access the chat page, and a clean UI using shadcn/ui components like Card, Input, Button, ScrollArea, and Avatar.
+- **Basic Features**: This implementation provides a simple AI chatbot with message history (session-based), streaming responses for real-time typing effect, user authentication via Clerk to access the chat page, and a clean UI using shadcn/ui components like Card, Input, Button, ScrollArea, and Avatar.
 - **Technology Choices**: Uses DeepSeek's "deepseek-chat" model via Vercel AI SDK for AI integration; assumes no persistent storage (e.g., no database for chat history); chat is on a dedicated protected page (/chat).
 - **API Keys**: Relies on DEEPSEEK_API_KEY in .env.local for the LLM; vercel-api-key is not used in this basic setup (it may be for advanced Vercel features, but not required here).
 - **Potential Limitations**: Streaming may have minor latency based on network; no multi-user support or advanced error handling; costs could arise from DeepSeek API usage and Vercel hosting.
@@ -83,7 +83,7 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
   });
 
   export const metadata: Metadata = {
-    title: "AI Chatbox",
+    title: "AI Chatbot",
     description: "Powered by DeepSeek and Vercel AI SDK",
   };
 
@@ -146,7 +146,7 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
 
     return (
       <div className="flex flex-col h-screen max-w-2xl mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-4">AI Chatbox</h1>
+        <h1 className="text-2xl font-bold mb-4">AI Chatbot</h1>
         <ScrollArea className="flex-1 border rounded-md p-4 mb-4">
           {messages.map((message) => (
             <Card key={message.id} className="mb-2">
@@ -183,7 +183,7 @@ If these assumptions don't match your needs (e.g., floating chat instead of page
 
 ---
 
-This comprehensive guide expands on the basic implementation, providing step-by-step explanations, potential extensions, and troubleshooting. It draws from official documentation and examples to ensure reliability, while incorporating best practices for scalability and user experience in an AI-powered chatbox.
+This comprehensive guide expands on the basic implementation, providing step-by-step explanations, potential extensions, and troubleshooting. It draws from official documentation and examples to ensure reliability, while incorporating best practices for scalability and user experience in an AI-powered chatbot.
 
 #### Detailed Project Structure
 

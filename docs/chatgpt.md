@@ -29,7 +29,7 @@ Great — this is a very clear and focused use case. Before I dive into code, I�
 
 ---
 
-If all that’s good, here’s a **basic implementation plan + sample code** for a Next.js (App Router) + Clerk + shadcn/ui + Tailwind chatbox, using Vercel AI Gateway with Deepseek.
+If all that's good, here's a **basic implementation plan + sample code** for a Next.js (App Router) + Clerk + shadcn/ui + Tailwind chatbot, using Vercel AI Gateway with Deepseek.
 
 ---
 
@@ -115,7 +115,7 @@ interface Message {
   content: string;
 }
 
-export function ChatBox() {
+export function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const { send, isLoading } = useStreamChat({
@@ -216,7 +216,7 @@ Example of rendering the chat in a protected page:
 ```tsx
 // app/chat/page.tsx
 
-import { ChatBox } from "@/components/Chat";
+import { ChatBot } from "@/components/Chat";
 import { auth } from "@clerk/nextjs";
 
 export default function ChatPage() {
@@ -227,7 +227,7 @@ export default function ChatPage() {
 
   return (
     <div className="h-full">
-      <ChatBox />
+      <ChatBot />
     </div>
   );
 }
@@ -264,7 +264,7 @@ Once the basic version works, you might want to add:
 
 ---
 
-If you like, I can send you a **full starter repo** (boilerplate) with Next.js + Clerk + shadcn/ui + Tailwind + Vercel AI Gateway + Deepseek chatbox that you can clone and build on. Do you want me to do that?
+If you like, I can send you a **full starter repo** (boilerplate) with Next.js + Clerk + shadcn/ui + Tailwind + Vercel AI Gateway + Deepseek chatbot that you can clone and build on. Do you want me to do that?
 
 [1]: https://vercel.com/ai-gateway/models/deepseek-v3.1?utm_source=chatgpt.com "DeepSeek V3.1 on Vercel AI Gateway"
 [2]: https://vercel.com/docs/ai/deepinfra?utm_source=chatgpt.com "Vercel Deep Infra Integration"

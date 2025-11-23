@@ -82,7 +82,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Chatbox",
+  title: "AI Chatbot",
   description: "AI-powered chat application",
 };
 
