@@ -45,9 +45,9 @@ A modern Next.js application featuring AI-powered chat, unified stock image sear
 ### Cloudflare R2 Media Gallery
 
 - **Multi-Bucket Support**: Browse images and videos from multiple R2 buckets
-- **Tab Navigation**: Easy switching between buckets (`bestitconsulting-assets`, `juewei-assets`, `static-assets`)
-- **Multiple Display Modes**: Grid, Masonry, and List views
-- **Folder Navigation**: Navigate through folder hierarchies with breadcrumbs
+- **Bucket Sidebar**: Stable left-side bucket list (`bestitconsulting-assets`, `juewei-assets`, `static-assets`, `friendshipdaycare`)
+- **Folder Tree Panel**: Middle column shows an expandable folder tree (Windows Explorer–style)
+- **Multiple Display Modes**: Grid, Masonry, and List views for the right-hand content area
 - **Video Support**: View videos alongside images with dedicated video player
 - **Search & Filter**: Filter by file type and search within buckets
 - **Responsive Design**: Optimized for all screen sizes
@@ -151,13 +151,13 @@ ai-chatbot/
 │   ├── api/                  # API routes
 │   │   ├── chat/             # AI chat API endpoint
 │   │   ├── images-hub/       # Image search API
-│   │   └── r2/                # R2 media API
-│   ├── images-hub/           # Redirect to home
-│   ├── r2-images/             # R2 media gallery page
+│   │   └── r2/               # R2 media API (list, image)
+│   ├── cloudflare-images/    # R2 media gallery page
+│   ├── stock-images/         # Stock image search page
 │   ├── sign-in/               # Clerk sign-in page
 │   ├── sign-up/               # Clerk sign-up page
 │   ├── layout.tsx             # Root layout with Clerk provider
-│   └── page.tsx               # Home page (Stock Images)
+│   └── page.tsx               # Home page (Portrait-style landing)
 ├── components/                # React components
 │   ├── chat-widget/           # Floating chat widget
 │   ├── images-hub/            # Stock image search components
@@ -318,9 +318,9 @@ In Vercel Dashboard → Settings → Environment Variables, add:
 
 ### R2 Media Gallery
 
-- Three bucket tabs for different asset collections
+- Left bucket sidebar for multiple asset buckets
+- Middle folder tree panel for subfolders
 - Multiple display modes (Grid, Masonry, List)
-- Folder navigation with breadcrumbs
 - Video playback support
 - File type filtering
 

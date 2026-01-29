@@ -1,6 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  logging: {
+    // Reduce dev-server noise from frequent R2 folder/image listing requests.
+    // This only affects development logging, not production builds.
+    incomingRequests: {
+      ignore: [/\/api\/r2\/list/],
+    },
+  },
   images: {
     remotePatterns: [
       // Unsplash

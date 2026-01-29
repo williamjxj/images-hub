@@ -9,10 +9,11 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { R2ImageTabs } from "./r2-image-tabs";
+import { R2FolderPanel } from "./r2-folder-panel";
 import { R2ImageGrid } from "./r2-image-grid";
 import { R2ImageMasonry } from "./r2-image-masonry";
 import { R2ImageList } from "./r2-image-list";
-import { R2FolderNavigation } from "./r2-folder-navigation";
+import { R2ImageFilter } from "./r2-image-filter";
 import { R2DisplayModeSelector } from "./r2-display-mode-selector";
 import { R2ImageModal } from "./r2-image-modal";
 import { R2VideoModal } from "./r2-video-modal";
@@ -188,106 +189,114 @@ export function R2ImageGallery() {
       <AriaLiveRegion priority="polite">
         {loading ? "Loading images..." : images.length > 0 ? `Loaded ${images.length} images` : ""}
       </AriaLiveRegion>
-      <div className="flex flex-col min-h-screen">
-        <div className="container mx-auto flex flex-col flex-1">
-          {/* Header */}
-          <div className="p-4 space-y-2">
-            <h1 className="text-3xl font-bold">
-              <AnimatedText animation="reveal" delay={0}>
-                Cloudflare Images
-              </AnimatedText>
-            </h1>
-            <div className="text-muted-foreground">
-              <AnimatedText animation="fade" delay={0.2}>
-                Browse and manage your images from Cloudflare R2 storage buckets
-              </AnimatedText>
-            </div>
+      <div className="flex min-h-screen">
+        {/* Left Sidebar - Bucket Names */}
+        <aside className="w-56 border-r bg-background/50 backdrop-blur-sm shrink-0">
+          <div className="sticky top-0 p-4 h-screen overflow-y-auto">
+            <R2ImageTabs
+              buckets={R2_BUCKETS}
+              activeBucket={activeBucket}
+              onTabChange={switchBucket}
+            />
           </div>
+        </aside>
 
-          {/* Tab Navigation */}
-          <div className="border-b p-4">
-            <div className="flex items-center justify-between">
-              <R2ImageTabs
-                buckets={R2_BUCKETS}
-                activeBucket={activeBucket}
-                onTabChange={switchBucket}
-              />
-              <R2DisplayModeSelector
-                mode={displayMode}
-                onModeChange={setDisplayMode}
-              />
-            </div>
-          </div>
+        {/* Middle Panel - Folder Tree */}
+        <R2FolderPanel
+          bucket={activeBucket}
+          currentFolder={currentFolder}
+          onFolderClick={navigateToFolder}
+        />
 
-          {/* Folder Navigation */}
-          {(folders.length > 0 || currentFolder) && (
-            <div className="border-b p-4">
-              <R2FolderNavigation
-                bucket={activeBucket}
-                currentFolder={currentFolder}
-                folders={folders}
-                onFolderClick={navigateToFolder}
-                filter={filter}
-                onFilterChange={setFilter}
-                imageCount={filteredImages.length}
-              />
-            </div>
-          )}
-
-          {/* Main Content Area */}
-          <div className="flex-1 overflow-auto p-4">
-            {loading && images.length === 0 ? (
-              <R2ImageLoading count={12} mode={displayMode} />
-            ) : error ? (
-              <Card className="p-6">
-                <div className="flex items-center gap-2 text-destructive">
-                  <AlertCircle className="h-5 w-5" aria-hidden="true" />
-                  <p role="alert">{error}</p>
-                </div>
-              </Card>
-            ) : images.length === 0 ? (
-              <Card className="p-6">
-                <div className="text-center">
-                  <p className="text-muted-foreground">
-                    No images currently, click Sub-Folder to view more images.
-                  </p>
-                </div>
-              </Card>
-            ) : (
-              <>
-                {renderImages()}
-                {/* Infinite scroll trigger */}
-                {hasMore && (
-                  <div
-                    ref={infiniteScrollRef}
-                    className="h-20 flex items-center justify-center mt-8"
-                  >
-                    {loading && <R2ImageLoading count={8} mode={displayMode} />}
+        {/* Right Content Area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <div className="container mx-auto flex flex-col flex-1">
+            {/* Header */}
+            <div className="p-4 space-y-4 border-b">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold">
+                    <AnimatedText animation="reveal" delay={0}>
+                      Cloudflare Images
+                    </AnimatedText>
+                  </h1>
+                  <div className="text-muted-foreground">
+                    <AnimatedText animation="fade" delay={0.2}>
+                      Browse and manage your images from Cloudflare R2 storage buckets
+                    </AnimatedText>
                   </div>
-                )}
-              </>
+                </div>
+                <R2DisplayModeSelector
+                  mode={displayMode}
+                  onModeChange={setDisplayMode}
+                />
+              </div>
+
+              {/* Search and Filters */}
+              <div className="flex items-center justify-between gap-4">
+                <R2ImageFilter
+                  filter={filter}
+                  onFilterChange={setFilter}
+                  imageCount={filteredImages.length}
+                />
+              </div>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="flex-1 overflow-auto p-4">
+              {loading && images.length === 0 ? (
+                <R2ImageLoading count={12} mode={displayMode} />
+              ) : error ? (
+                <Card className="p-6">
+                  <div className="flex items-center gap-2 text-destructive">
+                    <AlertCircle className="h-5 w-5" aria-hidden="true" />
+                    <p role="alert">{error}</p>
+                  </div>
+                </Card>
+              ) : images.length === 0 ? (
+                <Card className="p-6">
+                  <div className="text-center">
+                    <p className="text-muted-foreground">
+                      No images currently, click Sub-Folder to view more images.
+                    </p>
+                  </div>
+                </Card>
+              ) : (
+                <>
+                  {renderImages()}
+                  {/* Infinite scroll trigger */}
+                  {hasMore && (
+                    <div
+                      ref={infiniteScrollRef}
+                      className="h-20 flex items-center justify-center mt-8"
+                    >
+                      {loading && <R2ImageLoading count={8} mode={displayMode} />}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Image Modal */}
+            {selectedMedia && selectedMedia.mediaType === "image" && (
+              <R2ImageModal
+                image={selectedMedia}
+                images={filteredImages}
+                onClose={() => setSelectedMedia(null)}
+                onNavigate={handleImageModalNavigate}
+              />
+            )}
+
+            {/* Video Modal */}
+            {selectedMedia && selectedMedia.mediaType === "video" && (
+              <R2VideoModal
+                video={selectedMedia}
+                videos={filteredImages}
+                onClose={() => setSelectedMedia(null)}
+                onNavigate={handleVideoModalNavigate}
+              />
             )}
           </div>
-
-          {/* Image Modal */}
-          {selectedMedia && selectedMedia.mediaType === "image" && (
-            <R2ImageModal
-              image={selectedMedia}
-              images={filteredImages}
-              onClose={() => setSelectedMedia(null)}
-              onNavigate={handleImageModalNavigate}
-            />
-          )}
-
-          {/* Video Modal */}
-          {selectedMedia && selectedMedia.mediaType === "video" && (
-            <R2VideoModal
-              video={selectedMedia}
-              videos={filteredImages}
-              onClose={() => setSelectedMedia(null)}
-              onNavigate={handleVideoModalNavigate}
-            />
-          )}
         </div>
       </div>
     </TooltipProvider>

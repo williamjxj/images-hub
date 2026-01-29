@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ImageData, PexelsSearchResponse, PexelsPhoto } from "./types";
+import { PexelsSearchResponse, PexelsPhoto } from "./types";
 
 /**
  * Pexels API client
@@ -68,50 +68,6 @@ export class PexelsClient {
       console.error("Pexels API error:", error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to fetch images from Pexels: ${errorMessage}`);
-    }
-  }
-
-  /**
-   * Search for popular tech-related images (legacy method)
-   * @deprecated Use search() method instead
-   */
-  async searchImages(count: number = 8): Promise<ImageData[]> {
-    try {
-      const query = "software AI technology programming computer";
-      const response = await axios.get<PexelsSearchResponse>(
-        `${this.baseUrl}/search`,
-        {
-          params: {
-            query,
-            per_page: count,
-            orientation: "landscape",
-            size: "large",
-          },
-          headers: {
-            Authorization: this.apiKey,
-          },
-        }
-      );
-
-      if (!response.data.photos || !Array.isArray(response.data.photos)) {
-        console.error("Invalid Pexels API response:", response.data);
-        return [];
-      }
-
-      return response.data.photos.map((photo) => ({
-        id: photo.id.toString(),
-        url: photo.src.large,
-        width: photo.width,
-        height: photo.height,
-        source: "pexels" as const,
-        author: photo.photographer,
-        tags: photo.alt ? [photo.alt] : [],
-      }));
-    } catch (error: unknown) {
-      const axiosError = error as { response?: { data?: unknown } };
-      console.error("Pexels API error:", error);
-      console.error("Response data:", axiosError.response?.data);
-      throw new Error(`Failed to fetch images from Pexels: ${error}`);
     }
   }
 }

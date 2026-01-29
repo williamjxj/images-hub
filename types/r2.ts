@@ -11,7 +11,8 @@
 export type R2BucketName =
   | "bestitconsulting-assets"
   | "juewei-assets"
-  | "static-assets";
+  | "static-assets"
+  | "friendshipdaycare";
 
 /**
  * Display mode for image gallery

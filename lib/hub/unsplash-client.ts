@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ImageData, UnsplashSearchResponse, UnsplashPhoto } from "./types";
+import { UnsplashSearchResponse, UnsplashPhoto } from "./types";
 
 /**
  * Unsplash API client
@@ -66,50 +66,6 @@ export class UnsplashClient {
       console.error("Unsplash API error:", error);
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to fetch images from Unsplash: ${errorMessage}`);
-    }
-  }
-
-  /**
-   * Search for popular tech-related images (legacy method)
-   * @deprecated Use search() method instead
-   */
-  async searchImages(count: number = 8): Promise<ImageData[]> {
-    try {
-      const query = "software AI technology programming computer";
-      const response = await axios.get<UnsplashSearchResponse>(
-        `${this.baseUrl}/search/photos`,
-        {
-          params: {
-            query,
-            per_page: count,
-            order_by: "popular",
-            orientation: "landscape",
-          },
-          headers: {
-            Authorization: `Client-ID ${this.accessKey}`,
-          },
-        }
-      );
-
-      if (!response.data.results || !Array.isArray(response.data.results)) {
-        console.error("Invalid Unsplash API response:", response.data);
-        return [];
-      }
-
-      return response.data.results.map((photo) => ({
-        id: photo.id,
-        url: photo.urls.regular,
-        width: photo.width,
-        height: photo.height,
-        source: "unsplash" as const,
-        author: photo.user.name,
-        tags: photo.tags ? photo.tags.map((tag) => tag.title) : [],
-      }));
-    } catch (error: unknown) {
-      const axiosError = error as { response?: { data?: unknown } };
-      console.error("Unsplash API error:", error);
-      console.error("Response data:", axiosError.response?.data);
-      throw new Error(`Failed to fetch images from Unsplash: ${error}`);
     }
   }
 }

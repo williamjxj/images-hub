@@ -8,12 +8,13 @@ import type { R2BucketName } from "@/types/r2";
 
 /**
  * Supported R2 bucket names
- * These are the three buckets configured for this feature
+ * These are the four buckets configured for this feature
  */
 export const R2_BUCKETS: readonly R2BucketName[] = [
   "bestitconsulting-assets",
   "juewei-assets",
   "static-assets",
+  "friendshipdaycare",
 ] as const;
 
 /**

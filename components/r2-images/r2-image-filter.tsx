@@ -7,7 +7,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Filter, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -45,6 +45,7 @@ export function R2ImageFilter({
   onFilterChange,
   imageCount = 0,
 }: R2ImageFilterProps) {
+  const [isMounted, setIsMounted] = useState(false);
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(filter.search || "");
   const [selectedFileTypes, setSelectedFileTypes] = useState<string[]>(
@@ -83,6 +84,11 @@ export function R2ImageFilter({
     });
   };
 
+  // Avoid Radix Popover hydration mismatches by rendering it only after mount.
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <div className="flex items-center gap-2">
       {/* Search Input */}
@@ -110,115 +116,123 @@ export function R2ImageFilter({
       </div>
 
       {/* Advanced Filters Popover */}
-      <Popover open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant={hasActiveFilters ? "default" : "outline"}
-            size="sm"
-            className="relative"
-            aria-label="Advanced filters"
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            Filters
-            {hasActiveFilters && (
-              <span className="ml-2 h-5 w-5 rounded-full bg-primary-foreground text-primary text-xs flex items-center justify-center">
-                {selectedFileTypes.length + (searchQuery ? 1 : 0)}
-              </span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80" align="end">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">Advanced Filters</h3>
+      {isMounted ? (
+        <Popover open={isAdvancedOpen} onOpenChange={setIsAdvancedOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant={hasActiveFilters ? "default" : "outline"}
+              size="sm"
+              className="relative"
+              aria-label="Advanced filters"
+            >
+              <Filter className="h-4 w-4 mr-2" />
+              Filters
               {hasActiveFilters && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearFilters}
-                  className="h-7 text-xs"
-                >
-                  Clear all
-                </Button>
+                <span className="ml-2 h-5 w-5 rounded-full bg-primary-foreground text-primary text-xs flex items-center justify-center">
+                  {selectedFileTypes.length + (searchQuery ? 1 : 0)}
+                </span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80" align="end">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-sm">Advanced Filters</h3>
+                {hasActiveFilters && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="h-7 text-xs"
+                  >
+                    Clear all
+                  </Button>
+                )}
+              </div>
+
+              {/* File Type Filter */}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">File Type</Label>
+                <div className="space-y-3">
+                  {/* Images */}
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground mb-2 block">
+                      Images
+                    </Label>
+                    <div className="space-y-2">
+                      {FILE_TYPES.filter((t) => t.category === "image").map(
+                        (type) => (
+                          <div
+                            key={type.value}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={`filter-type-${type.value}`}
+                              checked={selectedFileTypes.includes(type.value)}
+                              onCheckedChange={() =>
+                                handleFileTypeToggle(type.value)
+                              }
+                            />
+                            <Label
+                              htmlFor={`filter-type-${type.value}`}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              {type.label}
+                            </Label>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                  {/* Videos */}
+                  <div>
+                    <Label className="text-xs font-medium text-muted-foreground mb-2 block">
+                      Videos
+                    </Label>
+                    <div className="space-y-2">
+                      {FILE_TYPES.filter((t) => t.category === "video").map(
+                        (type) => (
+                          <div
+                            key={type.value}
+                            className="flex items-center space-x-2"
+                          >
+                            <Checkbox
+                              id={`filter-type-${type.value}`}
+                              checked={selectedFileTypes.includes(type.value)}
+                              onCheckedChange={() =>
+                                handleFileTypeToggle(type.value)
+                              }
+                            />
+                            <Label
+                              htmlFor={`filter-type-${type.value}`}
+                              className="text-sm font-normal cursor-pointer"
+                            >
+                              {type.label}
+                            </Label>
+                          </div>
+                        )
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Results count */}
+              {imageCount > 0 && (
+                <div className="pt-2 border-t text-sm text-muted-foreground">
+                  Showing {imageCount} image{imageCount !== 1 ? "s" : ""}
+                </div>
               )}
             </div>
-
-            {/* File Type Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">File Type</Label>
-              <div className="space-y-3">
-                {/* Images */}
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">
-                    Images
-                  </Label>
-                  <div className="space-y-2">
-                    {FILE_TYPES.filter((t) => t.category === "image").map(
-                      (type) => (
-                        <div
-                          key={type.value}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`filter-type-${type.value}`}
-                            checked={selectedFileTypes.includes(type.value)}
-                            onCheckedChange={() =>
-                              handleFileTypeToggle(type.value)
-                            }
-                          />
-                          <Label
-                            htmlFor={`filter-type-${type.value}`}
-                            className="text-sm font-normal cursor-pointer"
-                          >
-                            {type.label}
-                          </Label>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-                {/* Videos */}
-                <div>
-                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">
-                    Videos
-                  </Label>
-                  <div className="space-y-2">
-                    {FILE_TYPES.filter((t) => t.category === "video").map(
-                      (type) => (
-                        <div
-                          key={type.value}
-                          className="flex items-center space-x-2"
-                        >
-                          <Checkbox
-                            id={`filter-type-${type.value}`}
-                            checked={selectedFileTypes.includes(type.value)}
-                            onCheckedChange={() =>
-                              handleFileTypeToggle(type.value)
-                            }
-                          />
-                          <Label
-                            htmlFor={`filter-type-${type.value}`}
-                            className="text-sm font-normal cursor-pointer"
-                          >
-                            {type.label}
-                          </Label>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Results count */}
-            {imageCount > 0 && (
-              <div className="pt-2 border-t text-sm text-muted-foreground">
-                Showing {imageCount} image{imageCount !== 1 ? "s" : ""}
-              </div>
-            )}
-          </div>
-        </PopoverContent>
-      </Popover>
+          </PopoverContent>
+        </Popover>
+      ) : (
+        // SSR-safe placeholder to keep layout stable during hydration
+        <Button variant="outline" size="sm" className="relative" disabled>
+          <Filter className="h-4 w-4 mr-2" />
+          Filters
+        </Button>
+      )}
     </div>
   );
 }

@@ -1,72 +1,69 @@
-# AI Chatbot Implementation Details
+# Application Implementation Details
 
 ## Overview
 
-This document describes the implementation of an AI-powered chatbot application built with Next.js, Clerk authentication, and the Vercel AI SDK. The application provides a real-time chat interface powered by DeepSeek AI models.
+This document describes the implementation of a modern media and AI application built with Next.js, Clerk authentication, and the Vercel AI SDK. The app provides:
+
+- An AI-powered chat widget
+- A unified stock image search hub (Unsplash, Pexels, Pixabay)
+- A Cloudflare R2 media gallery with multi-bucket, folder-based navigation
 
 ## Tech Stack
 
 ### Core Framework
 
-- **Next.js 16.0.3** - React framework with App Router
+- **Next.js 16.0.3** - App Router, server components, API routes
 - **React 19.2.0** - UI library
-- **TypeScript 5** - Type safety
+- **TypeScript 5** - Strict typing
 
 ### Authentication
 
 - **Clerk 6.35.2** - User authentication and management
-  - Integrated with Next.js middleware for route protection
-  - Supports sign-in and sign-up flows
+  - Middleware-based route protection
+  - Required for all main features (chat, search, R2 gallery)
 
 ### AI Integration
 
-- **Vercel AI SDK 5.0.93** - AI integration framework
-- **@ai-sdk/react 2.0.93** - React hooks for AI interactions
-- **@ai-sdk/openai 2.0.68** - OpenAI-compatible API client
+- **Vercel AI SDK 5.x** - AI integration framework
+- **@ai-sdk/react** - React hooks for chat streaming
 - **DeepSeek API** - AI model provider (via OpenAI-compatible interface)
 
-### Styling
+### Styling & UI
 
-- **Tailwind CSS 4** - Utility-first CSS framework
-  - CSS-based configuration using `@theme` directive
-  - PostCSS integration via `@tailwindcss/postcss`
-- **shadcn/ui** - Component library
-  - Button, Input, Card, ScrollArea components
-  - New York style variant
+- **Tailwind CSS 4** - Utility-first CSS with `@theme` config
+- **shadcn/ui** - Primitive components (Button, Input, Card, Tabs, Tooltip, etc.)
+- **Radix UI** - Accessible primitives under the hood
+- **Framer Motion** - Animations for galleries and navigation
 
-### UI Components
-
-- **Radix UI** - Headless UI primitives
-  - ScrollArea, Slot, Avatar components
-- **Lucide React** - Icon library
-- **class-variance-authority** - Component variant management
-- **clsx & tailwind-merge** - Class name utilities
-
-## Project Structure
+## Project Structure (high level)
 
 ```
-ai-chatbot/
-├── app/
-│   ├── api/
-│   │   └── chat/
-│   │       └── route.ts          # Chat API endpoint
-│   ├── globals.css                # Global styles & Tailwind config
-│   ├── layout.tsx                 # Root layout with ClerkProvider
-│   └── page.tsx                   # Main chat interface
-├── components/
-│   └── ui/                        # shadcn/ui components
-│       ├── avatar.tsx
-│       ├── button.tsx
-│       ├── card.tsx
-│       ├── input.tsx
-│       └── scroll-area.tsx
-├── lib/
-│   └── utils.ts                   # Utility functions (cn helper)
-├── middleware.ts                  # Clerk authentication middleware
-├── tailwind.config.ts             # Tailwind config (compatibility)
-├── postcss.config.mjs             # PostCSS configuration
-├── components.json                # shadcn/ui configuration
-└── package.json                   # Dependencies
+app/
+  api/
+    chat/                 # AI chat API
+    images-hub/           # Stock image search API
+    r2/                   # Cloudflare R2 list / image APIs
+  cloudflare-images/      # R2 media gallery page
+  stock-images/           # Stock image search hub
+  sign-in/, sign-up/      # Clerk auth pages
+  page.tsx                # Portrait-style marketing / landing
+
+components/
+  chat-widget/            # Floating AI chat widget
+  images-hub/             # Stock image search UI
+  r2-images/              # R2 gallery UI (buckets, folders, viewer)
+  ui/                     # shadcn/ui primitives + custom UI
+
+lib/
+  hub/                    # Provider clients + search aggregator
+  r2/                     # R2 client + list/get helpers
+  hooks/                  # Custom hooks (chat, search, R2, UI state)
+  utils/                  # Generic utilities (storage, accessibility, etc.)
+
+types/
+  chat-widget.ts          # Chat widget types
+  ui-ux.ts                # UI/UX related types
+  r2.ts                   # R2 gallery types
 ```
 
 ## Implementation Details
@@ -124,7 +121,44 @@ CLERK_SECRET_KEY=sk_...
   - Input field with send button
   - Loading states and empty state
 
-### 3. Styling Configuration
+### 3. Stock Image Search Hub
+
+- **API**: `app/api/images-hub/search/route.ts`
+  - Authenticated `GET` endpoint
+  - Calls `lib/hub/search-aggregator.ts`
+  - Aggregates Unsplash, Pexels, and Pixabay using provider clients
+- **Aggregator**: `lib/hub/search-aggregator.ts`
+  - Normalizes provider responses into unified `ImageResult` structures
+  - Handles per-provider errors and exposes them in `SearchResponse.errors`
+- **UI**: `components/images-hub/*`
+  - Provider filter chips, search bar, result sections grouped by provider
+  - Infinite scroll and responsive masonry/grid layouts
+
+### 4. Cloudflare R2 Media Gallery
+
+- **Page**: `app/cloudflare-images/page.tsx`
+  - Server component that checks Clerk auth
+  - Renders `R2ImageGallery`
+- **Gallery**: `components/r2-images/r2-image-gallery.tsx`
+  - Client component coordinating:
+    - Bucket selection (`R2ImageTabs` – left column)
+    - Folder tree (`R2FolderPanel` + `R2FolderTree` – middle column)
+    - Image/video grid/masonry/list (right column)
+    - Infinite scroll, modals, filters
+- **Data Hook**: `lib/hooks/use-r2-images.ts`
+  - Wraps `/api/r2/list` endpoint
+  - Manages active bucket, current folder, pagination, and loading state
+- **API**: `app/api/r2/list/route.ts`
+  - Validates bucket, prefix, and token
+  - Uses `lib/r2/list-objects.ts` + `get-object-url.ts` to list objects and generate presigned URLs
+
+Layout summary for the R2 gallery:
+
+- **Left**: Bucket list (all R2 buckets – including `friendshipdaycare`)
+- **Middle**: Folder tree (expandable, Windows Explorer–style)
+- **Right**: Images/videos with multiple display modes and modals
+
+### 5. Styling Configuration
 
 #### Tailwind CSS v4
 
@@ -150,7 +184,7 @@ CLERK_SECRET_KEY=sk_...
 - Base color: Slate
 - Component aliases configured
 
-### 4. Component Library
+### 6. Component Library
 
 #### shadcn/ui Components
 

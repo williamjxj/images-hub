@@ -18,20 +18,6 @@ export interface ImageResult {
 }
 
 /**
- * Legacy image data structure (kept for backward compatibility)
- * @deprecated Use ImageResult instead
- */
-export interface ImageData {
-  id: string;
-  url: string;
-  width: number;
-  height: number;
-  source: "unsplash" | "pixabay" | "pexels";
-  author?: string;
-  tags?: string[];
-}
-
-/**
  * Unsplash API response types
  */
 export interface UnsplashPhoto {
